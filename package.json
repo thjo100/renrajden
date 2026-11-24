@@ -1,0 +1,15 @@
+{
+  "name": "renrajden",
+  "version": "0.2.0",
+  "private": true,
+  "description": "Ny webbplats för Renrajden – OK Renens seedningslopp inför Vasaloppet",
+  "scripts": {
+    "preview": "node dev/build-preview.js",
+    "preview:admin": "node dev/build-preview.js --admin",
+    "shots": "node dev/shots.js",
+    "verify": "node dev/verify.js"
+  },
+  "devDependencies": {
+    "playwright": "1.63.0"
+  }
+}

@@ -1,0 +1,1622 @@
+<title>Renrajden 2027</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<meta name="description" content="Renrajden – seedningsgrundande klassiskt långlopp inför Vasaloppet på Ormberget i Luleå. Arrangör: OK Renen.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@700;900&family=Familjen+Grotesk:wght@400;500;700&family=JetBrains+Mono:wght@400;600&display=swap">
+<script>document.documentElement.lang = "sv";</script>
+<style>
+/* Layout: klubbvästen som gränssnitt – blå "väst"-hero med välvd text och ren, en röd/vit sidopanel
+   som blir en dubbelspårig km-mätare (0–42 km) längs sidan, därefter snövita sektioner på ett 12-kolumnsrutnät. */
+:root {
+  --bg: #F4F6FB;        /* snö med blå ton */
+  --surface: #FFFFFF;
+  --ice: #E4EAF7;
+  --line: #C5CFE8;
+  --text: #131A33;
+  --muted: #4B5578;
+  --accent: #3451A3;    /* västblå, mörkad för text */
+  --hero: #4561AE;      /* västens blå */
+  --hero-ink: #FFFFFF;
+  --hero-soft: #E4EAF7;
+  --reindeer: #8EA2DD;  /* renens ljusblå */
+  --red: #C8102E;       /* västens röda */
+  --red-text: #A50D26;
+  --footer: #1B2754;
+  --footer-ink: #C8D2F0;
+  --focus: #1B2754;
+  --control: #6E7AA3;   /* fältramar, minst 3:1 */
+  --bib-paper: #FFFFFF;
+  --bib-ink: #131A33;
+  --shadow: 0 1px 2px rgba(19, 26, 51, .06), 0 8px 24px rgba(19, 26, 51, .08);
+
+  --f-display: "Big Shoulders Display", "Arial Narrow", "Roboto Condensed", sans-serif;
+  --f-body: "Familjen Grotesk", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --f-mono: "JetBrains Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+
+  --s-xs: .8125rem; --s-sm: .9375rem; --s-md: 1.0625rem; --s-lg: 1.3125rem;
+  --s-xl: 1.75rem; --s-2xl: 2.5rem; --s-3xl: 3.5rem;
+  --wrap: 72rem;
+  --radius: 6px;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0C1230; --surface: #141C40; --ice: #1A2450; --line: #2C386A;
+    --text: #E7ECFA; --muted: #A6B1D4; --accent: #9DB3F7;
+    --hero: #263A80; --hero-ink: #FFFFFF; --hero-soft: #C8D2F0; --reindeer: #3F56A6;
+    --red: #B4102B; --red-text: #FF7A8E; --footer: #070B20; --footer-ink: #A6B1D4;
+    --focus: #FFFFFF; --control: #6878B8; --shadow: 0 1px 2px rgba(0,0,0,.3), 0 8px 24px rgba(0,0,0,.35);
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0C1230; --surface: #141C40; --ice: #1A2450; --line: #2C386A;
+  --text: #E7ECFA; --muted: #A6B1D4; --accent: #9DB3F7;
+  --hero: #263A80; --hero-ink: #FFFFFF; --hero-soft: #C8D2F0; --reindeer: #3F56A6;
+  --red: #B4102B; --red-text: #FF7A8E; --footer: #070B20; --footer-ink: #A6B1D4;
+  --focus: #FFFFFF; --control: #6878B8; --shadow: 0 1px 2px rgba(0,0,0,.3), 0 8px 24px rgba(0,0,0,.35);
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; scroll-padding-top: 5.5rem; }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } *, *::before, *::after { transition: none !important; animation: none !important; } }
+body {
+  background: var(--bg); color: var(--text);
+  font-family: var(--f-body); font-size: var(--s-md); line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 60; background: var(--surface); }
+h1, h2, h3 { text-wrap: balance; line-height: 1.1; margin: 0; }
+p { margin: 0; }
+a { color: var(--accent); text-underline-offset: .18em; text-decoration-thickness: 1px; }
+a:hover { text-decoration-thickness: 2px; }
+:focus-visible { outline: 3px solid var(--focus); outline-offset: 3px; border-radius: 2px; }
+.on-blue { --focus: #FFFFFF; }
+.sr-only { position: absolute !important; width: 1px; height: 1px; margin: -1px; padding: 0; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
+.wrap {
+  max-width: var(--wrap); margin-inline: auto;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+}
+@media (min-width: 700px) { .wrap { padding-left: max(32px, env(safe-area-inset-left, 0px)); padding-right: max(32px, env(safe-area-inset-right, 0px)); } }
+.mono { font-family: var(--f-mono); font-variant-numeric: tabular-nums; }
+.ext::after { content: " ↗"; content: " ↗" / ""; font-family: var(--f-mono); font-size: .85em; }
+.news-links .ext::after { margin-left: .3em; }
+
+/* ---------- Skip link ---------- */
+.skip { position: absolute; left: 16px; top: -100px; z-index: 100; background: var(--surface); color: var(--text); padding: .75rem 1rem; border-radius: var(--radius); font-weight: 700; box-shadow: var(--shadow); }
+.skip:focus { top: calc(env(safe-area-inset-top, 0px) + 12px); }
+
+/* ---------- Buttons ---------- */
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: .5rem;
+  min-height: 48px; padding: .625rem 1.25rem; border-radius: 999px; border: 2px solid transparent;
+  font: 700 var(--s-md)/1.1 var(--f-body); text-decoration: none; cursor: pointer;
+  transition: transform .15s ease, background-color .15s ease;
+}
+.btn:hover { transform: translateY(-1px); }
+.btn-light { background: #FFFFFF; color: #1B2754; }
+.btn-ghost { background: transparent; color: var(--hero-ink); border-color: currentColor; }
+.btn-primary { background: var(--accent); color: var(--surface); }
+.btn-red { background: var(--red); color: #FFFFFF; }
+.btn-quiet { background: transparent; color: var(--accent); border-color: var(--line); }
+.btn-sm { min-height: 40px; padding: .375rem .875rem; font-size: var(--s-sm); }
+.btn[disabled], .btn[aria-disabled="true"] { opacity: .6; cursor: progress; transform: none; }
+
+/* ---------- Header ---------- */
+.site-header {
+  position: sticky; top: env(safe-area-inset-top, 0px); z-index: 50;
+  background: var(--surface); border-bottom: 1px solid var(--line);
+}
+.header-inner { display: flex; align-items: center; gap: 1rem; min-height: 4.25rem; }
+.brand { display: flex; align-items: center; gap: .625rem; text-decoration: none; color: var(--text); margin-right: auto; }
+.brand svg { width: 2.5rem; height: 2.5rem; flex: none; }
+.brand-name { font: 900 1.75rem/1 var(--f-display); letter-spacing: .04em; text-transform: uppercase; color: var(--accent); }
+.brand-sub { display: block; font: 600 .75rem/1.2 var(--f-mono); letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+.menu-btn { display: none; }
+.site-nav ul { list-style: none; margin: 0; padding: 0; display: flex; gap: .25rem; flex-wrap: wrap; }
+.site-nav a {
+  display: block; padding: .5rem .625rem; border-radius: var(--radius);
+  color: var(--text); text-decoration: none; font-weight: 500; font-size: var(--s-sm);
+}
+.site-nav a:hover { background: var(--ice); }
+.site-nav a[aria-current="true"] { color: var(--red-text); box-shadow: inset 0 -3px 0 var(--red); border-radius: 0; }
+.progress-mobile { height: 3px; background: var(--ice); }
+.progress-mobile span { display: block; height: 100%; background: var(--red); transform-origin: left; transform: scaleX(0); }
+@media (max-width: 1179px) {
+  .menu-btn { display: inline-flex; }
+  .site-nav { position: absolute; left: 0; right: 0; top: 100%; background: var(--surface); border-bottom: 1px solid var(--line); box-shadow: var(--shadow);
+    max-height: calc(100vh - 5rem); max-height: calc(100dvh - 5rem); overflow-y: auto; overscroll-behavior: contain; }
+  .site-nav:not([data-open]) { display: none; }
+  .site-nav ul { flex-direction: column; padding: .5rem max(16px, env(safe-area-inset-right, 0px)) 1rem max(16px, env(safe-area-inset-left, 0px)); }
+  .site-nav a { padding: .875rem .75rem; font-size: var(--s-md); }
+}
+
+/* ---------- Km-rail (västens sidopanel = dubbelspår) ---------- */
+.rail { display: none; }
+@media (min-width: 1360px) {
+  .rail {
+    display: block; position: fixed; z-index: 40;
+    left: max(14px, env(safe-area-inset-left, 0px)); top: 6.5rem; bottom: 2rem; width: 92px;
+    pointer-events: none; --p: 0;
+  }
+  .rail-track { position: absolute; left: 0; top: 0; bottom: 0; width: 26px; border-radius: 13px; background: var(--red); box-shadow: 0 0 0 4px var(--surface), 0 0 0 5px var(--line); }
+  .rail-track::before, .rail-track::after { content: ""; position: absolute; top: 12px; bottom: 12px; width: 2px; background: rgba(255,255,255,.75); }
+  .rail-track::before { left: 8px; } .rail-track::after { right: 8px; }
+  .rail-mark { position: absolute; left: 0; width: 26px; height: 0; }
+  .rail-mark::before { content: ""; position: absolute; left: 4px; right: 4px; top: -1px; height: 2px; background: #FFFFFF; }
+  .rail-mark span { position: absolute; left: 34px; top: -.7em; font: 600 .75rem/1.2 var(--f-mono); color: var(--muted); white-space: nowrap; background: var(--surface); padding: 1px 5px; border-radius: 3px; box-shadow: 0 0 0 1px var(--line); }
+  .rail-skier {
+    position: absolute; left: 13px; top: calc(12px + (100% - 24px) * var(--p));
+    width: 18px; height: 18px; margin: -9px 0 0 -9px; border-radius: 50%;
+    background: #FFFFFF; border: 4px solid var(--footer);
+  }
+  .rail-readout {
+    position: absolute; left: 34px; top: calc(12px + (100% - 24px) * var(--p)); transform: translateY(-50%);
+    display: none; background: var(--footer); color: #FFFFFF; padding: .3rem .5rem; border-radius: 4px;
+    box-shadow: 0 0 0 2px var(--surface);
+    font: 600 .75rem/1.25 var(--f-mono); white-space: nowrap; font-variant-numeric: tabular-nums;
+  }
+  .rail-readout span { display: block; font-weight: 400; color: #C8D2F0; }
+  .rail-mark span i { display: none; font-style: normal; font-weight: 400; }
+  .rail-mark.near span { visibility: hidden; }
+}
+@media (min-width: 1440px) {
+  .rail-readout { display: block; }
+  .rail-mark span i { display: block; }
+}
+
+/* ---------- Alert & admin bars ---------- */
+.alert-bar { background: var(--red); color: #FFFFFF; }
+.alert-bar .wrap { display: flex; flex-wrap: wrap; gap: .25rem 1rem; align-items: baseline; padding-block: .75rem; }
+.alert-bar .alert-title { font: 900 1.125rem/1.2 var(--f-display); text-transform: uppercase; letter-spacing: .06em; margin: 0; }
+.alert-bar a { color: #FFFFFF; font-weight: 700; }
+.admin-bar { background: var(--footer); color: #FFFFFF; }
+.admin-bar .wrap { display: flex; flex-wrap: wrap; align-items: center; gap: .75rem 1rem; padding-block: .625rem; }
+.admin-who { display: flex; align-items: center; gap: .625rem; margin-right: auto; font-size: var(--s-sm); }
+.admin-who img { width: 2rem; height: 2rem; border-radius: 50%; }
+.admin-badge { font: 600 .75rem/1 var(--f-mono); letter-spacing: .08em; text-transform: uppercase; background: var(--red); color: #FFFFFF; padding: .3rem .5rem; border-radius: 3px; }
+.admin-bar .btn-quiet { color: #FFFFFF; border-color: rgba(255,255,255,.5); }
+
+/* ---------- Hero ---------- */
+.hero { position: relative; overflow: hidden; background: var(--hero); color: var(--hero-ink); isolation: isolate; }
+.hero-wave { position: absolute; left: 0; right: 0; bottom: -1px; width: 100%; height: 90px; z-index: 0; color: var(--surface); }
+.hero-stripe { position: absolute; left: 0; top: 0; bottom: 0; width: 34px; z-index: -1;
+  background: linear-gradient(90deg, #FFFFFF 0 7px, var(--red) 7px 27px, #FFFFFF 27px 34px); }
+.hero-ren { position: absolute; z-index: -1; right: -50px; bottom: 20px; width: min(52vw, 540px); height: auto; color: var(--reindeer); }
+@media (min-width: 1360px) { .hero-stripe { display: none; } }
+.hero-grid {
+  display: grid; gap: 2rem; align-items: end;
+  position: relative; z-index: 1;
+  padding-block: 3.5rem 6rem; padding-left: max(52px, env(safe-area-inset-left, 0px));
+}
+@media (min-width: 900px) { .hero-grid { grid-template-columns: minmax(0, 1.35fr) minmax(0, .65fr); padding-block: 4rem 7rem; } }
+.hero-copy { display: grid; gap: 1.25rem; min-width: 0; }
+.eyebrow { font: 600 var(--s-xs)/1.3 var(--f-mono); letter-spacing: .1em; text-transform: uppercase; }
+.hero .eyebrow { color: var(--hero-soft); }
+.hero-title svg { display: block; width: 100%; max-width: 640px; height: auto; overflow: visible; }
+.hero-title text { font-family: var(--f-display); font-weight: 900; }
+.hero-date { font: 700 var(--s-xl)/1.2 var(--f-display); letter-spacing: .03em; text-transform: uppercase; }
+.hero-lede { font-size: var(--s-lg); line-height: 1.45; max-width: 34ch; color: var(--hero-ink); }
+.hero-cta { display: flex; flex-wrap: wrap; gap: .75rem; }
+
+/* Nummerlapp = nedräkning */
+.bib {
+  position: relative; justify-self: start; width: min(100%, 300px);
+  background: var(--bib-paper); color: var(--bib-ink); border-radius: 10px;
+  padding: 0 0 1.25rem; box-shadow: 0 18px 40px rgba(8, 14, 40, .35); transform: rotate(-2.5deg);
+  text-align: center; overflow: hidden;
+}
+@media (min-width: 900px) { .bib { justify-self: end; margin-bottom: 2.5rem; } }
+.bib::before, .bib::after, .bib-holes::before, .bib-holes::after {
+  content: ""; position: absolute; width: 14px; height: 14px; border-radius: 50%;
+  background: var(--hero); box-shadow: inset 0 2px 3px rgba(0,0,0,.35);
+}
+.bib::before { left: 12px; top: 46px; } .bib::after { right: 12px; top: 46px; }
+.bib-holes::before { left: 12px; bottom: 12px; } .bib-holes::after { right: 12px; bottom: 12px; }
+.bib-head { display: block; background: var(--red); color: #FFFFFF; padding: .5rem 1rem; font: 900 1.125rem/1.2 var(--f-display); letter-spacing: .12em; text-transform: uppercase; }
+.bib-num { display: block; font: 900 clamp(5.5rem, 16vw, 7.5rem)/.9 var(--f-display); letter-spacing: -.01em; margin-top: 1rem; font-variant-numeric: tabular-nums; color: #1B2754; }
+.bib-label { display: block; font: 600 var(--s-xs)/1.3 var(--f-mono); letter-spacing: .1em; text-transform: uppercase; margin-top: .25rem; }
+.bib-foot { display: block; margin-top: .75rem; padding-top: .625rem; border-top: 2px dashed #C5CFE8; margin-inline: 1.5rem; font-size: var(--s-sm); }
+
+.bib { --focus: #1B2754; }
+.bib-link { display: inline-block; margin-top: .375rem; font-weight: 700; color: #3451A3; }
+@media (max-width: 899px) { body[data-phase="raceweek"] .bib, body[data-phase="raceday"] .bib { order: -1; } }
+
+/* Senaste-remsa */
+.latest { background: var(--footer); color: #FFFFFF; }
+.latest .wrap { display: flex; flex-wrap: wrap; gap: .25rem .875rem; align-items: baseline; padding-block: .875rem; }
+.latest-label { font: 600 var(--s-xs)/1 var(--f-mono); letter-spacing: .1em; text-transform: uppercase; color: #FF9AA9; }
+.latest a { color: #FFFFFF; font-weight: 700; }
+.latest time { color: var(--footer-ink); font-size: var(--s-sm); }
+
+/* ---------- Sections ---------- */
+.section { padding-block: 4.5rem; }
+.section + .section { border-top: 1px solid var(--line); }
+.section.tint { background: var(--surface); }
+.section-head { display: grid; gap: .625rem; margin-bottom: 2.25rem; max-width: 46rem; }
+.section-head .eyebrow { color: var(--red-text); }
+.section h2 { font: 900 clamp(2.5rem, 7vw, 4rem)/.95 var(--f-display); text-transform: uppercase; letter-spacing: .01em; color: var(--text); }
+.section-intro { font-size: var(--s-lg); line-height: 1.5; color: var(--muted); max-width: 60ch; }
+.section h3 { font: 800 var(--s-xl)/1.15 var(--f-display); letter-spacing: .02em; text-transform: uppercase; }
+.note { font-size: var(--s-sm); color: var(--muted); }
+.chip { display: inline-flex; align-items: center; gap: .35rem; font: 600 .75rem/1 var(--f-mono); letter-spacing: .06em; text-transform: uppercase; padding: .375rem .5rem; border-radius: 3px; background: var(--ice); color: var(--text); white-space: nowrap; }
+.chip-red { background: var(--red); color: #FFFFFF; }
+.chip-outline { background: transparent; box-shadow: inset 0 0 0 1px var(--line); color: var(--muted); }
+
+/* Fakta */
+.facts { display: grid; grid-template-columns: minmax(0, 1fr); gap: 1px; background: var(--line); border: 1px solid var(--line); border-radius: var(--radius); overflow: hidden; margin: 0; }
+@media (min-width: 560px) { .facts { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (min-width: 900px) { .facts { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+.fact { background: var(--surface); padding: 1.125rem 1.25rem; display: grid; gap: .25rem; align-content: start; }
+.fact dt { font: 600 .75rem/1.2 var(--f-mono); letter-spacing: .1em; text-transform: uppercase; color: var(--muted); }
+.fact dd { margin: 0; font: 800 1.5rem/1.15 var(--f-display); letter-spacing: .01em; }
+.fact dd small { display: block; font: 400 var(--s-sm)/1.4 var(--f-body); color: var(--muted); margin-top: .25rem; letter-spacing: 0; }
+
+/* Distansväljare */
+.dist { margin-top: 2.5rem; display: grid; gap: 1.5rem; }
+@media (min-width: 900px) { .dist { grid-template-columns: minmax(0, 1fr) minmax(0, 1.5fr); align-items: start; } }
+.dist fieldset { border: 0; padding: 0; margin: 0; min-width: 0; }
+.dist legend { font: 800 var(--s-xl)/1.15 var(--f-display); text-transform: uppercase; letter-spacing: .02em; margin-bottom: .875rem; padding: 0; }
+.seg { display: grid; grid-template-columns: repeat(3, 1fr); gap: .5rem; }
+.seg input { position: absolute; opacity: 0; width: 1px; height: 1px; }
+.seg label {
+  display: grid; justify-items: center; gap: .125rem; padding: .875rem .5rem; cursor: pointer;
+  border: 2px solid var(--line); border-radius: var(--radius); background: var(--surface);
+}
+.seg label b { font: 900 2.25rem/1 var(--f-display); }
+.seg label span { font: 600 .75rem/1.2 var(--f-mono); letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+.seg input:checked + label { border-color: var(--red-text); box-shadow: inset 0 0 0 1px var(--red-text); }
+@media (forced-colors: active) {
+  .seg input:checked + label { border: 4px solid Highlight; }
+  .seg input:checked + label b::after { content: " ✓"; }
+  .lap.on .lap-track { background: Highlight; }
+}
+.seg input:checked + label b { color: var(--red-text); }
+.seg input:focus-visible + label { outline: 3px solid var(--focus); outline-offset: 3px; }
+.laps { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: .375rem; margin-bottom: 1.25rem; }
+.lap { display: grid; gap: .5rem; }
+.lap-track { height: 22px; border-radius: 11px; background: var(--ice); position: relative; }
+.lap-track::before, .lap-track::after { content: ""; position: absolute; left: 10px; right: 10px; height: 2px; background: var(--line); }
+.lap-track::before { top: 6px; } .lap-track::after { bottom: 6px; }
+.lap.on .lap-track { background: var(--red); }
+.lap.on .lap-track::before, .lap.on .lap-track::after { background: rgba(255,255,255,.8); }
+.lap span { font: 600 .75rem/1.2 var(--f-mono); letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+.lap.on span { color: var(--text); }
+.dist-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(8.5rem, 1fr)); gap: 1rem; margin: 0; }
+.dist-stats div { border-top: 2px solid var(--text); padding-top: .5rem; }
+.dist-stats dt { font: 600 .75rem/1.2 var(--f-mono); letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+.dist-stats dd { margin: .25rem 0 0; font: 800 1.75rem/1 var(--f-display); font-variant-numeric: tabular-nums; }
+.dist-note { margin-top: 1rem; }
+
+/* Seedningsvägen */
+.path { list-style: none; margin: 0; padding: 0; display: grid; gap: 0; counter-reset: step; }
+@media (min-width: 900px) { .path { grid-template-columns: repeat(5, minmax(0, 1fr)); } }
+.path li { position: relative; padding: 0 0 1.75rem 3.75rem; counter-increment: step; }
+@media (min-width: 900px) { .path li { padding: 3.75rem 1.25rem 0 0; } }
+.path li::before {
+  content: counter(step); position: absolute; left: 0; top: 0; width: 2.75rem; height: 2.75rem; border-radius: 50%;
+  display: grid; place-items: center; background: var(--surface); color: var(--red-text);
+  border: 3px solid var(--red); font: 900 1.375rem/1 var(--f-display); z-index: 1;
+}
+.path li::after { content: ""; position: absolute; left: calc(1.375rem - 4px); top: 2.75rem; bottom: 0; width: 8px; border-inline: 2px solid var(--line); }
+@media (min-width: 900px) { .path li::after { left: 2.75rem; right: 0; top: calc(1.375rem - 4px); bottom: auto; width: auto; height: 8px; border-inline: 0; border-block: 2px solid var(--line); } }
+.path li:last-child::after { display: none; }
+.path h3 { font-size: var(--s-lg); margin-bottom: .375rem; }
+.path p { font-size: var(--s-sm); color: var(--muted); }
+.path a { font-weight: 600; }
+
+/* Anmälan */
+.routes { display: grid; gap: 1rem; grid-template-columns: repeat(auto-fit, minmax(17rem, 1fr)); }
+.route { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 1.5rem; display: grid; gap: .75rem; align-content: start; }
+.route-tag { justify-self: start; }
+.route h3 { font-size: var(--s-xl); }
+.route p { color: var(--muted); }
+.pending { display: flex; gap: .5rem; align-items: center; font-size: var(--s-sm); color: var(--text); background: var(--ice); padding: .75rem .875rem; border-radius: var(--radius); }
+.pending::before { content: ""; flex: none; width: 10px; height: 10px; border-radius: 50%; background: var(--red); }
+.copy-row { display: flex; flex-wrap: wrap; align-items: center; gap: .5rem .75rem; }
+.copy-row .mail { font: 600 var(--s-md)/1.3 var(--f-mono); word-break: break-all; }
+
+/* PM */
+.pm-grid { display: grid; gap: 2.5rem; }
+@media (min-width: 960px) { .pm-grid { grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr); } }
+.timeline { list-style: none; margin: 0; padding: 0; border-left: 3px solid var(--red); }
+.timeline li { display: grid; grid-template-columns: 6.5rem minmax(0, 1fr); gap: .75rem; padding: 0 0 1.25rem 1rem; position: relative; }
+.timeline li::before { content: ""; position: absolute; left: -9px; top: .35rem; width: 15px; height: 15px; border-radius: 50%; background: var(--surface); border: 3px solid var(--red); }
+.timeline time, .timeline .t { font: 600 var(--s-sm)/1.5 var(--f-mono); font-variant-numeric: tabular-nums; color: var(--red-text); }
+.timeline b { display: block; overflow-wrap: anywhere; hyphens: auto; }
+@media (max-width: 400px) { .timeline li { grid-template-columns: minmax(0, 1fr); gap: .125rem; } }
+.timeline p { font-size: var(--s-sm); color: var(--muted); }
+.know { display: grid; gap: 1rem; grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr)); }
+.know > section { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 1.25rem; }
+.know h3 { font-size: var(--s-lg); margin-bottom: .625rem; }
+.know ul { margin: 0; padding-left: 1.1rem; display: grid; gap: .375rem; font-size: var(--s-sm); }
+.packlist { margin-top: 2rem; background: var(--ice); border-radius: var(--radius); padding: 1.5rem; }
+.packlist-head { display: flex; flex-wrap: wrap; justify-content: space-between; gap: .5rem 1rem; align-items: baseline; margin-bottom: 1rem; }
+.packlist ul { list-style: none; margin: 0; padding: 0; display: grid; gap: .25rem 1.5rem; grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr)); }
+.check { display: flex; gap: .75rem; align-items: flex-start; padding: .5rem 0; cursor: pointer; font-size: var(--s-sm); }
+.check input { flex: none; width: 1.375rem; height: 1.375rem; margin: 0; accent-color: var(--red); }
+.check input:checked + span { text-decoration: line-through; color: var(--muted); }
+
+/* Bana & före */
+.two { display: grid; gap: 2.5rem; }
+@media (min-width: 960px) { .two { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); } }
+.stat-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(9rem, 1fr)); gap: 1rem; margin: 0 0 1.5rem; }
+.stat-row div { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 1rem; }
+.stat-row dt { font: 600 .75rem/1.2 var(--f-mono); letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+.stat-row dd { margin: .25rem 0 0; font: 900 2rem/1 var(--f-display); font-variant-numeric: tabular-nums; }
+.link-list { list-style: none; margin: 1.25rem 0 0; padding: 0; display: grid; gap: .5rem; }
+.link-list a { display: flex; justify-content: space-between; gap: 1rem; align-items: center; padding: .875rem 1rem; background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); text-decoration: none; font-weight: 600; }
+.link-list a:hover { border-color: var(--accent); }
+.link-list small { font: 400 var(--s-xs)/1.3 var(--f-mono); color: var(--muted); text-align: right; }
+.cold { margin-top: 1.5rem; display: flex; gap: 1rem; align-items: center; padding: 1rem 1.25rem; border: 2px solid var(--accent); border-radius: var(--radius); }
+.cold b { font: 900 2.25rem/1 var(--f-display); color: var(--accent); white-space: nowrap; }
+details.archive { margin-top: 1.5rem; border-top: 1px solid var(--line); padding-top: 1rem; }
+details.archive summary { cursor: pointer; font-weight: 700; min-height: 44px; display: flex; align-items: center; }
+details.archive .wax { display: grid; gap: 1rem; margin-top: .75rem; font-size: var(--s-sm); }
+details.archive h4 { margin: 0 0 .25rem; font: 700 var(--s-sm)/1.3 var(--f-mono); text-transform: uppercase; letter-spacing: .06em; }
+
+/* Nyheter */
+.news-band { background: var(--hero); color: var(--hero-ink); }
+.news-band.section + .section, .section + .news-band { border-top: 0; }
+.news-band h2 { color: var(--hero-ink); }
+.news-band .section-head .eyebrow { color: var(--hero-soft); }
+.news-band .section-intro { color: var(--hero-soft); }
+.news-toolbar { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: end; gap: 1rem; margin-bottom: 2rem; }
+.news-toolbar .section-head { margin-bottom: 0; }
+.news-list { display: grid; gap: 1rem; grid-template-columns: minmax(0, 1fr); align-items: start; }
+@media (min-width: 900px) {
+  .news-list { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .news-card.featured { grid-column: 1 / -1; grid-template-columns: minmax(0, 1fr) minmax(0, 1.25fr); column-gap: 3rem; padding: 2rem 2.25rem; }
+  .news-card.featured .news-head h3 { font-size: 3rem; }
+}
+.news-head, .news-content { display: grid; gap: .75rem; align-content: start; min-width: 0; }
+.news-archive { list-style: none; margin: 1.5rem 0 0; padding: 0; background: var(--surface); color: var(--text); border-radius: var(--radius); box-shadow: var(--shadow); --focus: var(--focus-card, #1B2754); }
+.news-archive > li + li { border-top: 1px solid var(--line); }
+.news-archive summary {
+  display: grid; grid-template-columns: 8.5rem minmax(0, 1fr) auto; gap: .25rem 1rem; align-items: baseline;
+  padding: .875rem 1.25rem; cursor: pointer; list-style: none; min-height: 48px;
+}
+.news-archive summary::-webkit-details-marker { display: none; }
+.news-archive summary::before { content: "+"; grid-column: 3; grid-row: 1; font: 600 1.125rem/1 var(--f-mono); color: var(--accent); }
+.news-archive details[open] summary::before { content: "−"; }
+.news-archive summary time { font: 600 var(--s-xs)/1.4 var(--f-mono); color: var(--muted); font-variant-numeric: tabular-nums; }
+.news-archive .arch-title { font-weight: 700; }
+.news-archive .arch-tag { grid-column: 2; justify-self: start; }
+.news-archive .news-content { padding: 0 1.25rem 1.25rem; }
+@media (min-width: 700px) { .news-archive .news-content { padding-left: calc(8.5rem + 2.25rem); } .news-archive .arch-tag { grid-column: auto; grid-row: 1; } .news-archive summary { grid-template-columns: 8.5rem minmax(0, 1fr) auto auto; } .news-archive summary::before { grid-column: 4; } }
+@media (max-width: 520px) { .news-archive summary { grid-template-columns: minmax(0, 1fr) auto; } .news-archive summary time { grid-column: 1; } .news-archive .arch-title { grid-column: 1; } .news-archive .arch-tag { grid-column: 1; } .news-archive summary::before { grid-column: 2; grid-row: 1 / span 3; align-self: center; } }
+.news-card {
+  background: var(--surface); color: var(--text); border-radius: var(--radius); padding: 1.375rem 1.5rem 1.5rem;
+  display: grid; gap: .75rem; box-shadow: var(--shadow); min-width: 0; --focus: var(--focus-card, #1B2754);
+}
+.news-card.pinned { box-shadow: var(--shadow), inset 0 4px 0 var(--red); }
+.news-meta { display: flex; flex-wrap: wrap; gap: .375rem .5rem; align-items: center; }
+.news-meta time { font: 600 var(--s-xs)/1 var(--f-mono); color: var(--muted); font-variant-numeric: tabular-nums; margin-right: .25rem; }
+.news-card h3 { font: 800 1.625rem/1.1 var(--f-display); letter-spacing: .01em; text-transform: none; }
+.news-body { display: grid; gap: .625rem; font-size: var(--s-sm); overflow-wrap: anywhere; }
+.news-links { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: .375rem; }
+.news-links a { display: inline-flex; align-items: center; min-height: 36px; padding: .25rem .75rem; border-radius: 999px; background: var(--ice); color: var(--accent); font-size: var(--s-sm); font-weight: 600; text-decoration: none; }
+.news-links a:hover { text-decoration: underline; }
+.news-admin { display: flex; gap: .5rem; flex-wrap: wrap; border-top: 1px dashed var(--line); padding-top: .75rem; }
+.news-admin small { flex-basis: 100%; color: var(--muted); font-size: var(--s-xs); }
+.news-state { background: rgba(255,255,255,.1); border: 1px dashed rgba(255,255,255,.5); border-radius: var(--radius); padding: 1.5rem; display: grid; gap: .5rem; }
+.news-state b { font: 800 var(--s-xl)/1.2 var(--f-display); text-transform: uppercase; letter-spacing: .02em; }
+.news-more { margin-top: 1.5rem; }
+.news-more .btn-quiet { color: var(--hero-ink); border-color: rgba(255,255,255,.55); }
+:root { --focus-card: #1B2754; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --focus-card: #FFFFFF; } }
+:root[data-theme="dark"] { --focus-card: #FFFFFF; }
+
+/* Resultat */
+.years { list-style: none; margin: 0; padding: 0; display: grid; gap: 0; border-top: 2px solid var(--text); }
+.year { display: grid; grid-template-columns: 5.5rem minmax(0, 1fr); gap: .5rem 1.25rem; padding: 1rem 0; border-bottom: 1px solid var(--line); align-items: baseline; }
+.year-num { font: 900 2.25rem/1 var(--f-display); font-variant-numeric: tabular-nums; }
+.year.cancelled .year-num { color: var(--muted); text-decoration: line-through; text-decoration-thickness: 3px; text-decoration-color: var(--red); }
+.year-body { display: grid; gap: .5rem; min-width: 0; }
+.year-body p { font-size: var(--s-sm); color: var(--muted); }
+.year-body .winners { color: var(--text); }
+.year-links { display: flex; flex-wrap: wrap; gap: .25rem 1rem; list-style: none; margin: 0; padding: 0; font-size: var(--s-sm); }
+.year-links a { display: inline-block; padding-block: .25rem; }
+.next-year { background: var(--red); color: #FFFFFF; margin: 0 -.75rem; padding: 1rem .75rem; border-radius: var(--radius); border-bottom: 0; }
+.next-year .year-num { color: #FFFFFF; }
+.next-year p, .next-year a { color: #FFFFFF; }
+.history-grid { display: grid; gap: 2.5rem; }
+@media (min-width: 960px) { .history-grid { grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr); } }
+.side-box { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 1.25rem 1.5rem; }
+.side-box + .side-box { margin-top: 1rem; }
+.side-box h3 { font-size: var(--s-lg); margin-bottom: .75rem; }
+.side-box ul { margin: 0; padding-left: 1.1rem; display: grid; gap: .375rem; font-size: var(--s-sm); }
+
+/* Partners & kontakt */
+.partners { display: flex; flex-wrap: wrap; gap: .75rem; list-style: none; margin: 0; padding: 0; }
+.partners li { font: 800 1.375rem/1 var(--f-display); text-transform: uppercase; letter-spacing: .04em; padding: .875rem 1.125rem; border: 2px solid var(--line); border-radius: var(--radius); background: var(--surface); }
+.partners li small { display: block; font: 400 .75rem/1.3 var(--f-mono); letter-spacing: .06em; color: var(--muted); margin-top: .25rem; }
+.contact-grid { display: grid; gap: 1rem; grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr)); margin-top: 1.5rem; }
+
+/* Footer */
+.site-footer { background: var(--footer); color: var(--footer-ink); padding-block: 3rem; font-size: var(--s-sm); }
+.site-footer a { color: #FFFFFF; }
+.footer-grid { display: grid; gap: 2rem; }
+@media (min-width: 800px) { .footer-grid { grid-template-columns: 1.2fr 1fr; } }
+.footer-brand { display: flex; gap: .875rem; align-items: center; color: #FFFFFF; }
+.footer-brand svg { width: 3rem; height: 3rem; }
+.footer-brand b { font: 900 1.75rem/1 var(--f-display); text-transform: uppercase; letter-spacing: .04em; }
+.footer-admin { display: flex; flex-wrap: wrap; gap: .75rem; align-items: center; margin-top: 1rem; }
+.footer-admin .btn-quiet { color: #FFFFFF; border-color: rgba(255,255,255,.45); }
+.site-footer details { align-self: start; border: 1px solid rgba(255,255,255,.2); border-radius: var(--radius); padding: .875rem 1rem; }
+.site-footer summary { cursor: pointer; font-weight: 700; color: #FFFFFF; min-height: 28px; }
+.site-footer details ul { padding-left: 1.1rem; display: grid; gap: .375rem; margin: .75rem 0 0; }
+.finish { margin-top: 2.5rem; padding-top: 1.25rem; border-top: 1px dashed rgba(255,255,255,.25); display: flex; flex-wrap: wrap; gap: .5rem 1.5rem; justify-content: space-between; font: 600 var(--s-xs)/1.4 var(--f-mono); letter-spacing: .06em; text-transform: uppercase; }
+
+/* ---------- Dialoger ---------- */
+dialog {
+  width: min(100% - 32px, 36rem); max-height: calc(100% - 32px); padding: 0; border: 0; border-radius: 10px;
+  background: var(--surface); color: var(--text); box-shadow: 0 24px 64px rgba(0,0,0,.35);
+}
+dialog::backdrop { background: rgba(10, 16, 40, .6); }
+.dlg-head { display: flex; justify-content: space-between; align-items: center; gap: 1rem; padding: 1.25rem 1.5rem; border-bottom: 1px solid var(--line); position: sticky; top: 0; background: var(--surface); z-index: 1; }
+.dlg-head h2 { font: 900 1.75rem/1.1 var(--f-display); text-transform: uppercase; letter-spacing: .02em; }
+.dlg-close { width: 44px; height: 44px; border-radius: 50%; border: 0; background: var(--ice); color: var(--text); font-size: 1.375rem; cursor: pointer; flex: none; }
+.dlg-body { padding: 1.5rem; display: grid; gap: 1.125rem; }
+.dlg-foot { display: flex; flex-wrap: wrap; gap: .75rem; justify-content: flex-end; padding: 1rem 1.5rem 1.5rem; }
+.login-stripe { height: 10px; background: linear-gradient(90deg, #FFFFFF 0 20%, var(--red) 20% 80%, #FFFFFF 80%); border-bottom: 1px solid var(--line); }
+.btn-google { background: var(--surface); color: var(--text); border: 2px solid var(--line); border-radius: 999px; width: 100%; min-height: 52px; font-size: var(--s-md); }
+.btn-google svg { width: 20px; height: 20px; }
+.login-msg { border-radius: var(--radius); padding: .875rem 1rem; font-size: var(--s-sm); }
+.login-msg[data-kind="error"] { background: color-mix(in srgb, var(--red) 12%, var(--surface)); border-left: 4px solid var(--red); }
+.login-msg[data-kind="info"] { background: var(--ice); border-left: 4px solid var(--accent); }
+.proto-note { font-size: var(--s-xs); color: var(--muted); border-top: 1px dashed var(--line); padding-top: .875rem; }
+
+.field { display: grid; gap: .375rem; }
+.field label, .field .lbl { font-weight: 700; font-size: var(--s-sm); }
+.field .hint { font-size: var(--s-xs); color: var(--muted); }
+.field input[type="text"], .field input[type="url"], .field input[type="date"], .field select, .field textarea {
+  width: 100%; min-height: 46px; padding: .625rem .75rem; border: 2px solid var(--control); border-radius: var(--radius);
+  background: var(--bg); color: var(--text); font: 400 var(--s-md)/1.4 var(--f-body);
+}
+.field textarea { min-height: 9rem; resize: vertical; }
+.field [aria-invalid="true"] { border-color: var(--red); }
+.err { color: var(--red-text); font-size: var(--s-xs); font-weight: 700; }
+.row2 { display: grid; gap: 1rem; grid-template-columns: repeat(auto-fit, minmax(12rem, 1fr)); }
+.link-rows { display: grid; gap: .75rem; }
+.link-row { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.4fr) auto; gap: .5rem; align-items: start; }
+.link-row .icon-btn { margin-top: calc(var(--s-sm) * 1.6 + .375rem); }
+@media (max-width: 520px) { .link-row { grid-template-columns: minmax(0, 1fr) auto; } .link-row .field:nth-child(2) { grid-column: 1 / -1; grid-row: 2; } }
+.icon-btn { width: 46px; height: 46px; border-radius: var(--radius); border: 2px solid var(--control); background: var(--surface); color: var(--text); cursor: pointer; font-size: 1.25rem; }
+.toggles { display: grid; gap: .5rem; }
+.error-summary { scroll-margin-top: 6rem; background: color-mix(in srgb, var(--red) 10%, var(--surface)); border-left: 4px solid var(--red); padding: .875rem 1rem; border-radius: var(--radius); font-size: var(--s-sm); }
+.error-summary ul { margin: .375rem 0 0; padding-left: 1.1rem; }
+
+.discard { margin: 0 1.5rem; padding: 1rem; border-radius: var(--radius); background: color-mix(in srgb, var(--red) 10%, var(--surface)); border-left: 4px solid var(--red); display: grid; gap: .75rem; }
+.discard-btns { display: flex; flex-wrap: wrap; gap: .5rem; }
+.phase-demo { margin-top: 1rem; padding-top: 1rem; border-top: 1px dashed rgba(255,255,255,.25); display: grid; gap: .625rem; }
+.phase-btns { display: flex; flex-wrap: wrap; gap: .5rem; }
+.phase-btns .btn-quiet { color: #FFFFFF; border-color: rgba(255,255,255,.45); }
+.phase-btns [aria-pressed="true"] { background: #FFFFFF; color: #1B2754; border-color: #FFFFFF; }
+
+/* Toast */
+.toast {
+  position: fixed; z-index: 80; left: 50%; transform: translateX(-50%);
+  bottom: calc(env(safe-area-inset-bottom, 0px) + 16px);
+  width: min(100% - 32px, 30rem);
+  display: flex; gap: .75rem; align-items: center; justify-content: space-between;
+  background: var(--footer); color: #FFFFFF; border-radius: 8px; padding: .75rem .75rem .75rem 1.125rem; box-shadow: 0 12px 32px rgba(0,0,0,.3);
+  --focus: #FFFFFF;
+}
+.toast > span:last-child { display: flex; gap: .375rem; }
+.toast button { background: transparent; color: #FFFFFF; border: 2px solid rgba(255,255,255,.5); border-radius: 999px; min-height: 40px; padding: .25rem .875rem; font: 700 var(--s-sm)/1 var(--f-body); cursor: pointer; }
+</style>
+
+<a class="skip" href="#main">Hoppa till innehållet</a>
+
+<div class="rail" aria-hidden="true">
+  <div class="rail-track">
+    <div class="rail-mark" style="top: 12px"><span>START</span></div>
+    <div class="rail-mark" style="top: calc(12px + (100% - 24px) * .25)"><span>10,5<i>Anmälan</i></span></div>
+    <div class="rail-mark" style="top: calc(12px + (100% - 24px) * .5)"><span>21<i>Bana</i></span></div>
+    <div class="rail-mark" style="top: calc(12px + (100% - 24px) * .75)"><span>31,5<i>Resultat</i></span></div>
+    <div class="rail-mark" style="top: calc(100% - 12px)"><span>42 MÅL</span></div>
+  </div>
+  <div class="rail-skier"></div>
+  <div class="rail-readout"><b id="rail-km">0,0 km</b><span id="rail-lap">varv 1</span></div>
+</div>
+
+<header class="site-header">
+  <div class="wrap header-inner">
+    <a class="brand" href="#top">
+      <svg viewBox="0 0 300 340" aria-hidden="true"><use href="#ren"/></svg>
+      <span><span class="brand-name">Renrajden</span><span class="brand-sub">OK Renen · Luleå</span></span>
+    </a>
+    <button class="btn btn-quiet btn-sm menu-btn" id="menu-btn" aria-expanded="false" aria-controls="site-nav">Meny</button>
+    <nav class="site-nav" id="site-nav" aria-label="Huvudmeny">
+      <ul>
+        <li><a href="#loppet">Loppet</a></li>
+        <li><a href="#seedning">Seedning</a></li>
+        <li><a href="#anmalan">Anmälan</a></li>
+        <li><a href="#pm">PM &amp; tider</a></li>
+        <li><a href="#bana">Bana &amp; före</a></li>
+        <li><a href="#nyheter">Nyheter</a></li>
+        <li><a href="#resultat">Resultat</a></li>
+        <li><a href="#kontakt">Kontakt</a></li>
+      </ul>
+    </nav>
+  </div>
+  <div class="progress-mobile" aria-hidden="true"><span id="progress-mobile"></span></div>
+</header>
+
+<section class="admin-bar on-blue" id="admin-bar" aria-label="Administratörsverktyg" hidden>
+  <div class="wrap">
+    <div class="admin-who"><img id="admin-avatar" alt=""><span><span class="admin-badge">Admin</span> Inloggad som <b id="admin-name">administratör</b></span></div>
+    <button class="btn btn-red btn-sm" type="button" data-action="new-news">+ Ny nyhet</button>
+    <button class="btn btn-quiet btn-sm" type="button" id="logout-btn">Logga ut</button>
+  </div>
+</section>
+
+<main id="main" tabindex="-1">
+  <section class="alert-bar on-blue" id="alert-bar" aria-labelledby="alert-h" hidden>
+    <div class="wrap"><h2 id="alert-h" class="alert-title">Viktigt</h2><p id="alert-text"></p><a id="alert-link" href="#nyheter">Läs mer<span class="sr-only"> om det viktiga meddelandet</span></a></div>
+  </section>
+  <div class="latest on-blue" id="latest" hidden>
+    <div class="wrap"><span class="latest-label">Senaste nytt</span><a id="latest-link" href="#nyheter"></a><time id="latest-date"></time></div>
+  </div>
+
+  <section class="hero on-blue" id="top" aria-labelledby="hero-title">
+    <svg class="hero-wave" viewBox="0 0 1440 90" preserveAspectRatio="none" aria-hidden="true">
+      <path d="M0 22 C300 92 560 92 820 52 C1060 16 1260 12 1440 40 V90 H0 Z" fill="currentColor"/>
+      <path d="M0 8 C300 78 560 78 820 38 C1060 2 1260 -2 1440 26" fill="none" stroke="#FFFFFF" stroke-width="4" opacity=".6"/>
+    </svg>
+    <div class="hero-stripe" aria-hidden="true"></div>
+    <svg class="hero-ren" viewBox="0 0 300 340" aria-hidden="true"><use href="#ren"/></svg>
+    <div class="wrap hero-grid">
+      <div class="hero-copy">
+        <p class="eyebrow">Ormberget · Luleå · Klassisk stil · Arrangör OK Renen</p>
+        <h1 class="hero-title" id="hero-title">
+          <span class="sr-only">Renrajden 2027</span>
+          <svg viewBox="0 0 600 250" aria-hidden="true" style="color:#FFFFFF">
+            <defs><path id="arc" d="M30 222 A300 190 0 0 1 570 222"/></defs>
+            <text font-size="108" fill="currentColor" letter-spacing="5"><textPath href="#arc" startOffset="50%" text-anchor="middle">RENRAJDEN</textPath></text>
+            <text x="300" y="232" font-size="64" fill="currentColor" text-anchor="middle" letter-spacing="6">2027</text>
+          </svg>
+        </h1>
+        <p class="hero-date"><time datetime="2027-01-30">Lördag 30 januari 2027</time></p>
+        <p class="hero-lede">Seedningsgrundande långlopp inför Vasaloppet. Klassisk stil i dubbelspår, fyra varv runt Ormberget.</p>
+        <div class="hero-cta">
+          <a class="btn btn-light" id="cta-1" href="#anmalan">Så anmäler du dig</a>
+          <a class="btn btn-ghost" id="cta-2" href="#nyheter">Senaste nytt</a>
+        </div>
+      </div>
+      <p class="bib" id="countdown" aria-live="off">
+        <span class="bib-holes" aria-hidden="true"></span>
+        <span class="bib-head">Renrajden · 2027</span>
+        <span class="bib-num" id="count-num">–</span>
+        <span class="bib-label" id="count-label">dagar kvar till start</span>
+        <a class="bib-link" id="count-link" href="#resultat" hidden>Se resultaten</a>
+        <span class="bib-foot">Lördag 30 januari · Ormbergsstadion</span>
+      </p>
+    </div>
+  </section>
+
+  <!-- LOPPET -->
+  <section class="section tint" id="loppet" aria-labelledby="loppet-h">
+    <div class="wrap">
+      <div class="section-head">
+        <p class="eyebrow">Klassiskt långlopp · Luleå</p>
+        <h2 id="loppet-h">Loppet</h2>
+        <p class="section-intro">Renrajden är OK Renens klassiska långlopp på Ormberget i Luleå. Resultatet är seedningsgrundande för Vasaloppet, så här kan du åka till dig ett bättre startled.</p>
+      </div>
+      <dl class="facts">
+        <div class="fact"><dt>Datum</dt><dd>30 januari 2027<small>Lördag. Inbjudan och mer info kommer.</small></dd></div>
+        <div class="fact"><dt>Start</dt><dd>Meddelas<small>2025 startade alla distanser kl 10:00.</small></dd></div>
+        <div class="fact"><dt>Plats</dt><dd>Ormbergsstadion<small>Ormberget, Luleå · <a class="ext" href="https://www.google.com/maps/search/?api=1&amp;query=Ormbergsstadion%2C%20Lule%C3%A5" target="_blank" rel="noopener">Hitta hit<span class="sr-only"> (karta, öppnas i ny flik)</span></a></small></dd></div>
+        <div class="fact"><dt>Stil</dt><dd>Klassisk<small>Dubbelspår, stilkontroll längs banan</small></dd></div>
+        <div class="fact"><dt>Distanser <span class="chip chip-outline">Prel.</span></dt><dd>42 · 21 · 10 km<small>Enligt 2025. Bekräftas i inbjudan 2027.</small></dd></div>
+        <div class="fact"><dt>Seedning</dt><dd>Vasaloppet<small>Seedningsgrundande lopp</small></dd></div>
+      </dl>
+
+      <div class="dist">
+        <fieldset>
+          <legend>Välj distans</legend>
+          <div class="seg">
+            <input type="radio" name="dist" id="d42" value="42" checked><label for="d42"><b>42</b><span>km · HD42</span></label>
+            <input type="radio" name="dist" id="d21" value="21"><label for="d21"><b>21</b><span>km · HD21</span></label>
+            <input type="radio" name="dist" id="d10" value="10"><label for="d10"><b>10</b><span>km · motion</span></label>
+          </div>
+          <p class="note dist-note">Banan är en slinga på ca 10,5 km som åks ett, två eller fyra varv. Du passerar stadion efter varje varv.</p>
+        </fieldset>
+        <div>
+          <div class="laps" aria-hidden="true">
+            <div class="lap on"><div class="lap-track"></div><span>Varv 1</span></div>
+            <div class="lap on"><div class="lap-track"></div><span>Varv 2</span></div>
+            <div class="lap on"><div class="lap-track"></div><span>Varv 3</span></div>
+            <div class="lap on"><div class="lap-track"></div><span>Varv 4</span></div>
+          </div>
+          <dl class="dist-stats" id="dist-stats">
+            <div><dt>Varv</dt><dd id="ds-laps">4</dd></div>
+            <div><dt>Höjdmeter</dt><dd id="ds-hm">ca 390</dd></div>
+            <div><dt>Vätskekontroller</dt><dd id="ds-water">8</dd></div>
+          </dl>
+          <p class="note dist-note" id="ds-prize">Prisutdelning för 1:a–3:e i HD42, direkt när de gått i mål.</p>
+          <p class="sr-only" id="dist-live" aria-live="polite"></p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SEEDNING -->
+  <section class="section" id="seedning" aria-labelledby="seed-h">
+    <div class="wrap">
+      <div class="section-head">
+        <p class="eyebrow">Från Ormberget till Sälen</p>
+        <h2 id="seed-h">Vägen till startledet</h2>
+        <p class="section-intro">Så går det till när ditt Renrajden-resultat blir seedning i Vasaloppet.</p>
+      </div>
+      <ol class="path">
+        <li><h3>Anmäl dig</h3><p>Via din klubb i IdrottOnline, eller i SSF TA om du är klubblös eller medlem i OK Renen. <a href="#anmalan">Så anmäler du dig</a></p></li>
+        <li><h3>Ta med Vasa-ID</h3><p>Behövs för automatisk seedning om du efteranmäler dig.</p></li>
+        <li><h3>Åk Renrajden</h3><p>Klassisk stil med stilkontrollanter längs banan och 83 % stavlängd.</p></li>
+        <li><h3>Vi skickar in resultatet</h3><p>Seedningen skickas till Vasaloppet samma kväll. 2024 skickades den lördag kl 20:50.</p></li>
+        <li><h3>Kolla ditt startled</h3><p>Vasaloppet publicerar seedningstabellerna. <a class="ext" href="https://www.vasaloppet.se/lopp/skidlopp/vasaloppet/seedning/seedningstabeller/" target="_blank" rel="noopener">Seedningstabeller<span class="sr-only"> (öppnas i ny flik)</span></a></p></li>
+      </ol>
+    </div>
+  </section>
+
+  <!-- ANMÄLAN -->
+  <section class="section tint" id="anmalan" aria-labelledby="anm-h">
+    <div class="wrap">
+      <div class="section-head">
+        <p class="eyebrow">Anmälan 2027</p>
+        <h2 id="anm-h">Anmälan</h2>
+        <p class="pending">Anmälan till 2027 är inte öppen än. Datum och avgifter kommer i inbjudan.</p>
+      </div>
+      <div class="routes">
+        <article class="route">
+          <span class="chip chip-red route-tag">Enklast</span>
+          <h3>Via din klubb</h3>
+          <p>Anmäl dig via din klubbs sida i IdrottOnline. Där finns dina uppgifter redan.</p>
+        </article>
+        <article class="route">
+          <span class="chip route-tag">Klubblös eller OK Renen</span>
+          <h3>Direkt i SSF TA</h3>
+          <p>Är du klubblös eller medlem i OK Renen anmäler du dig i Svenska Skidförbundets tävlingsadministration.</p>
+          <p class="note">Länken för 2027 publiceras här när anmälan öppnar.</p>
+        </article>
+        <article class="route">
+          <span class="chip chip-outline route-tag">I sista hand</span>
+          <h3>Mejla oss</h3>
+          <p>Fungerar inget av ovanstående? Mejla oss så hjälper vi dig.</p>
+          <div class="copy-row"><a class="mail" id="mail-1" href="mailto:info@renrajden.se">info@renrajden.se</a><button class="btn btn-quiet btn-sm" type="button" data-copy="mail-1">Kopiera adress</button></div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- PM -->
+  <section class="section" id="pm" aria-labelledby="pm-h">
+    <div class="wrap">
+      <div class="section-head">
+        <p class="eyebrow">PM 2025 · uppdateras inför 2027</p>
+        <h2 id="pm-h">Tävlingsdagen</h2>
+        <p class="section-intro">Så såg dagen ut 2025 (söndag 9 februari). PM för 2027 publiceras här före loppet.</p>
+      </div>
+      <div class="pm-grid">
+        <ol class="timeline">
+          <li><span class="t">Fre–lör</span><div><b>Pistning</b><p>Spåren prepareras mellan kl 22 och 00.</p></div></li>
+          <li><time datetime="08:00">08:00</time><div><b>Ombyte och dusch öppnar</b><p>Ormbergsanläggningen, öppet 8–15.</p></div></li>
+          <li><span class="t">08:00–09:45</span><div><b>Nummerlappsutdelning</b><p>Kom i god tid. Parkeringsvakter finns.</p></div></li>
+          <li><time datetime="10:00">10:00</time><div><b>Start för alla distanser</b><p>Även 10 km. Startsignal ges av startpersonal.</p></div></li>
+          <li><span class="t">Efter målgång</span><div><b>Prisutdelning, Ormbergsstadion</b><p>Direkt när 1:a–3:e i HD42 och vinnarna i HD21 gått i mål. Lottningspriser på startnummer sätts upp på anslagstavlan, priserna hämtas i sekretariatet.</p></div></li>
+          <li><time datetime="15:00">15:00</time><div><b>Dusch och ombyte stänger</b></div></li>
+        </ol>
+        <div class="know">
+          <section><h3>Före start</h3><ul>
+            <li>Kom i god tid, parkeringsvakter finns. <a class="ext" href="https://www.google.com/maps/search/?api=1&amp;query=Ormbergsstadion%2C%20Lule%C3%A5" target="_blank" rel="noopener">Hitta hit<span class="sr-only"> (karta, öppnas i ny flik)</span></a></li>
+            <li>Varm vallabod närmast gamla värmestugan.</li>
+            <li>Ta med Vasa-ID för automatisk seedning (efteranmälan).</li>
+            <li>Var beredd att betala med Swish. Gärna jämna pengar vid kontant betalning.</li>
+          </ul></section>
+          <section><h3>Starten</h3><ul>
+            <li>Seedning 1–9 för föranmälda. Snabba efteranmälda får 11–20 och startar i startled 1.</li>
+            <li>I övrigt gäller självseedning.</li>
+            <li>Inga skidor mellan spåren under starten.</li>
+          </ul></section>
+          <section><h3>I spåret</h3><ul>
+            <li>83 % stavlängd gäller. Stilkontrollanter finns längs banan.</li>
+            <li>Följ banmarkeringarna. Dubbelspår, ca 98 höjdmeter per varv.</li>
+            <li>Två vätskekontroller per varv med uppvärmd sportdryck från Umara och vatten.</li>
+            <li>Skräpzoner vid vätskekontrollerna. Fäst gels med kardborreband. Inget skräp i naturen.</li>
+          </ul></section>
+          <section><h3>Efteråt</h3><ul>
+            <li>Sedvanlig fika till försäljning.</li>
+            <li>Priser från Hermelinen, Sweco, Lappland Media, ICA Kvantum och ICA Porsön.</li>
+            <li>Tävlingsledare 2025: Maria Svanberg.</li>
+          </ul></section>
+        </div>
+      </div>
+      <div class="packlist">
+        <div class="packlist-head">
+          <h3 id="pack-h">Min packlista</h3>
+          <p class="note" id="pack-count" aria-live="polite">0 av 7 packat</p>
+        </div>
+        <ul aria-labelledby="pack-h" id="packlist">
+          <li><label class="check"><input type="checkbox" id="p-vasa"><span>Vasa-ID</span></label></li>
+          <li><label class="check"><input type="checkbox" id="p-swish"><span>Swish eller jämna kontanter</span></label></li>
+          <li><label class="check"><input type="checkbox" id="p-velcro"><span>Kardborreband för gels</span></label></li>
+          <li><label class="check"><input type="checkbox" id="p-wax"><span>Glid- och fästvalla</span></label></li>
+          <li><label class="check"><input type="checkbox" id="p-poles"><span>Stavar, max 83 % av kroppslängden</span></label></li>
+          <li><label class="check"><input type="checkbox" id="p-towel"><span>Handduk och ombyte till duschen</span></label></li>
+          <li><label class="check"><input type="checkbox" id="p-warm"><span>Varma kläder till prisutdelningen</span></label></li>
+        </ul>
+        <p class="note" style="margin-top:.75rem">Listan sparas bara i din webbläsare.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- BANA & FÖRE -->
+  <section class="section tint" id="bana" aria-labelledby="bana-h">
+    <div class="wrap">
+      <div class="section-head">
+        <p class="eyebrow">Ormberget · dubbelspår</p>
+        <h2 id="bana-h">Bana &amp; före</h2>
+        <p class="section-intro">En flack slinga under 100 höjdmeter per varv. Start och mål på Ormbergsstadion.</p>
+      </div>
+      <div class="two">
+        <div>
+          <h3 style="margin-bottom:1rem">Banan</h3>
+          <dl class="stat-row">
+            <div><dt>Slinga</dt><dd>~10,5 km</dd></div>
+            <div><dt>Höjd/varv</dt><dd>~98 m</dd></div>
+            <div><dt>Varv, 42 km</dt><dd>4</dd></div>
+          </dl>
+          <p>Banan är dubbelspårad och markerad hela vägen. Två vätskekontroller per varv, med skräpzoner direkt efter.</p>
+          <ul class="link-list">
+            <li><a href="https://renrajden.blogspot.com/p/bans.html" target="_blank" rel="noopener"><span class="ext">Banskiss och stadionkarta<span class="sr-only"> (öppnas i ny flik)</span></span><small>bild, 2022</small></a></li>
+            <li><a href="https://www.strava.com/routes/23387754" target="_blank" rel="noopener"><span class="ext">Banan i Strava<span class="sr-only"> (öppnas i ny flik)</span></span><small>rutt, 2020</small></a></li>
+            <li><a href="https://renrajden.blogspot.com/2015/01/karta-till-duscharna.html" target="_blank" rel="noopener"><span class="ext">Karta till duscharna<span class="sr-only"> (öppnas i ny flik)</span></span><small>bild</small></a></li>
+          </ul>
+        </div>
+        <div id="fore">
+          <h3 style="margin-bottom:1rem">Före och väder</h3>
+          <p>Kolla temperaturen vid stadion och webbkameran innan du vallar.</p>
+          <ul class="link-list">
+            <li><a href="https://iot.lunet.se/dashboard/198d8930-774c-11ee-bb6a-17314c01ceae?publicId=59878940-6788-11eb-afaf-e3eb52d62c89" target="_blank" rel="noopener"><span class="ext">Temperaturstation Ormbergsstadion<span class="sr-only"> (öppnas i ny flik)</span></span><small>live</small></a></li>
+            <li><a href="https://www2.lulea.se/web-camera/ormberget/imageorm.jpg" target="_blank" rel="noopener"><span class="ext">Webbkamera Ormberget<span class="sr-only"> (öppnas i ny flik)</span></span><small>Luleå kommun</small></a></li>
+            <li><a href="https://www.klart.se/se/norrbottens-l%C3%A4n/v%C3%A4der-lule%C3%A5/" target="_blank" rel="noopener"><span class="ext">Prognos timme för timme<span class="sr-only"> (öppnas i ny flik)</span></span><small>klart.se</small></a></li>
+            <li><a href="https://www.smhi.se/vader/prognoser-och-varningar/vaderprognos/q/Lule%C3%A5/2694762" target="_blank" rel="noopener"><span class="ext">Väderprognos Luleå<span class="sr-only"> (öppnas i ny flik)</span></span><small>SMHI</small></a></li>
+          </ul>
+          <div class="cold"><b>−20 °C</b><p class="note">Köldgräns: under −20 °C på banans kallaste punkt får tävlingen inte genomföras. 2014 ställdes Renrajden in på grund av kyla.</p></div>
+          <details class="archive">
+            <summary>Vallningsförslag från tidigare år</summary>
+            <div class="wax">
+              <p class="note">Historiska förslag. Fluorvalla är förbjuden i tävling sedan säsongen 2023/24.</p>
+              <div><h4>16 januari 2016, start 10:00</h4>
+                <p><b>Glid:</b> Paraffin LF Race Cold, Paraffin HF Cold.</p>
+                <p><b>Fäste, uppehåll:</b> AT grundvalla med vallajärn. 1 lager K 18 på ljummen yta, jämna ut försiktigt. Låt svalna, lägg 1 lager K 18 och 2–3 lager K 15.</p>
+                <p><b>Fäste, snöfall:</b> AT grundvalla med vallajärn. 1 lager K 15 på ljummen yta. Låt svalna, lägg 3–4 lager K 15 mixat med TAR Orange.</p></div>
+              <div><h4>Vauhti, tidigare år</h4>
+                <p><b>Glid:</b> Grundvalla med LF Blå, därefter HF Pink.</p>
+                <p><b>Fäste vid nån minusgrad:</b> Tunt K-base klister i botten, K-Violett klister täckt med K 12. Alternativt Grundvax Super, K 12, ev täckt med K 15.</p></div>
+            </div>
+          </details>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- NYHETER -->
+  <section class="section news-band on-blue" id="nyheter" aria-labelledby="news-h">
+    <div class="wrap">
+      <div class="news-toolbar">
+        <div class="section-head">
+          <p class="eyebrow">Från arrangören</p>
+          <h2 id="news-h">Nyheter</h2>
+          <p class="section-intro">Startlistor, PM, resultat och ändringar publiceras här först.</p>
+        </div>
+        <button class="btn btn-light" type="button" data-action="new-news" data-admin-only hidden>+ Ny nyhet</button>
+      </div>
+      <div id="news-state" class="news-state" role="status">
+        <b>Hämtar nyheter…</b>
+      </div>
+      <noscript><p class="news-state">Slå på JavaScript för att se nyheterna.</p></noscript>
+      <div class="news-list" id="news-list"></div>
+      <div class="news-more"><button class="btn btn-quiet" type="button" id="news-more" hidden aria-controls="news-archive" aria-expanded="false">Visa nyhetsarkivet</button></div>
+      <ul class="news-archive" id="news-archive" aria-label="Nyhetsarkiv" hidden></ul>
+    </div>
+  </section>
+
+  <!-- RESULTAT -->
+  <section class="section tint" id="resultat" aria-labelledby="res-h">
+    <div class="wrap">
+      <div class="section-head">
+        <p class="eyebrow">Resultat sedan 2013 · tre år utan tävling</p>
+        <h2 id="res-h">Resultat &amp; historik</h2>
+        <p class="section-intro">Alla resultat vi har sparat, år för år. Struket år = ingen tävling.</p>
+      </div>
+      <div class="history-grid">
+        <ol class="years" id="years"></ol>
+        <div>
+          <section class="side-box">
+            <h3>Segrare i arkivet</h3>
+            <ul>
+              <li><b>2017, 42 km:</b> Klas Nilsson och Anna Rimpi</li>
+              <li><b>2015, H42:</b> 1. Tarjei Solli, 2. Niklas Henriksson, 3. Andreas Berglund</li>
+              <li><b>2015, D42:</b> Emma Bergström</li>
+            </ul>
+          </section>
+          <section class="side-box">
+            <h3>Tidigare inbjudningar</h3>
+            <ul class="inv-list">
+              <li><a href="https://drive.google.com/file/d/1zls7gy47sPfDOObksWetWNeUa4RoDA6Z/view?usp=sharing" target="_blank" rel="noopener">Inbjudan 2025<span class="sr-only"> (öppnas i ny flik)</span></a></li>
+              <li><a href="https://drive.google.com/file/d/1QMQdZtp4bTciwujqiT23ZmbOjenoj-QN/view?usp=sharing" target="_blank" rel="noopener">Inbjudan 2024<span class="sr-only"> (öppnas i ny flik)</span></a></li>
+              <li><a href="https://drive.google.com/file/d/1UDaIENyTIf-ig6vSlUeimXJ261k_S6MK/view?usp=share_link" target="_blank" rel="noopener">Inbjudan 2023<span class="sr-only"> (öppnas i ny flik)</span></a></li>
+              <li><a href="https://www.okrenen.se/globalassets/ok-renen---orientering/tavling/inbjudan-renrajden-2022.pdf" target="_blank" rel="noopener">Inbjudan 2022<span class="sr-only"> (öppnas i ny flik)</span></a></li>
+              <li><a href="http://www.okrenen.se/globalassets/ok-renen---orientering/dokument/inbjudan-renrajden-2020.pdf" target="_blank" rel="noopener">Inbjudan 2020<span class="sr-only"> (öppnas i ny flik)</span></a></li>
+              <li><a href="http://ta.skidor.com/EventFiles/ae91fdbe-bcbd-4b51-b76f-5f04395fe2c6.pdf" target="_blank" rel="noopener">Renrajden och Kalvrajden 2018<span class="sr-only"> (öppnas i ny flik)</span></a></li>
+              <li><a href="http://ta.skidor.com/EventFiles/5652af6c-138d-4ce6-a0dc-858d59e502f2.pdf" target="_blank" rel="noopener">Inbjudan 2017<span class="sr-only"> (öppnas i ny flik)</span></a></li>
+            </ul>
+          </section>
+          <section class="side-box">
+            <h3>Kalvrajden</h3>
+            <p class="note">Barn- och ungdomsloppet för HD10–12 och HD14–16, kört 2016 och 2018.</p>
+          </section>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PARTNERS -->
+  <section class="section" id="partners" aria-labelledby="partners-h">
+    <div class="wrap">
+      <div class="section-head">
+        <p class="eyebrow">Tack till</p>
+        <h2 id="partners-h">Partners</h2>
+      </div>
+      <ul class="partners" aria-labelledby="partners-h">
+        <li>Umara<small>Sportdryck i spåret</small></li>
+        <li>Port of Luleå<small>Klubbpartner</small></li>
+        <li>Hermelinen<small>Priser</small></li>
+        <li>Sweco<small>Priser</small></li>
+        <li>Lappland Media<small>Priser</small></li>
+        <li>ICA Kvantum<small>Priser</small></li>
+        <li>ICA Porsön<small>Priser</small></li>
+      </ul>
+      <p class="note" style="margin-top:1rem">Tidigare år: Vauhti, Pakkala Sport, Äventyrsbutiken Hägglunds, Team Sportia, Agio, Lulebo, SCA, Nordchark, Kuriren och Vitargo.</p>
+    </div>
+  </section>
+
+  <!-- KONTAKT -->
+  <section class="section tint" id="kontakt" aria-labelledby="kontakt-h">
+    <div class="wrap">
+      <div class="section-head">
+        <p class="eyebrow">Frågor om loppet</p>
+        <h2 id="kontakt-h">Kontakt</h2>
+      </div>
+      <div class="contact-grid">
+        <div class="route">
+          <h3>Mejl</h3>
+          <div class="copy-row"><a class="mail" id="mail-2" href="mailto:info@renrajden.se">info@renrajden.se</a><button class="btn btn-quiet btn-sm" type="button" data-copy="mail-2">Kopiera adress</button></div>
+        </div>
+        <div class="route">
+          <h3>OK Renen</h3>
+          <p>Medlemmar i orienterings-, skid-, cykel- och friidrottsförbundet.</p>
+          <p><a class="ext" href="https://www.okrenen.se/" target="_blank" rel="noopener">okrenen.se<span class="sr-only"> (öppnas i ny flik)</span></a> · <a class="ext" href="https://www.facebook.com/okrenen/" target="_blank" rel="noopener">Facebook<span class="sr-only"> (öppnas i ny flik)</span></a></p>
+        </div>
+        <div class="route">
+          <h3>Dela loppet</h3>
+          <p>Tagga dina bilder med <b>#renrajden</b>.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+  <div class="toast" id="toast" hidden><span id="toast-text"></span><span><button type="button" id="toast-action" hidden>Ångra</button><button type="button" id="toast-close" aria-label="Stäng meddelandet">×</button></span></div>
+  <div class="sr-only" id="sr-live" aria-live="polite"></div>
+</main>
+
+<footer class="site-footer on-blue">
+  <div class="wrap">
+    <div class="footer-grid">
+      <div>
+        <div class="footer-brand"><svg viewBox="0 0 300 340" aria-hidden="true" style="color:#8EA2DD"><use href="#ren"/></svg><div><b>Renrajden</b><br>Arrangör: OK Renen, Luleå</div></div>
+        <p style="margin-top:1rem">Ormbergsstadion, Ormberget, Luleå · <a class="mono" href="mailto:info@renrajden.se">info@renrajden.se</a></p>
+        <div class="footer-admin">
+          <button class="btn btn-quiet btn-sm" type="button" id="login-open">Logga in som administratör</button>
+          <span>Endast för arrangörens administratörer.</span>
+        </div>
+      </div>
+      <details>
+        <summary>Om prototypen</summary>
+        <ul>
+          <li>All information och alla nyheter är öppna för alla. Bara administratörer loggar in.</li>
+          <li>Skarp version: inloggning med Google (OpenID Connect). Servern verifierar Googles ID-token och släpper bara in adresser på klubbens adminlista.</li>
+          <li>Förslag på teknik: statisk sajt med Firebase Authentication (Google) och Firestore, där säkerhetsreglerna bara låter adminlistan skriva nyheter.</li>
+          <li>I prototypen ersätts Google av ditt claude.ai-konto. Redaktörer av den här sidan räknas som administratörer och nyheterna sparas i sidans delade databas.</li>
+          <li>Innehållet kommer från renrajden.se (november 2026). Uppgifter för 2027 som saknas är markerade.</li>
+        </ul>
+        <div class="phase-demo" role="group" aria-labelledby="phase-h">
+          <p id="phase-h"><b>Förhandsvisa sidans lägen</b> (bara i prototypen)</p>
+          <div class="phase-btns">
+            <button type="button" class="btn btn-quiet btn-sm" data-phase-btn="auto" aria-pressed="true">Som i dag</button>
+            <button type="button" class="btn btn-quiet btn-sm" data-phase-btn="raceweek" aria-pressed="false">Tävlingsvecka</button>
+            <button type="button" class="btn btn-quiet btn-sm" data-phase-btn="raceday" aria-pressed="false">Tävlingsdag</button>
+            <button type="button" class="btn btn-quiet btn-sm" data-phase-btn="after" aria-pressed="false">Efter loppet</button>
+          </div>
+        </div>
+      </details>
+    </div>
+    <div class="finish" aria-hidden="true"><span>Mål · 42 km</span><span>Bra åkt!</span></div>
+  </div>
+</footer>
+
+<!-- Inloggning -->
+<dialog id="login-dialog" aria-labelledby="login-h" aria-describedby="login-desc">
+  <div class="login-stripe" aria-hidden="true"></div>
+  <div class="dlg-head"><h2 id="login-h">Administratör</h2><button class="dlg-close" type="button" data-close aria-label="Stäng">×</button></div>
+  <div class="dlg-body">
+    <p id="login-desc">Logga in för att skriva, ändra och ta bort nyheter. Bara administratörer har tillgång. Besökare behöver inte logga in.</p>
+    <button class="btn btn-google" type="button" id="google-btn">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" stroke-width="2.4"/><path d="M12 12h7" stroke="currentColor" stroke-width="2.4"/></svg>
+      <span id="google-label">Logga in med Google</span>
+    </button>
+    <div class="login-msg" id="login-msg" role="alert" hidden></div>
+    <p class="proto-note">Prototyp: i skarp version öppnas Googles inloggning. Här används ditt claude.ai-konto, och du släpps in om du är redaktör för sidan.</p>
+  </div>
+</dialog>
+
+<!-- Redigera nyhet -->
+<dialog id="editor-dialog" aria-labelledby="editor-h">
+  <form id="editor-form" novalidate>
+    <div class="dlg-head"><h2 id="editor-h">Ny nyhet</h2><button class="dlg-close" type="button" data-close aria-label="Stäng utan att spara">×</button></div>
+    <div class="dlg-body">
+      <div class="error-summary" id="error-summary" role="group" aria-labelledby="err-h" tabindex="-1" hidden><b id="err-h">Rätta följande:</b><ul id="error-list"></ul></div>
+      <div class="field">
+        <label for="f-title">Rubrik</label>
+        <input type="text" id="f-title" maxlength="120" required aria-describedby="f-title-err">
+        <span class="err" id="f-title-err" hidden></span>
+      </div>
+      <div class="row2">
+        <div class="field">
+          <label for="f-date">Publiceringsdatum</label>
+          <input type="date" id="f-date" required aria-describedby="f-date-err">
+          <span class="err" id="f-date-err" hidden></span>
+        </div>
+        <div class="field">
+          <label for="f-tag">Etikett</label>
+          <select id="f-tag">
+            <option value="Info">Info</option>
+            <option value="Resultat">Resultat</option>
+            <option value="Ändring">Ändring</option>
+            <option value="Inställt">Inställt</option>
+            <option value="Valla">Valla</option>
+          </select>
+        </div>
+      </div>
+      <div class="field">
+        <label for="f-body">Text</label>
+        <span class="hint" id="f-body-hint">Tom rad ger nytt stycke.</span>
+        <textarea id="f-body" maxlength="4000" aria-describedby="f-body-hint f-body-err"></textarea>
+        <span class="err" id="f-body-err" hidden></span>
+      </div>
+      <fieldset class="field" style="border:0;padding:0;margin:0">
+        <legend class="lbl">Länkar</legend>
+        <span class="hint">Till exempel startlista, PM eller resultat. Adressen måste börja med https://</span>
+        <div class="link-rows" id="link-rows"></div>
+        <button class="btn btn-quiet btn-sm" type="button" id="add-link" style="justify-self:start">+ Lägg till länk</button>
+      </fieldset>
+      <fieldset class="toggles" style="border:0;padding:0;margin:0">
+        <legend class="lbl" style="font-weight:700;font-size:var(--s-sm);margin-bottom:.25rem">Visning</legend>
+        <label class="check"><input type="checkbox" id="f-pinned"><span>Fäst överst i nyhetslistan</span></label>
+        <label class="check"><input type="checkbox" id="f-alert"><span>Visa som viktigt meddelande högst upp på sidan (till exempel inställt lopp)</span></label>
+      </fieldset>
+    </div>
+    <div class="discard" id="discard" hidden>
+      <p role="alert">Stäng utan att spara? Det du har ändrat försvinner.</p>
+      <div class="discard-btns">
+        <button class="btn btn-quiet btn-sm" type="button" id="discard-keep">Fortsätt redigera</button>
+        <button class="btn btn-red btn-sm" type="button" id="discard-yes">Stäng utan att spara</button>
+      </div>
+    </div>
+    <div class="dlg-foot">
+      <button class="btn btn-quiet" type="button" data-close>Avbryt</button>
+      <button class="btn btn-red" type="submit" id="save-btn">Publicera</button>
+    </div>
+  </form>
+</dialog>
+
+<!-- Bekräfta borttagning -->
+<dialog id="confirm-dialog" aria-labelledby="confirm-h" aria-describedby="confirm-desc">
+  <div class="dlg-head"><h2 id="confirm-h">Ta bort nyheten?</h2><button class="dlg-close" type="button" data-close aria-label="Avbryt">×</button></div>
+  <div class="dlg-body"><p id="confirm-desc">Nyheten försvinner för alla besökare. Du kan ångra direkt efteråt.</p></div>
+  <div class="dlg-foot">
+    <button class="btn btn-quiet" type="button" data-close>Behåll</button>
+    <button class="btn btn-red" type="button" id="confirm-delete">Ta bort</button>
+  </div>
+</dialog>
+
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="ren" viewBox="0 0 300 340">
+    <g fill="currentColor" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+      <g fill="none" stroke-width="10">
+        <path d="M190 150 C208 112 234 84 238 44 C240 24 230 10 214 4"/>
+        <path d="M228 92 L266 70"/><path d="M238 56 L274 40"/><path d="M206 118 L186 92"/><path d="M236 30 L258 12"/>
+        <path d="M178 150 C172 112 152 82 130 62 C114 46 108 28 116 10"/>
+        <path d="M162 112 L124 106"/><path d="M142 80 L106 84"/><path d="M124 52 L90 42"/><path d="M152 94 L166 58"/>
+        <path d="M172 142 C150 140 128 150 116 170" stroke-width="9"/>
+      </g>
+      <path stroke="none" d="M262 340 C258 300 250 250 232 205 C220 175 205 158 190 150 C175 143 160 146 148 156 C120 180 92 215 66 244 C56 255 54 268 62 276 C70 284 84 286 96 282 C118 276 136 274 150 282 C162 290 168 310 170 340 Z"/>
+      <path stroke="none" d="M204 162 C226 142 250 136 264 140 C252 158 230 170 208 174 Z"/>
+    </g>
+  </symbol>
+</svg>
+
+<script>
+(() => {
+  "use strict";
+  const $ = (s, r = document) => r.querySelector(s);
+  const $$ = (s, r = document) => [...r.querySelectorAll(s)];
+  const el = (tag, attrs = {}, ...kids) => {
+    const n = document.createElement(tag);
+    for (const [k, v] of Object.entries(attrs)) {
+      if (v === false || v == null) continue;
+      if (k === "text") n.textContent = v; else n.setAttribute(k, v === true ? "" : v);
+    }
+    for (const k of kids) if (k != null) n.append(k);
+    return n;
+  };
+  const store = {
+    get(k) { try { return JSON.parse(localStorage.getItem(k)); } catch { return null; } },
+    set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch {} },
+  };
+  const ss = {
+    get(k) { try { return sessionStorage.getItem(k); } catch { return null; } },
+    set(k, v) { try { v == null ? sessionStorage.removeItem(k) : sessionStorage.setItem(k, v); } catch {} },
+  };
+  const fmtDate = (iso) => {
+    try { return new Intl.DateTimeFormat("sv-SE", { day: "numeric", month: "long", year: "numeric" }).format(new Date(iso + "T12:00:00")); }
+    catch { return iso; }
+  };
+  const todayIso = () => { const d = new Date(); return new Date(d.getTime() - d.getTimezoneOffset() * 60000).toISOString().slice(0, 10); };
+  const safeUrl = (u) => typeof u === "string" && /^https:\/\/[^\s<>"]+$/i.test(u.trim()) ? u.trim() : null;
+  const FOCUSABLE = "a[href],button,summary,input,select,textarea,[tabindex]";
+  const focusEl = (t) => { if (!t) return false; if (!t.matches(FOCUSABLE)) t.setAttribute("tabindex", "-1"); t.focus(); return document.activeElement === t; };
+  const srLive = $("#sr-live");
+  const announce = (text) => { srLive.textContent = ""; setTimeout(() => { srLive.textContent = text; }, 80); };
+
+  /* ---------- Lägen: före, tävlingsvecka, tävlingsdag, efter loppet ---------- */
+  const RACE = new Date(2027, 0, 30);
+  const daysLeft = () => { const n = new Date(); return Math.round((RACE - new Date(n.getFullYear(), n.getMonth(), n.getDate())) / 86400000); };
+  const phaseFor = (d) => d > 7 ? "before" : d > 0 ? "raceweek" : d === 0 ? "raceday" : "after";
+  let phaseOverride = null;
+  function applyPhase() {
+    const real = daysLeft();
+    const d = phaseOverride ? { raceweek: 3, raceday: 0, after: -1 }[phaseOverride] : real;
+    const phase = phaseOverride || phaseFor(real);
+    document.body.dataset.phase = phase;
+    const num = $("#count-num"), label = $("#count-label"), link = $("#count-link");
+    link.hidden = true;
+    if (d > 1) { num.textContent = d; label.textContent = "dagar kvar till start"; }
+    else if (d === 1) { num.textContent = "1"; label.textContent = "dag kvar till start"; }
+    else if (d === 0) { num.textContent = "0"; label.textContent = "Tävlingsdag! Tider finns i PM"; }
+    else { num.textContent = "✓"; label.textContent = "Loppet är kört"; link.hidden = false; }
+    const c1 = $("#cta-1"), c2 = $("#cta-2");
+    const set = (a, text, href) => { a.textContent = text; a.href = href; };
+    if (phase === "before") { set(c1, "Så anmäler du dig", "#anmalan"); set(c2, "Senaste nytt", "#nyheter"); }
+    else if (phase === "after") { set(c1, "Resultat", "#resultat"); set(c2, "Senaste nytt", "#nyheter"); }
+    else { set(c1, "PM och tider", "#pm"); set(c2, "Startlista och liveresultat", "#nyheter"); }
+    $$("[data-phase-btn]").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.phaseBtn === (phaseOverride || "auto"))));
+  }
+  applyPhase();
+  $$("[data-phase-btn]").forEach(b => b.addEventListener("click", () => {
+    phaseOverride = b.dataset.phaseBtn === "auto" ? null : b.dataset.phaseBtn;
+    applyPhase(); announce("Sidan visar nu läget " + b.textContent.toLowerCase() + ".");
+  }));
+
+  /* ---------- Meny ---------- */
+  const menuBtn = $("#menu-btn"), nav = $("#site-nav");
+  const menuOpen = () => nav.hasAttribute("data-open");
+  const setMenu = (open) => { menuBtn.setAttribute("aria-expanded", String(open)); open ? nav.setAttribute("data-open", "") : nav.removeAttribute("data-open"); };
+  menuBtn.addEventListener("click", () => setMenu(!menuOpen()));
+  document.addEventListener("keydown", (e) => { if (e.key === "Escape" && menuOpen()) { setMenu(false); menuBtn.focus(); } });
+  nav.addEventListener("focusout", (e) => { if (menuOpen() && e.relatedTarget && !nav.contains(e.relatedTarget) && e.relatedTarget !== menuBtn) setMenu(false); });
+  document.addEventListener("click", (e) => { if (menuOpen() && !nav.contains(e.target) && !menuBtn.contains(e.target)) setMenu(false); });
+  nav.addEventListener("click", (e) => {
+    const a = e.target.closest("a[href^='#']"); if (!a) return;
+    setMenu(false);
+    const h = $(a.getAttribute("href") + " h2");
+    if (h) requestAnimationFrame(() => { h.setAttribute("tabindex", "-1"); h.focus({ preventScroll: true }); });
+  });
+
+  /* ---------- Km-mätare: varven följer sektionerna ---------- */
+  const rail = $(".rail"), railKm = $("#rail-km"), railLap = $("#rail-lap"), mbar = $("#progress-mobile");
+  const marks = $$(".rail-mark"), navLinks = $$(".site-nav a");
+  const sectionIds = ["loppet", "seedning", "anmalan", "pm", "bana", "nyheter", "resultat", "partners", "kontakt"];
+  const lapAnchors = ["anmalan", "bana", "resultat"]; // 10,5 / 21 / 31,5 km
+  function kmAt(y, max) {
+    if (max <= 0) return 0;
+    y = Math.min(max, Math.max(0, y));
+    const off = innerHeight * .35, pts = [0];
+    for (const id of lapAnchors) { const s = document.getElementById(id); pts.push(s ? s.getBoundingClientRect().top + scrollY - off : 0); }
+    pts.push(max);
+    for (let i = 1; i < pts.length; i++) pts[i] = Math.min(max, Math.max(pts[i], pts[i - 1] + 1));
+    for (let i = 0; i < 4; i++) if (y <= pts[i + 1]) return (i + (y - pts[i]) / Math.max(1, pts[i + 1] - pts[i])) * 10.5;
+    return 42;
+  }
+  let raf = 0;
+  function updateScroll() {
+    raf = 0;
+    const max = document.documentElement.scrollHeight - innerHeight;
+    const km = kmAt(scrollY, max), p = km / 42, done = km >= 41.9;
+    rail.style.setProperty("--p", p.toFixed(4));
+    mbar.style.transform = `scaleX(${p.toFixed(4)})`;
+    railKm.textContent = done ? "MÅL!" : km.toFixed(1).replace(".", ",") + " km";
+    railLap.textContent = done ? "Bra åkt" : "varv " + Math.min(4, Math.floor(km / 10.5) + 1);
+    const h = rail.clientHeight - 24;
+    marks.forEach((m, i) => m.classList.toggle("near", Math.abs(p - i / 4) * h < 30));
+    let current = null;
+    for (const id of sectionIds) { const s = document.getElementById(id); if (s && s.getBoundingClientRect().top < innerHeight * .35) current = id; }
+    navLinks.forEach(a => a.getAttribute("href") === "#" + current ? a.setAttribute("aria-current", "location") : a.removeAttribute("aria-current"));
+  }
+  const onScroll = () => { if (!raf) raf = requestAnimationFrame(updateScroll); };
+  addEventListener("scroll", onScroll, { passive: true });
+  addEventListener("resize", onScroll);
+  updateScroll();
+
+  /* ---------- Distansväljare ---------- */
+  const DIST = {
+    42: { laps: 4, prize: "Prisutdelning för 1:a–3:e i HD42, direkt när de gått i mål." },
+    21: { laps: 2, prize: "Pris till vinnarna i HD21." },
+    10: { laps: 1, prize: "Motionsdistans. Startade samtidigt som de långa, kl 10:00, år 2025." },
+  };
+  $$('input[name="dist"]').forEach(r => r.addEventListener("change", () => {
+    const d = DIST[r.value];
+    $$(".lap").forEach((l, i) => l.classList.toggle("on", i < d.laps));
+    $("#ds-laps").textContent = d.laps;
+    $("#ds-hm").textContent = "ca " + d.laps * 98;
+    $("#ds-water").textContent = d.laps * 2;
+    $("#ds-prize").textContent = d.prize;
+    $("#dist-live").textContent = `${r.value} km: ${d.laps} varv, cirka ${d.laps * 98} höjdmeter och ${d.laps * 2} vätskekontroller. ${d.prize}`;
+  }));
+
+  /* ---------- Packlista (bara i webbläsaren) ---------- */
+  const packKey = "rr-pack-2027";
+  const packState = store.get(packKey) || {};
+  const packBoxes = $$("#packlist input");
+  const packCount = () => { $("#pack-count").textContent = `${packBoxes.filter(b => b.checked).length} av ${packBoxes.length} packat`; };
+  packBoxes.forEach(b => { b.checked = !!packState[b.id]; b.addEventListener("change", () => { packState[b.id] = b.checked; store.set(packKey, packState); packCount(); }); });
+  packCount();
+
+  /* ---------- Toast (pausar när den har fokus eller hovras) ---------- */
+  const toastEl = $("#toast"), toastBtn = $("#toast-action");
+  let toastTimer = 0, toastAction = null;
+  const hideToast = () => {
+    const hadFocus = toastEl.contains(document.activeElement);
+    toastEl.hidden = true; toastAction = null; clearTimeout(toastTimer);
+    if (hadFocus) focusEl($("#news-h"));
+  };
+  const armToast = (ms) => {
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => { (toastEl.contains(document.activeElement) || toastEl.matches(":hover")) ? armToast(3000) : hideToast(); }, ms);
+  };
+  const toast = (text, action) => {
+    $("#toast-text").textContent = text;
+    toastAction = action ? action.run : null;
+    toastBtn.hidden = !action; if (action) toastBtn.textContent = action.label;
+    toastEl.hidden = false;
+    announce(text);
+    armToast(action ? 10000 : 5000);
+  };
+  toastEl.addEventListener("focusout", (e) => { if (!toastEl.contains(e.relatedTarget)) armToast(5000); });
+  toastEl.addEventListener("keydown", (e) => { if (e.key === "Escape") { e.preventDefault(); hideToast(); } });
+  toastBtn.addEventListener("click", () => { const run = toastAction; hideToast(); if (run) run(); });
+  $("#toast-close").addEventListener("click", hideToast);
+
+  /* ---------- Kopiera e-post ---------- */
+  $$("[data-copy]").forEach(btn => btn.addEventListener("click", () => {
+    const src = document.getElementById(btn.dataset.copy);
+    const selectIt = () => { const r = document.createRange(); r.selectNodeContents(src); const s = getSelection(); s.removeAllRanges(); s.addRange(r); };
+    const fallback = () => { selectIt(); toast("Adressen är markerad. Kopiera med Ctrl+C eller ⌘C"); };
+    try { navigator.clipboard.writeText(src.textContent.trim()).then(() => toast("Adressen är kopierad"), fallback); } catch { fallback(); }
+  }));
+
+  /* ---------- Resultatarkiv ---------- */
+  const RESULTS = [
+    { y: 2025, d: "9 februari", links: [["Resultat (pdf)", "https://drive.google.com/file/d/18MDWvPwT7fYfBq7Ffobwkv2o5Ng6c-tY/view?usp=sharing"], ["Liveresultat", "http://live.skidor.com/5583#result@46786@1@-1"], ["Startlista", "https://drive.google.com/file/d/11-cwtSXdqn99fxNKolL9g5z0oK6Qnghb/view?usp=sharing"]] },
+    { y: 2024, d: "10 februari", links: [["Resultat (pdf)", "https://drive.google.com/file/d/1Auuj2y_SYhVtES366o7NH1-czVkCQ14x/view?usp=sharing"], ["SSF TA", "https://ta.skidor.com/ResultList.aspx?eventid=14793&competitionid=25311&orgid=2920"]] },
+    { y: 2023, d: "11 februari", links: [["Resultat", "https://drive.google.com/file/d/1MLrjuAHvQ4BOJSSZ6t7kAgGW8lONGRv2/view?usp=share_link"]] },
+    { y: 2022, d: "19 februari", links: [["Resultat", "https://drive.google.com/file/d/1IGspsGsRtOmkcbsIR68j7WqscqUged3u/view?usp=sharing"], ["Varvtider (chip)", "http://obasen.orientering.se/winsplits/online/sv/default.asp?page=table&databaseId=80132&categoryId=0"], ["Bilder", "https://photos.app.goo.gl/VTYn9jouczi5rCTv9"]] },
+    { y: 2021, off: "Inställt. Tävlingen var planerad till 2 januari 2021." },
+    { y: 2020, links: [["Resultat (pdf)", "https://www.okrenen.se/globalassets/ok-renen---orientering/dokument/resultat-renrajden2020.pdf"], ["SSF TA", "http://ta.skidor.com/ResultList.aspx?eventid=11471&competitionid=19335&orgid=2920"], ["skidresultat.se", "https://skidresultat.se/?cat=comp&id=4553"]], note: "10, 20 och 40 km på den nya fyravarvsbanan." },
+    { y: 2019, off: "Paus. Klubben arrangerade flera stora event." },
+    { y: 2018, links: [["SSF TA", "http://ta.skidor.com/ResultList.aspx?eventid=8698&competitionid=14578&orgid=2920"], ["Resultat (pdf)", "https://drive.google.com/open?id=1BeeHlL6ls90ua54wohkR_BRZpj585R7-"], ["skidresultat.se", "http://skidresultat.se/?cat=comp&id=3873&a1=res"], ["Bilder", "https://www.flickr.com/photos/139458541@N05/sets/72157691084581201"]], note: "Även Kalvrajden för HD10–16." },
+    { y: 2017, d: "14 januari", win: "Segrare 42 km: Klas Nilsson och Anna Rimpi.", links: [["SSF TA", "http://ta.skidor.com/ResultList.aspx?eventid=7506&competitionid=12701&orgid=2920"], ["Resultat (pdf)", "https://drive.google.com/open?id=0B1D0YYjNfoooRUxHeHkxN19YYm8"], ["skidresultat.se", "http://skidresultat.se/?cat=comp&id=3597&a1=res"], ["Kuriren", "http://www.kuriren.nu/nyheter/tungt-fore-gav-rejal-genomkorare-i-arets-renrajden-9091356.aspx"], ["NSD", "http://www.nsd.se/sport/vinnaren-missnojd-med-tiden-katastrof-10395936.aspx"]] },
+    { y: 2016, d: "16 januari", links: [["Resultat (pdf)", "http://www.okrenen.se/globalassets/ok-renen---orientering/tavling/renrajden2016_resultat.pdf"], ["Kalvrajden", "http://skidresultat.se/?cat=comp&id=3224&a1=res&a2=-1"], ["Bilder och film", "https://goo.gl/photos/7WFKvNaPG35Dzgkq5"], ["Kuriren", "http://www.kuriren.nu/sport/landslagskille-slog-rekord-pa-ormberget-8685214.aspx"], ["Damvinnaren berättar", "https://ninalintzen.wordpress.com/2016/01/16/antligen-tavling-renrajden/"]] },
+    { y: 2015, win: "Segrare: Tarjei Solli (H42) och Emma Bergström (D42).", links: [["Resultat", "https://docs.google.com/spreadsheets/d/1f9HGkHk8o17EsdgJ_ZBJSgh3F4vJIVprvc4jA9HVslM/pubhtml"], ["Varvtider", "http://fij.se/ttt/rr15.html"], ["skidresultat.se", "http://skidresultat.se/?cat=comp&id=2663&a1=res"], ["Kuriren", "http://www.kuriren.nu/sport/spannande-spurtduell-avgjorde-renrajden-8079740.aspx"], ["NSD", "http://www.nsd.se/sport/mental-seger-i-renrajden-9015448.aspx"]] },
+    { y: 2014, off: "Inställt på grund av kyla." },
+    { y: 2013, links: [["Resultat", "https://drive.google.com/file/d/0B1D0YYjNfooockxvbFIwU3hoTlk/view"]] },
+  ];
+  (function renderYears() {
+    const ol = $("#years");
+    ol.append(el("li", { class: "year next-year" },
+      el("span", { class: "year-num", text: "2027" }),
+      el("div", { class: "year-body" }, el("p", { text: "Lördag 30 januari. Resultaten publiceras här samma dag." }))));
+    for (const r of RESULTS) {
+      const body = el("div", { class: "year-body" });
+      if (r.off) body.append(el("p", { text: r.off }));
+      if (r.d) body.append(el("p", { text: r.d + " " + r.y }));
+      if (r.win) body.append(el("p", { class: "winners", text: r.win }));
+      if (r.note) body.append(el("p", { text: r.note }));
+      if (r.links) {
+        const ul = el("ul", { class: "year-links" });
+        for (const [label, href] of r.links) ul.append(el("li", {}, el("a", { href, target: "_blank", rel: "noopener", class: "ext" }, label, el("span", { class: "sr-only", text: " " + r.y + " (öppnas i ny flik)" }))));
+        body.append(ul);
+      }
+      ol.append(el("li", { class: "year" + (r.off ? " cancelled" : "") },
+        el("span", { class: "year-num" }, String(r.y), r.off ? el("span", { class: "sr-only", text: " (ingen tävling)" }) : null), body));
+    }
+  })();
+
+  /* =====================================================================
+     NYHETER – delad databas (db) + administratörsinloggning (user)
+     ===================================================================== */
+  const S = { db: null, user: null, admin: false, myId: null, news: [], status: "loading", showAll: false, editing: null, pendingDelete: null, openIds: new Set(), focusAfter: null, rendered: false, lastAlert: null };
+  const NEWS_VISIBLE = 4;
+  const edDlg = $("#editor-dialog"), loginDlg = $("#login-dialog"), confirmDlg = $("#confirm-dialog");
+
+  const sortNews = (a) => [...a].sort((x, y) => (y.pinned === true) - (x.pinned === true) || String(y.date).localeCompare(String(x.date)));
+  const clean = (raw, id) => ({
+    id,
+    title: String(raw.title || "Utan rubrik").slice(0, 160),
+    date: /^\d{4}-\d{2}-\d{2}$/.test(raw.date) ? raw.date : todayIso(),
+    tag: String(raw.tag || "Info").slice(0, 24),
+    body: String(raw.body || "").slice(0, 4000),
+    links: Array.isArray(raw.links) ? raw.links.filter(l => l && typeof l.label === "string").slice(0, 12).map(l => ({ label: l.label.slice(0, 80), url: String(l.url || "") })) : [],
+    pinned: raw.pinned === true, alert: raw.alert === true,
+    createdAt: raw.createdAt || null, createdBy: raw.createdBy || null, updatedAt: raw.updatedAt || null, updatedBy: raw.updatedBy || null,
+  });
+
+  const setState = (status, title, text) => {
+    S.status = status;
+    const box = $("#news-state");
+    if (status === "ready") { box.hidden = true; return; }
+    box.hidden = false; box.replaceChildren(el("b", { text: title }), text ? el("p", { text }) : null);
+  };
+
+  const tagChip = (n, extra = "") => el("span", { class: "chip" + extra + (n.tag === "Inställt" || n.tag === "Ändring" ? " chip-red" : ""), text: n.tag });
+  function newsContent(n) {
+    const box = el("div", { class: "news-content" });
+    if (n.body.trim()) {
+      const body = el("div", { class: "news-body" });
+      n.body.split(/\n\s*\n/).map(s => s.trim()).filter(Boolean).forEach(p => body.append(el("p", { text: p })));
+      box.append(body);
+    }
+    const links = n.links.map(l => ({ label: l.label, url: safeUrl(l.url) })).filter(l => l.url);
+    if (links.length) {
+      const ul = el("ul", { class: "news-links", "aria-label": "Länkar: " + n.title });
+      links.forEach(l => ul.append(el("li", {}, el("a", { href: l.url, target: "_blank", rel: "noopener noreferrer", class: "ext" }, l.label, el("span", { class: "sr-only", text: " (öppnas i ny flik)" })))));
+      box.append(ul);
+    }
+    if (S.admin) {
+      const admin = el("div", { class: "news-admin" },
+        el("button", { class: "btn btn-quiet btn-sm", type: "button", "data-edit": n.id, "aria-label": "Redigera: " + n.title, text: "Redigera" }),
+        el("button", { class: "btn btn-quiet btn-sm", type: "button", "data-delete": n.id, "aria-label": "Ta bort: " + n.title, text: "Ta bort" }));
+      if (n.updatedBy) { const base = "Senast ändrad " + (n.updatedAt ? fmtDate(n.updatedAt.slice(0, 10)) : ""); admin.append(el("small", { "data-by": n.updatedBy, "data-base": base, text: base })); }
+      box.append(admin);
+    }
+    return box;
+  }
+  function newsCard(n, featured) {
+    const card = el("article", { class: "news-card" + (n.pinned ? " pinned" : "") + (featured ? " featured" : ""), id: "nyhet-" + n.id, "aria-labelledby": "nt-" + n.id });
+    const meta = el("div", { class: "news-meta" }, el("time", { datetime: n.date, text: fmtDate(n.date) }), tagChip(n));
+    if (n.pinned) meta.append(el("span", { class: "chip chip-outline", text: "Fäst" }));
+    card.append(el("div", { class: "news-head" }, meta, el("h3", { id: "nt-" + n.id, text: n.title })), newsContent(n));
+    return card;
+  }
+  function archiveItem(n) {
+    const d = el("details", { id: "nyhet-" + n.id });
+    if (S.openIds.has(n.id)) d.open = true;
+    d.addEventListener("toggle", () => { d.open ? S.openIds.add(n.id) : S.openIds.delete(n.id); });
+    d.append(el("summary", {}, el("time", { datetime: n.date, text: fmtDate(n.date) }), el("span", { class: "arch-title", text: n.title }), tagChip(n, " arch-tag")), newsContent(n));
+    return el("li", {}, d);
+  }
+
+  function renderNews() {
+    const list = $("#news-list"), more = $("#news-more"), arch = $("#news-archive");
+    const items = sortNews(S.news);
+    // Spara besökarens fokus inom nyheterna så att liveuppdateringar inte river det.
+    const a = document.activeElement;
+    const holder = a && a !== document.body && a.closest ? a.closest("[id^='nyhet-']") : null;
+    const key = holder ? holder.id : null;
+    const idx = holder ? $$(FOCUSABLE, holder).indexOf(a) : -1;
+
+    if (S.status === "ready" && !items.length) setState("empty", "Inga nyheter än", S.admin ? "Skriv den första nyheten med knappen Ny nyhet." : "Nyheter om Renrajden 2027 publiceras här.");
+    else if (S.status === "empty" && items.length) setState("ready");
+    list.replaceChildren();
+    items.slice(0, NEWS_VISIBLE).forEach((n, i) => list.append(newsCard(n, i === 0)));
+    const older = items.slice(NEWS_VISIBLE);
+    arch.replaceChildren();
+    if (S.showAll) older.forEach(n => arch.append(archiveItem(n)));
+    arch.hidden = !S.showAll || !older.length;
+    more.hidden = !older.length;
+    more.setAttribute("aria-expanded", String(S.showAll));
+    more.textContent = S.showAll ? "Dölj nyhetsarkivet" : `Visa nyhetsarkivet (${older.length} äldre)`;
+
+    // Fokus: först ett uttryckligt mål efter spara/ångra, annars återställ det besökaren hade.
+    const f = S.focusAfter;
+    if (f && Date.now() > f.until) S.focusAfter = null;
+    if (S.focusAfter) {
+      const t = (f.sel && $(f.sel)) || $("#nt-" + f.id) || $("#nyhet-" + f.id + " > summary");
+      if (t) { focusEl(t); S.focusAfter = null; }
+      else if (S.news.some(n => n.id === f.id)) { focusEl(more.hidden ? $("#news-h") : more); S.focusAfter = null; }
+    } else if (key) {
+      const nh = document.getElementById(key);
+      if (nh) { const c = $$(FOCUSABLE, nh); focusEl(idx >= 0 && c[idx] ? c[idx] : nh); }
+      else focusEl($("#news-h"));
+    }
+
+    // Senaste nytt = nyaste datum, oavsett fäst.
+    const latest = [...S.news].sort((x, y) => String(y.date).localeCompare(String(x.date)))[0];
+    $("#latest").hidden = !latest;
+    if (latest) {
+      const l = $("#latest-link"); l.textContent = latest.title; l.href = document.getElementById("nyhet-" + latest.id) ? "#nyhet-" + latest.id : "#nyheter";
+      const t = $("#latest-date"); t.dateTime = latest.date; t.textContent = fmtDate(latest.date);
+    }
+    // Viktigt meddelande
+    const alertItem = items.filter(n => n.alert).sort((x, y) => y.date.localeCompare(x.date))[0];
+    $("#alert-bar").hidden = !alertItem;
+    if (alertItem) { $("#alert-text").textContent = alertItem.title; $("#alert-link").href = document.getElementById("nyhet-" + alertItem.id) ? "#nyhet-" + alertItem.id : "#nyheter"; }
+    const alertKey = alertItem ? alertItem.id + "|" + alertItem.title : null;
+    if (S.rendered && alertKey && alertKey !== S.lastAlert) announce("Viktigt meddelande: " + alertItem.title);
+    S.lastAlert = alertKey; S.rendered = true;
+
+    resolveEditors(items);
+  }
+  let profToken = 0;
+  async function resolveEditors(items) {
+    if (!S.admin || !S.user) return;
+    const ids = [...new Set(items.map(n => n.updatedBy).filter(Boolean))];
+    if (!ids.length) return;
+    const tok = ++profToken;
+    const ps = await S.user.profiles(ids);
+    if (tok !== profToken) return;
+    $$("[data-by]", $("#nyheter")).forEach(s => { const p = ps[s.dataset.by]; s.textContent = s.dataset.base + (p && p.name ? " av " + p.name : ""); });
+  }
+
+  $("#news-more").addEventListener("click", () => { S.showAll = !S.showAll; renderNews(); });
+
+  async function initData() {
+    if (!window.claude || typeof window.claude.use !== "function") {
+      setState("unavailable", "Nyheterna kan inte visas här", "Öppna prototypen på claude.ai för att se nyhetsflödet.");
+      return;
+    }
+    const [rd, ru] = await Promise.allSettled([window.claude.use("db"), window.claude.use("user")]);
+    const db = rd.status === "fulfilled" ? rd.value : null;
+    S.user = ru.status === "fulfilled" ? ru.value : null;
+    if (rd.status === "rejected") { setState("unavailable", "Nyheterna kunde inte hämtas", "Försök igen om en stund."); return; }
+    if (!db) { setState("unavailable", "Nyheterna kan inte visas här", "Logga in på claude.ai för att se nyhetsflödet i prototypen. På den skarpa sajten är nyheterna öppna för alla."); return; }
+    S.db = db;
+    let loaded = false;
+    const timer = setTimeout(() => {
+      if (loaded) return;
+      if (S.news.length) setState("slow", "Kan vara inaktuellt", "Vi visar sparade nyheter. De uppdateras så snart anslutningen är tillbaka.");
+      else setState("slow", "Nyheterna dröjer", "Vi får inte kontakt med nyhetsflödet just nu. Det laddas så snart anslutningen är tillbaka.");
+    }, 10000);
+    try {
+      db.collection("news").orderBy("date", "desc").limit(300).onSnapshot((snap) => {
+        S.news = snap.docs.filter(d => d.exists).map(d => clean(d.data() || {}, d.id));
+        if (!snap.metadata.fromCache) { loaded = true; clearTimeout(timer); }
+        if (S.status !== "ready" && S.status !== "empty" && (S.status !== "slow" || loaded)) setState("ready");
+        if (!S.news.length && S.status !== "empty") S.status = "ready";
+        renderNews();
+      }, () => {
+        clearTimeout(timer); loaded = true;
+        if (S.news.length) toast("Nyheterna uppdateras inte längre. Ladda om sidan för senaste versionen.");
+        else setState("unavailable", "Nyheterna kunde inte hämtas", "Försök igen om en stund.");
+      });
+    } catch { clearTimeout(timer); setState("unavailable", "Nyheterna kunde inte hämtas", "Försök igen om en stund."); return; }
+    if (ss.get("rr-admin")) checkAdmin(true);
+  }
+
+  /* ---------- Dialoger ---------- */
+  // Fokus återgår till det som öppnade dialogen, utom när en åtgärd själv bestämmer målet.
+  const openDialog = (dlg, returnSel) => { dlg._return = document.activeElement; dlg._returnSel = returnSel || null; dlg._skip = false; dlg.showModal(); };
+  const closeDialog = (dlg, opts = {}) => { if (opts.skipReturn) dlg._skip = true; if (opts.target) { dlg._return = opts.target; dlg._returnSel = null; } dlg.close(); };
+  $$("dialog").forEach(d => {
+    d.addEventListener("close", () => {
+      if (d._skip) { d._skip = false; return; }
+      const r = d._return, sel = d._returnSel; d._return = d._returnSel = null;
+      requestAnimationFrame(() => focusEl((r && document.contains(r) && r) || (sel && $(sel)) || $("#news-h")));
+    });
+    d.addEventListener("click", (e) => { if (!e.target.closest("[data-close]")) return; d === edDlg ? tryCloseEditor() : d.close(); });
+  });
+
+  /* ---------- Inloggning ---------- */
+  const loginMsg = $("#login-msg"), googleBtn = $("#google-btn");
+  const showLoginMsg = (kind, text) => { loginMsg.hidden = false; loginMsg.dataset.kind = kind; loginMsg.textContent = text; };
+  function setAdminUI(on) {
+    $("#admin-bar").hidden = !on;
+    $$("[data-admin-only]").forEach(b => b.hidden = !on);
+    $("#login-open").textContent = on ? "Logga ut som administratör" : "Logga in som administratör";
+  }
+  function logout(focusTarget) {
+    S.admin = false; ss.set("rr-admin", null); setAdminUI(false); renderNews();
+    toast("Du är utloggad"); focusEl(focusTarget);
+  }
+  $("#login-open").addEventListener("click", () => {
+    if (S.admin) { logout($("#login-open")); return; }
+    loginMsg.hidden = true; googleBtn.removeAttribute("aria-disabled"); $("#google-label").textContent = "Logga in med Google";
+    openDialog(loginDlg);
+  });
+  $("#logout-btn").addEventListener("click", () => logout($("#main")));
+
+  async function checkAdmin(silent) {
+    if (!S.user) {
+      if (!silent) showLoginMsg("info", "Inloggningen fungerar inte i den här vyn. Öppna prototypen på claude.ai, inloggad med ett konto som är redaktör för sidan.");
+      return false;
+    }
+    const me = await S.user.me();
+    if (!me.canEdit) {
+      ss.set("rr-admin", null);
+      if (!silent) showLoginMsg("error", "Ditt konto är inte administratör för Renrajden. Du kan fortfarande läsa allt på sidan. Behöver du behörighet? Kontakta info@renrajden.se.");
+      return false;
+    }
+    S.admin = true; S.myId = me.id;
+    ss.set("rr-admin", "1");
+    $("#admin-name").textContent = me.name || "administratör";
+    $("#admin-avatar").src = me.avatarUrl;
+    setAdminUI(true);
+    renderNews();
+    return true;
+  }
+  let checking = false;
+  googleBtn.addEventListener("click", async () => {
+    if (checking) return;
+    checking = true; googleBtn.setAttribute("aria-disabled", "true"); $("#google-label").textContent = "Kontrollerar behörighet…"; loginMsg.hidden = true;
+    const ok = await checkAdmin(false);
+    checking = false; googleBtn.removeAttribute("aria-disabled"); $("#google-label").textContent = "Logga in med Google";
+    if (ok) { closeDialog(loginDlg, { target: $("#admin-bar button") }); toast("Du är inloggad som administratör"); }
+  });
+
+  /* ---------- Skapa / redigera ---------- */
+  const form = $("#editor-form"), rows = $("#link-rows"), discard = $("#discard");
+  let linkSeq = 0, edInitial = "", saving = false;
+  const addLinkRow = (label = "", url = "") => {
+    const i = ++linkSeq;
+    const row = el("div", { class: "link-row" },
+      el("div", { class: "field" }, el("label", { for: "l-label-" + i, text: "Länktext" }), el("input", { type: "text", id: "l-label-" + i, maxlength: "80", value: label })),
+      el("div", { class: "field" }, el("label", { for: "l-url-" + i, text: "Adress" }), el("input", { type: "url", id: "l-url-" + i, inputmode: "url", placeholder: "https://", value: url, "aria-describedby": "l-url-err-" + i }), el("span", { class: "err", id: "l-url-err-" + i, hidden: true })),
+      el("button", { class: "icon-btn", type: "button", "aria-label": "Ta bort länk", "data-remove-link": "" }, "×"));
+    rows.append(row);
+    return row;
+  };
+  rows.addEventListener("click", (e) => {
+    const b = e.target.closest("[data-remove-link]"); if (!b) return;
+    const row = b.closest(".link-row"); const next = row.nextElementSibling || row.previousElementSibling;
+    row.remove(); (next ? next.querySelector("input") : $("#add-link")).focus();
+  });
+  $("#add-link").addEventListener("click", () => addLinkRow().querySelector("input").focus());
+
+  const formState = () => JSON.stringify([$("#f-title").value, $("#f-date").value, $("#f-tag").value, $("#f-body").value, $("#f-pinned").checked, $("#f-alert").checked, ...$$("input", rows).map(i => i.value)]);
+  const showDiscard = () => { discard.hidden = false; $("#discard-keep").focus(); };
+  const hideDiscard = (refocus) => { discard.hidden = true; if (refocus) $("#f-title").focus(); };
+  function tryCloseEditor() { if (formState() !== edInitial) showDiscard(); else edDlg.close(); }
+  edDlg.addEventListener("cancel", (e) => {
+    if (formState() === edInitial) return;
+    e.preventDefault();
+    discard.hidden ? showDiscard() : hideDiscard(true);
+  });
+  $("#discard-keep").addEventListener("click", () => hideDiscard(true));
+  $("#discard-yes").addEventListener("click", () => { discard.hidden = true; edDlg.close(); });
+
+  const clearErrors = () => {
+    $("#error-summary").hidden = true; $("#error-list").replaceChildren();
+    $$("[aria-invalid]", form).forEach(i => i.removeAttribute("aria-invalid"));
+    $$(".err", form).forEach(e => { e.hidden = true; e.textContent = ""; });
+  };
+  function openEditor(n) {
+    S.editing = n || null; clearErrors(); discard.hidden = true;
+    $("#editor-h").textContent = n ? "Redigera nyhet" : "Ny nyhet";
+    $("#save-btn").textContent = n ? "Spara ändringar" : "Publicera";
+    $("#f-title").value = n ? n.title : "";
+    $("#f-date").value = n ? n.date : todayIso();
+    $("#f-tag").value = n ? n.tag : "Info";
+    $("#f-body").value = n ? n.body : "";
+    $("#f-pinned").checked = !!(n && n.pinned);
+    $("#f-alert").checked = !!(n && n.alert);
+    rows.replaceChildren();
+    (n && n.links.length ? n.links : [{ label: "", url: "" }]).forEach(l => addLinkRow(l.label, l.url));
+    edInitial = formState();
+    if (n) S.openIds.add(n.id);
+    openDialog(edDlg, n ? '[data-edit="' + n.id + '"]' : null);
+    $("#f-title").focus();
+  }
+  document.addEventListener("click", (e) => {
+    if (e.target.closest('[data-action="new-news"]')) { if (S.admin) openEditor(null); return; }
+    const ed = e.target.closest("[data-edit]"); if (ed && S.admin) { const n = S.news.find(x => x.id === ed.dataset.edit); if (n) openEditor(n); return; }
+    const del = e.target.closest("[data-delete]");
+    if (del && S.admin) {
+      S.pendingDelete = S.news.find(x => x.id === del.dataset.delete) || null;
+      if (S.pendingDelete) { $("#confirm-h").textContent = "Ta bort ”" + S.pendingDelete.title + "”?"; openDialog(confirmDlg); }
+    }
+  });
+
+  const fieldError = (input, errEl, msg, list) => { input.setAttribute("aria-invalid", "true"); errEl.textContent = msg; errEl.hidden = false; list.push({ id: input.id, msg }); };
+  const writeErr = (e) => {
+    const code = e && e.code;
+    if (code === "invalid_argument") return "Ändringen nekades. Ditt konto har inte längre administratörsbehörighet.";
+    if (code === "quota_exceeded") return "Databasen är full. Ta bort gamla nyheter och försök igen.";
+    if (code === "resource_exhausted") return "För många ändringar på kort tid. Vänta en stund och försök igen.";
+    return "Det gick inte att spara just nu. Kontrollera anslutningen och försök igen.";
+  };
+  const withRetry = async (fn) => { try { return await fn(); } catch (e) { if (e && e.code === "unavailable") { await new Promise(r => setTimeout(r, 600 + Math.random() * 600)); return fn(); } throw e; } };
+  const showErrors = (msgs) => {
+    const list = $("#error-list");
+    msgs.forEach(x => list.append(el("li", {}, x.id ? el("a", { href: "#" + x.id, text: x.msg }) : x.msg)));
+    $("#error-summary").hidden = false; $("#error-summary").focus();
+  };
+
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    if (saving) return;
+    clearErrors(); discard.hidden = true;
+    const errs = [];
+    const title = $("#f-title").value.trim(), date = $("#f-date").value, body = $("#f-body").value.trim();
+    if (!title) fieldError($("#f-title"), $("#f-title-err"), "Skriv en rubrik.", errs);
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(date)) fieldError($("#f-date"), $("#f-date-err"), "Välj ett datum.", errs);
+    const links = []; let anyLink = false;
+    $$(".link-row", rows).forEach((row) => {
+      const [lab, url] = $$("input", row); const errEl = $(".err", row);
+      const L = lab.value.trim(), U = url.value.trim();
+      if (!L && !U) return;
+      anyLink = true;
+      if (!safeUrl(U)) { fieldError(url, errEl, U ? "Adressen måste börja med https://" : "Skriv adressen till länken.", errs); return; }
+      links.push({ label: L || U.replace(/^https:\/\//, "").split("/")[0], url: U });
+    });
+    if (!body && !anyLink) fieldError($("#f-body"), $("#f-body-err"), "Skriv en text eller lägg till minst en länk.", errs);
+    if (errs.length) { showErrors(errs); return; }
+
+    const now = new Date().toISOString();
+    const editing = S.editing;
+    const data = { title, date, tag: $("#f-tag").value, body, links, pinned: $("#f-pinned").checked, alert: $("#f-alert").checked, updatedAt: now, updatedBy: S.myId || null };
+    const save = $("#save-btn"), old = save.textContent;
+    saving = true; save.setAttribute("aria-disabled", "true"); save.textContent = "Sparar…";
+    try {
+      const col = S.db.collection("news");
+      const ref = editing ? col.doc(editing.id) : col.doc();
+      await withRetry(() => ref.set(editing
+        ? { ...data, createdAt: editing.createdAt || now, createdBy: editing.createdBy || null }
+        : { ...data, createdAt: now, createdBy: S.myId || null }));
+      S.focusAfter = { sel: editing ? '[data-edit="' + ref.id + '"]' : null, id: ref.id, until: Date.now() + 6000 };
+      closeDialog(edDlg, { skipReturn: true });
+      renderNews();
+      toast(editing ? "Ändringarna är sparade" : "Nyheten är publicerad");
+    } catch (err) {
+      showErrors([{ msg: writeErr(err) }]);
+    } finally {
+      saving = false; save.removeAttribute("aria-disabled"); save.textContent = old;
+    }
+  });
+  $("#error-list").addEventListener("click", (e) => { const a = e.target.closest("a"); if (!a) return; e.preventDefault(); const t = document.getElementById(a.getAttribute("href").slice(1)); if (t) t.focus(); });
+
+  /* ---------- Ta bort (med ångra) ---------- */
+  let deleting = false;
+  $("#confirm-delete").addEventListener("click", async () => {
+    const n = S.pendingDelete; if (!n || deleting) return;
+    const btn = $("#confirm-delete"); deleting = true; btn.setAttribute("aria-disabled", "true");
+    try {
+      await withRetry(() => S.db.collection("news").doc(n.id).delete());
+      closeDialog(confirmDlg, { skipReturn: true });
+      const { id, ...rest } = n;
+      toast("Nyheten är borttagen", { label: "Ångra", run: async () => {
+        try { await S.db.collection("news").doc(id).set(rest); S.focusAfter = { id, until: Date.now() + 6000 }; renderNews(); toast("Nyheten är återställd"); }
+        catch (err) { toast(writeErr(err)); }
+      } });
+      requestAnimationFrame(() => toastBtn.focus());
+    } catch (err) { closeDialog(confirmDlg); toast(writeErr(err)); }
+    finally { deleting = false; btn.removeAttribute("aria-disabled"); S.pendingDelete = null; }
+  });
+
+  initData();
+})();
+</script>
