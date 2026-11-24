@@ -1,8 +1,8 @@
 // Skärmdumpar i fyra lägen + kontroll av sidledsscroll och JS-fel.
-//   node dev/shots.js [utkatalog]   (standard: dev/shots)
+//   node dev/shots.cjs [utkatalog]   (standard: dev/shots)
 const path = require("path");
 const fs = require("fs");
-const { openPage } = require("./harness");
+const { openPage } = require("./harness.cjs");
 
 (async () => {
   const out = process.argv[2] || path.join(__dirname, "shots");

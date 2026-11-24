@@ -1,9 +1,9 @@
 // Bygger dev/preview.html: prototypen inslagen i samma skelett som vid publicering,
 // med en lokal mock av databasen och inloggningen så att allt går att testa i webbläsaren.
 //
-//   node dev/build-preview.js              besökare (läser nyheter)
-//   node dev/build-preview.js --admin      inloggning lyckas, CRUD fungerar
-//   node dev/build-preview.js --signed-out läget utan databas
+//   node dev/build-preview.cjs              besökare (läser nyheter)
+//   node dev/build-preview.cjs --admin      inloggning lyckas, CRUD fungerar
+//   node dev/build-preview.cjs --signed-out läget utan databas
 //
 // Öppna sedan dev/preview.html i webbläsaren. Ändringar i mocken lever bara tills sidan laddas om.
 const fs = require("fs");

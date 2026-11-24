@@ -1,6 +1,6 @@
 // Funktionstest av de viktigaste flödena (efter UX-utvärderingen).
-//   node dev/verify.js
-const { openPage } = require("./harness");
+//   node dev/verify.cjs
+const { openPage } = require("./harness.cjs");
 
 const results = [];
 const check = (name, ok, detail = "") => results.push(`${ok ? "OK  " : "FEL "} ${name}${detail ? " – " + detail : ""}`);
