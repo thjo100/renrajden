@@ -172,7 +172,7 @@ npm run admin -- add fornamn.efternamn@gmail.com --project <projekt-id>
 ## 7. Publicera
 
 1. Slå ihop pull requesten (thjo100/renrajden#1) till `main`. Säg till Claude, eller klicka på **Merge pull request** på GitHub.
-2. Fliken **Actions** i GitHub visar körningen "Test och publicering". Först körs testerna (cirka 5 minuter), sedan publiceras säkerhetsreglerna och sajten.
+2. Fliken **Actions** i GitHub visar körningen "Test och publicering". Först körs testerna (cirka 5 minuter), sedan publiceras säkerhetsreglerna, och därefter byggs och publiceras sajten med årets lopp och resultatarkivet från Firestore. Samma publicering körs också automatiskt varje natt.
 3. När körningen är grön finns sajten på **https://renrajden.web.app** (webbplatsen `renrajden`, satt i `firebase.json`).
    Adressen `renrajden.web.app` måste finnas under **Authentication → Settings → Authorized domains**, annars fungerar inte inloggningen.
 4. Importera nu nyheterna enligt steg 6b.
@@ -182,6 +182,7 @@ npm run admin -- add fornamn.efternamn@gmail.com --project <projekt-id>
 - [ ] Sidan visas med nedräkning och nyheter.
 - [ ] **Logga in som administratör** längst ned → **Logga in med Google** → adminraden visas.
 - [ ] Skapa en testnyhet, ändra den och ta bort den.
+- [ ] Välj **Årets lopp** i adminraden och spara. Första gången kopieras årets lopp och hela resultatarkivet till Firestore (samlingarna `settings` och `years`).
 - [ ] Logga in med ett konto som inte är admin. Du ska få beskedet att bara administratörer har tillgång.
 
 Behöver du publicera om utan kodändring: **Actions → Test och publicering → Run workflow** (gren `main`).
@@ -245,7 +246,7 @@ Gratisplanen Spark har dagliga tak. Två är relevanta:
 | Tjänst | Tak per dag (Spark) | Ungefärlig åtgång |
 |---|---|---|
 | Hosting, trafik | 360 MB | Ett första besök är cirka 300 kB, alltså runt 1 200 nya besökare per dag |
-| Firestore, läsningar | 50 000 | En besökare läser alla nyheter (cirka 25 dokument) vid sidladdning och sedan varje minut medan sidan är öppen |
+| Firestore, läsningar | 50 000 | En besökare läser alla nyheter (cirka 25 dokument) vid sidladdning och sedan varje minut medan sidan är öppen, plus årets lopp och resultatarkivet (cirka 15 dokument) en gång per sidladdning |
 
 En vanlig dag räcker gratisplanen med god marginal. På **tävlingsdagen**, när åkare, publik och anhöriga följer startlistor och resultat, kan taken nås. Då slutar sajten eller nyhetsflödet att fungera resten av dygnet.
 
@@ -257,6 +258,7 @@ En vanlig dag räcker gratisplanen med god marginal. På **tävlingsdagen**, nä
 |---|---|
 | Publiceringsjobben i Actions visas som *skipped* | Variabeln `VITE_FIREBASE_PROJECT_ID` saknas eller är felstavad (steg 4). |
 | Publiceringen misslyckas med *permission denied* | Någon roll saknas på servicekontot (steg 5), eller hela JSON-filen kom inte med i secret. |
+| Publiceringen avbryts med "Årets lopp och resultatarkivet kunde inte hämtas från Firestore" | Bygget når inte Firestore. Kontrollera att `VITE_FIREBASE_PROJECT_ID` stämmer och att säkerhetsreglerna publicerades i steget före. Kör om jobbet när Firestore svarar igen. |
 | "Nyheterna kunde inte hämtas" | Reglerna är inte publicerade än (steg 7), eller så är nyheterna inte importerade (steg 6b). |
 | "Den här adressen är inte godkänd för inloggning" | Domänen saknas under Authorized domains (steg 8d). |
 | "… är inte administratör" fast adressen ska vara admin | Dokument-ID:t i `admins` måste vara exakt Google-adressen med små bokstäver (steg 6a). |

@@ -1,5 +1,5 @@
-// Ingång. Sidan fungerar utan Firebase. Nyheterna laddas efter första renderingen,
-// och inloggningskoden laddas bara för administratörer.
+// Ingång. Sidan fungerar utan Firebase. Nyheterna och det senaste innehållet för årets lopp
+// laddas efter första renderingen, och inloggningskoden laddas bara för administratörer.
 import "@fontsource/big-shoulders-display/latin-700";
 import "@fontsource/big-shoulders-display/latin-900";
 import "@fontsource/familjen-grotesk/latin-400";
@@ -11,6 +11,7 @@ import "./styles.css";
 
 import { $, store, initToast, initDialogs } from "./ui.js";
 import { initSite } from "./site.js";
+import { refreshContent } from "./cms/runtime.js";
 
 const ADMIN_HINT = "rr-admin"; // samma nyckel som i admin.js
 
@@ -19,6 +20,8 @@ initDialogs();
 initSite();
 
 import("./news.js").then((m) => m.startNews());
+// Årets lopp och resultatarkivet finns redan i sidan från bygget. Hämta det senaste från Firestore.
+refreshContent();
 
 let adminModule = null;
 const loadAdmin = () => (adminModule ??= import("./admin.js").then(async (m) => { await m.init(); return m; }));

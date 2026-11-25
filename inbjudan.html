@@ -3,23 +3,26 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <title>Inbjudan Renrajden 2027</title>
-  <meta name="description" content="Inbjudan till Renrajden lördag 30 januari 2027 på Ormberget i Luleå. Distanser, avgifter och anmälan.">
+  <title>{{cms:inv-title}}</title>
+  <meta name="description" content="{{cms:inv-description}}">
   <meta name="theme-color" content="#4561AE">
   <link rel="canonical" href="https://renrajden.se/inbjudan">
   <link rel="icon" href="/favicon.svg" type="image/svg+xml">
   <meta property="og:type" content="website">
   <meta property="og:locale" content="sv_SE">
   <meta property="og:site_name" content="Renrajden">
-  <meta property="og:title" content="Inbjudan Renrajden 2027 – lördag 30 januari på Ormberget">
-  <meta property="og:description" content="42, 21 och 10,5 km klassiskt. Seedningsgrundande för Vasaloppet. Arrangör: OK Renen, Luleå.">
+  <meta property="og:title" content="{{cms:inv-og-title}}">
+  <meta property="og:description" content="{{cms:inv-og-description}}">
   <meta property="og:url" content="https://renrajden.se/inbjudan">
+  <script type="application/json" id="cms-data" data-page="inbjudan">{{cms:data}}</script>
   <script type="module" src="/src/inbjudan.js"></script>
 </head>
 <body>
 <!--
-  Inbjudan 2027. Ändra text direkt här. Sidan är byggd för ett A4-ark:
-  kontrollera med "Skriv ut" att allt fortfarande ryms på en sida efter en ändring.
+  Inbjudan till årets lopp. Datum, plats, distanser, avgifter, sista anmälningsdag och e-post
+  ändras i adminläget (Årets lopp) och fylls i de tomma platserna (data-cms) från src/cms/.
+  Övrig text ändras här. Sidan är byggd för ett A4-ark: kontrollera med "Skriv ut" att allt
+  fortfarande ryms på en sida efter en ändring (npm run test:e2e kontrollerar det också).
 -->
 <nav class="toolbar" aria-label="Inbjudan">
   <a href="/">Till renrajden.se</a>
@@ -33,14 +36,14 @@
     <div class="top-inner">
       <p class="kicker"><span class="tag">Inbjudan</span> Arrangör OK Renen, Luleå</p>
       <h1 class="title">
-        <span class="sr-only">Renrajden 2027</span>
+        <span class="sr-only" data-cms="title-text"></span>
         <svg viewBox="0 0 600 250" aria-hidden="true">
           <defs><path id="arc" d="M30 222 A300 190 0 0 1 570 222"/></defs>
           <text font-size="108" fill="currentColor" letter-spacing="5"><textPath href="#arc" startOffset="50%" text-anchor="middle">RENRAJDEN</textPath></text>
-          <text x="300" y="232" font-size="64" fill="currentColor" text-anchor="middle" letter-spacing="6">2027</text>
+          <text x="300" y="232" font-size="64" fill="currentColor" text-anchor="middle" letter-spacing="6" data-cms="year"></text>
         </svg>
       </h1>
-      <p class="date"><time datetime="2027-01-30">Lördag 30 januari 2027</time></p>
+      <p class="date" data-cms="inv-date"></p>
       <p class="lede">Klassiskt långlopp på Ormberget i Luleå. Seedningsgrundande för Vasaloppet.</p>
     </div>
     <svg class="wave" viewBox="0 0 1440 90" preserveAspectRatio="none" aria-hidden="true">
@@ -49,12 +52,7 @@
     </svg>
   </header>
 
-  <dl class="facts">
-    <div><dt>Start</dt><dd>Kl 10:00<small>Alla distanser</small></dd></div>
-    <div><dt>Plats</dt><dd>Ormbergsstadion<small>Ormberget, Luleå</small></dd></div>
-    <div><dt>Stil</dt><dd>Klassisk<small>Dubbelspår, stilkontroll</small></dd></div>
-    <div><dt>Bana</dt><dd>10,5 km<small>Slinga, ca 98 höjdmeter</small></dd></div>
-  </dl>
+  <dl class="facts" data-cms="inv-facts"></dl>
 
   <section class="block" aria-labelledby="fees-h">
     <h2 id="fees-h">Distanser och avgifter</h2>
@@ -62,18 +60,14 @@
       <thead>
         <tr><th scope="col">Distans</th><th scope="col">Klasser</th><th scope="col" class="num">Anmälan</th><th scope="col" class="num">Efteranmälan</th></tr>
       </thead>
-      <tbody>
-        <tr><th scope="row"><b>42 km</b><span>4 varv</span></th><td>D42 · H42</td><td class="num price">500 kr</td><td class="num price late">600 kr</td></tr>
-        <tr><th scope="row"><b>21 km</b><span>2 varv</span></th><td>D21 · H21</td><td class="num price">300 kr</td><td class="num price late">350 kr</td></tr>
-        <tr><th scope="row"><b>10,5 km</b><span>1 varv</span></th><td>Motion</td><td class="num price">200 kr</td><td class="num price late">200 kr</td></tr>
-      </tbody>
+      <tbody data-cms="inv-fees"></tbody>
     </table>
   </section>
 
   <section class="block" aria-labelledby="anm-h">
     <div class="block-head">
       <h2 id="anm-h">Anmälan</h2>
-      <p class="deadline">Sista anmälningsdag <b>söndag 24 januari 2027</b></p>
+      <p class="deadline" data-cms="inv-deadline"></p>
     </div>
     <ol class="steps">
       <li><b>Via din klubb</b><p>Anmäl dig på din klubbs sida i IdrottOnline. Där finns dina uppgifter redan.</p></li>
@@ -89,12 +83,7 @@
     </div>
     <div>
       <h2>Bra att veta</h2>
-      <ul>
-        <li>Stavar max 83 % av kroppslängden.</li>
-        <li>Två vätskekontroller per varv.</li>
-        <li>Prisutdelning direkt efter målgång och lottade priser på startnummer.</li>
-        <li>Köldgräns −20 °C på banans kallaste punkt.</li>
-      </ul>
+      <ul data-cms="inv-know"></ul>
     </div>
   </section>
 
@@ -108,7 +97,7 @@
       <p class="url">renrajden.se</p>
     </div>
     <div class="contact">
-      <p><span>Frågor</span>info@renrajden.se</p>
+      <p data-cms="inv-mail"></p>
       <p><span>Arrangör</span>OK Renen, Luleå</p>
     </div>
   </footer>

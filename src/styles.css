@@ -258,7 +258,7 @@ a:hover { text-decoration-thickness: 2px; }
 @media (min-width: 900px) { .dist { grid-template-columns: minmax(0, 1fr) minmax(0, 1.5fr); align-items: start; } }
 .dist fieldset { border: 0; padding: 0; margin: 0; min-width: 0; }
 .dist legend { font: 800 var(--s-xl)/1.15 var(--f-display); text-transform: uppercase; letter-spacing: .02em; margin-bottom: .875rem; padding: 0; }
-.seg { display: grid; grid-template-columns: repeat(3, 1fr); gap: .5rem; }
+.seg { display: grid; grid-auto-flow: column; grid-auto-columns: minmax(0, 1fr); gap: .5rem; } /* en kolumn per distans */
 .seg input { position: absolute; opacity: 0; width: 1px; height: 1px; }
 .seg label {
   display: grid; justify-items: center; gap: .125rem; padding: .875rem .5rem; cursor: pointer;
@@ -274,7 +274,7 @@ a:hover { text-decoration-thickness: 2px; }
 }
 .seg input:checked + label b { color: var(--red-text); }
 .seg input:focus-visible + label { outline: 3px solid var(--focus); outline-offset: 3px; }
-.laps { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: .375rem; margin-bottom: 1.25rem; }
+.laps { display: grid; grid-auto-flow: column; grid-auto-columns: minmax(0, 1fr); gap: .375rem; margin-bottom: 1.25rem; } /* ett spår per varv */
 .lap { display: grid; gap: .5rem; }
 .lap-track { height: 22px; border-radius: 11px; background: var(--ice); position: relative; }
 .lap-track::before, .lap-track::after { content: ""; position: absolute; left: 10px; right: 10px; height: 2px; background: var(--line); }
@@ -426,7 +426,8 @@ details.archive h4 { margin: 0 0 .25rem; font: 700 var(--s-sm)/1.3 var(--f-mono)
 .history-grid { display: grid; gap: 2.5rem; }
 @media (min-width: 960px) { .history-grid { grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr); } }
 .side-box { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 1.25rem 1.5rem; }
-.side-box + .side-box { margin-top: 1rem; }
+.side-col { display: grid; gap: 1rem; align-content: start; }
+.side-cms { display: contents; }
 .side-box h3 { font-size: var(--s-lg); margin-bottom: .75rem; }
 .side-box ul { margin: 0; padding-left: 1.1rem; display: grid; gap: .375rem; font-size: var(--s-sm); }
 
@@ -472,14 +473,14 @@ dialog::backdrop { background: rgba(10, 16, 40, .6); }
 .field { display: grid; gap: .375rem; }
 .field label, .field .lbl { font-weight: 700; font-size: var(--s-sm); }
 .field .hint { font-size: var(--s-xs); color: var(--muted); }
-.field input[type="text"], .field input[type="url"], .field input[type="date"], .field select, .field textarea {
+.field input[type="text"], .field input[type="url"], .field input[type="date"], .field input[type="time"], .field input[type="email"], .field select, .field textarea {
   width: 100%; min-height: 46px; padding: .625rem .75rem; border: 2px solid var(--control); border-radius: var(--radius);
   background: var(--bg); color: var(--text); font: 400 var(--s-md)/1.4 var(--f-body);
 }
 .field textarea { min-height: 9rem; resize: vertical; }
 .field [aria-invalid="true"] { border-color: var(--red); }
 .err { color: var(--red-text); font-size: var(--s-xs); font-weight: 700; }
-.row2 { display: grid; gap: 1rem; grid-template-columns: repeat(auto-fit, minmax(12rem, 1fr)); }
+.row2 { display: grid; gap: 1rem; grid-template-columns: repeat(auto-fit, minmax(12rem, 1fr)); align-items: end; }
 .link-rows { display: grid; gap: .75rem; }
 .link-row { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.4fr) auto; gap: .5rem; align-items: start; }
 .link-row .icon-btn { margin-top: calc(var(--s-sm) * 1.6 + .375rem); }
@@ -488,6 +489,21 @@ dialog::backdrop { background: rgba(10, 16, 40, .6); }
 .toggles { display: grid; gap: .5rem; }
 .error-summary { scroll-margin-top: 6rem; background: color-mix(in srgb, var(--red) 10%, var(--surface)); border-left: 4px solid var(--red); padding: .875rem 1rem; border-radius: var(--radius); font-size: var(--s-sm); }
 .error-summary ul { margin: .375rem 0 0; padding-left: 1.1rem; }
+
+/* Admin: årets lopp och resultatarkivet (src/cms-admin.js) */
+dialog.dlg-wide { width: min(100% - 32px, 46rem); }
+.group { border: 0; padding: 0; margin: 0; min-width: 0; display: grid; gap: 1rem; }
+.group > legend { font: 800 var(--s-lg)/1.2 var(--f-display); letter-spacing: .02em; text-transform: uppercase; padding: 0; margin-bottom: .75rem; }
+.group > .hint { font-size: var(--s-xs); color: var(--muted); margin-top: -.5rem; }
+.row4 { display: grid; gap: 1rem; grid-template-columns: repeat(auto-fit, minmax(9rem, 1fr)); align-items: end; }
+.sub-rows { display: grid; gap: .875rem; }
+.sub-row { border: 1px solid var(--line); border-radius: var(--radius); padding: .75rem 1rem 1rem; margin: 0; min-width: 0; display: grid; gap: .75rem; }
+.sub-row > legend { font-weight: 700; font-size: var(--s-sm); padding: 0 .375rem; }
+.row-grid { display: grid; gap: .75rem; grid-template-columns: repeat(auto-fit, minmax(7rem, 1fr)); align-items: end; }
+.sub-row [data-remove-row], .add-row { justify-self: start; }
+.field textarea.short { min-height: 5rem; }
+.year-admin { display: flex; flex-wrap: wrap; gap: .5rem; margin-top: .25rem; }
+.next-year .btn-quiet { color: #FFFFFF; border-color: rgba(255,255,255,.6); }
 
 .discard { margin: 0 1.5rem; padding: 1rem; border-radius: var(--radius); background: color-mix(in srgb, var(--red) 10%, var(--surface)); border-left: 4px solid var(--red); display: grid; gap: .75rem; }
 .discard-btns { display: flex; flex-wrap: wrap; gap: .5rem; }

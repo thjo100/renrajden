@@ -1,0 +1,124 @@
+// Standardinnehåll för årets lopp och resultatarkivet.
+//
+// Används när Firestore saknar innehållet (innan en administratör har sparat något första gången)
+// eller inte går att nå när sajten byggs. När en administratör sparar första gången kopieras
+// det här innehållet till Firestore, och därefter är det Firestore som gäller.
+// Ändra alltså i adminläget på sajten, inte här.
+
+export const DEFAULT_EVENT = {
+  date: "2027-01-30",
+  startTime: "10:00",
+  status: "planned",
+  venue: "Ormbergsstadion",
+  venueArea: "Ormberget, Luleå",
+  mapUrl: "https://www.google.com/maps/search/?api=1&query=Ormbergsstadion%2C%20Lule%C3%A5",
+  deadline: "2027-01-24",
+  registrationUrl: "",
+  startListUrl: "",
+  liveResultsUrl: "",
+  email: "info@renrajden.se",
+  lapKm: 10.5,
+  climbPerLap: 98,
+  waterPerLap: 2,
+  coldLimit: -20,
+  distances: [
+    { km: 42, laps: 4, classes: "HD42", fee: 500, lateFee: 600, note: "Prisutdelning för 1:a–3:e i HD42, direkt när de gått i mål." },
+    { km: 21, laps: 2, classes: "HD21", fee: 300, lateFee: 350, note: "Pris till vinnarna i HD21." },
+    { km: 10.5, laps: 1, classes: "Motion", fee: 200, lateFee: 200, note: "Motionsdistans på 10,5 km. Start kl 10:00, samtidigt som de långa." },
+  ],
+};
+
+const link = (label, url) => ({ label, url });
+const year = (y, fields) => ({ year: y, status: "held", date: "", text: "", winners: [], links: [], invitation: null, ...fields });
+
+export const DEFAULT_YEARS = [
+  year(2025, {
+    date: "2025-02-09",
+    links: [
+      link("Resultat (pdf)", "https://drive.google.com/file/d/18MDWvPwT7fYfBq7Ffobwkv2o5Ng6c-tY/view?usp=sharing"),
+      link("Liveresultat", "http://live.skidor.com/5583#result@46786@1@-1"),
+      link("Startlista", "https://drive.google.com/file/d/11-cwtSXdqn99fxNKolL9g5z0oK6Qnghb/view?usp=sharing"),
+    ],
+    invitation: link("Inbjudan 2025", "https://drive.google.com/file/d/1zls7gy47sPfDOObksWetWNeUa4RoDA6Z/view?usp=sharing"),
+  }),
+  year(2024, {
+    date: "2024-02-10",
+    links: [
+      link("Resultat (pdf)", "https://drive.google.com/file/d/1Auuj2y_SYhVtES366o7NH1-czVkCQ14x/view?usp=sharing"),
+      link("SSF TA", "https://ta.skidor.com/ResultList.aspx?eventid=14793&competitionid=25311&orgid=2920"),
+    ],
+    invitation: link("Inbjudan 2024", "https://drive.google.com/file/d/1QMQdZtp4bTciwujqiT23ZmbOjenoj-QN/view?usp=sharing"),
+  }),
+  year(2023, {
+    date: "2023-02-11",
+    links: [link("Resultat", "https://drive.google.com/file/d/1MLrjuAHvQ4BOJSSZ6t7kAgGW8lONGRv2/view?usp=share_link")],
+    invitation: link("Inbjudan 2023", "https://drive.google.com/file/d/1UDaIENyTIf-ig6vSlUeimXJ261k_S6MK/view?usp=share_link"),
+  }),
+  year(2022, {
+    date: "2022-02-19",
+    links: [
+      link("Resultat", "https://drive.google.com/file/d/1IGspsGsRtOmkcbsIR68j7WqscqUged3u/view?usp=sharing"),
+      link("Varvtider (chip)", "http://obasen.orientering.se/winsplits/online/sv/default.asp?page=table&databaseId=80132&categoryId=0"),
+      link("Bilder", "https://photos.app.goo.gl/VTYn9jouczi5rCTv9"),
+    ],
+    invitation: link("Inbjudan 2022", "https://www.okrenen.se/globalassets/ok-renen---orientering/tavling/inbjudan-renrajden-2022.pdf"),
+  }),
+  year(2021, { status: "cancelled", text: "Inställt. Tävlingen var planerad till 2 januari 2021." }),
+  year(2020, {
+    text: "10, 20 och 40 km på den nya fyravarvsbanan.",
+    links: [
+      link("Resultat (pdf)", "https://www.okrenen.se/globalassets/ok-renen---orientering/dokument/resultat-renrajden2020.pdf"),
+      link("SSF TA", "http://ta.skidor.com/ResultList.aspx?eventid=11471&competitionid=19335&orgid=2920"),
+      link("skidresultat.se", "https://skidresultat.se/?cat=comp&id=4553"),
+    ],
+    invitation: link("Inbjudan 2020", "http://www.okrenen.se/globalassets/ok-renen---orientering/dokument/inbjudan-renrajden-2020.pdf"),
+  }),
+  year(2019, { status: "cancelled", text: "Paus. Klubben arrangerade flera stora event." }),
+  year(2018, {
+    text: "Även Kalvrajden för HD10–16.",
+    links: [
+      link("SSF TA", "http://ta.skidor.com/ResultList.aspx?eventid=8698&competitionid=14578&orgid=2920"),
+      link("Resultat (pdf)", "https://drive.google.com/open?id=1BeeHlL6ls90ua54wohkR_BRZpj585R7-"),
+      link("skidresultat.se", "http://skidresultat.se/?cat=comp&id=3873&a1=res"),
+      link("Bilder", "https://www.flickr.com/photos/139458541@N05/sets/72157691084581201"),
+    ],
+    invitation: link("Renrajden och Kalvrajden 2018", "http://ta.skidor.com/EventFiles/ae91fdbe-bcbd-4b51-b76f-5f04395fe2c6.pdf"),
+  }),
+  year(2017, {
+    date: "2017-01-14",
+    winners: [{ class: "42 km", names: "Klas Nilsson och Anna Rimpi" }],
+    links: [
+      link("SSF TA", "http://ta.skidor.com/ResultList.aspx?eventid=7506&competitionid=12701&orgid=2920"),
+      link("Resultat (pdf)", "https://drive.google.com/open?id=0B1D0YYjNfoooRUxHeHkxN19YYm8"),
+      link("skidresultat.se", "http://skidresultat.se/?cat=comp&id=3597&a1=res"),
+      link("Kuriren", "http://www.kuriren.nu/nyheter/tungt-fore-gav-rejal-genomkorare-i-arets-renrajden-9091356.aspx"),
+      link("NSD", "http://www.nsd.se/sport/vinnaren-missnojd-med-tiden-katastrof-10395936.aspx"),
+    ],
+    invitation: link("Inbjudan 2017", "http://ta.skidor.com/EventFiles/5652af6c-138d-4ce6-a0dc-858d59e502f2.pdf"),
+  }),
+  year(2016, {
+    date: "2016-01-16",
+    links: [
+      link("Resultat (pdf)", "http://www.okrenen.se/globalassets/ok-renen---orientering/tavling/renrajden2016_resultat.pdf"),
+      link("Kalvrajden", "http://skidresultat.se/?cat=comp&id=3224&a1=res&a2=-1"),
+      link("Bilder och film", "https://goo.gl/photos/7WFKvNaPG35Dzgkq5"),
+      link("Kuriren", "http://www.kuriren.nu/sport/landslagskille-slog-rekord-pa-ormberget-8685214.aspx"),
+      link("Damvinnaren berättar", "https://ninalintzen.wordpress.com/2016/01/16/antligen-tavling-renrajden/"),
+    ],
+  }),
+  year(2015, {
+    winners: [
+      { class: "H42", names: "1. Tarjei Solli, 2. Niklas Henriksson, 3. Andreas Berglund" },
+      { class: "D42", names: "Emma Bergström" },
+    ],
+    links: [
+      link("Resultat", "https://docs.google.com/spreadsheets/d/1f9HGkHk8o17EsdgJ_ZBJSgh3F4vJIVprvc4jA9HVslM/pubhtml"),
+      link("Varvtider", "http://fij.se/ttt/rr15.html"),
+      link("skidresultat.se", "http://skidresultat.se/?cat=comp&id=2663&a1=res"),
+      link("Kuriren", "http://www.kuriren.nu/sport/spannande-spurtduell-avgjorde-renrajden-8079740.aspx"),
+      link("NSD", "http://www.nsd.se/sport/mental-seger-i-renrajden-9015448.aspx"),
+    ],
+  }),
+  year(2014, { status: "cancelled", text: "Inställt på grund av kyla." }),
+  year(2013, { links: [link("Resultat", "https://drive.google.com/file/d/0B1D0YYjNfooockxvbFIwU3hoTlk/view")] }),
+];
