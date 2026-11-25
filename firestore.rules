@@ -1,0 +1,91 @@
+rules_version = '2';
+
+// Renrajden – säkerhetsregler
+//
+// * Nyheter (news) kan läsas av alla, även utan inloggning.
+// * Bara administratörer får skapa, ändra och ta bort nyheter.
+// * Administratör = inloggad med Google, verifierad e-post, och dokumentet
+//   admins/{e-post i gemener} finns. Adminlistan hanteras med `npm run admin`
+//   (firebase-admin) eller i Firebase-konsolen – aldrig från webbläsaren.
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function signedInWithGoogle() {
+      return request.auth != null
+        && request.auth.token.firebase.sign_in_provider == 'google.com'
+        && request.auth.token.email_verified == true
+        && request.auth.token.email is string;
+    }
+
+    function emailKey() {
+      return request.auth.token.email.lower();
+    }
+
+    function isAdmin() {
+      return signedInWithGoogle()
+        && exists(/databases/$(database)/documents/admins/$(emailKey()));
+    }
+
+    function validLink(l) {
+      return l is map
+        && l.keys().hasOnly(['label', 'url'])
+        && l.label is string && l.label.size() <= 80
+        && l.url is string && l.url.size() <= 2000
+        && l.url.matches('^https://[^ <>"]+$');
+    }
+
+    // Regler kan inte loopa, så varje position kontrolleras för sig (max 12 länkar).
+    function validLinks(ls) {
+      return ls is list && ls.size() <= 12
+        && (ls.size() < 1 || validLink(ls[0]))
+        && (ls.size() < 2 || validLink(ls[1]))
+        && (ls.size() < 3 || validLink(ls[2]))
+        && (ls.size() < 4 || validLink(ls[3]))
+        && (ls.size() < 5 || validLink(ls[4]))
+        && (ls.size() < 6 || validLink(ls[5]))
+        && (ls.size() < 7 || validLink(ls[6]))
+        && (ls.size() < 8 || validLink(ls[7]))
+        && (ls.size() < 9 || validLink(ls[8]))
+        && (ls.size() < 10 || validLink(ls[9]))
+        && (ls.size() < 11 || validLink(ls[10]))
+        && (ls.size() < 12 || validLink(ls[11]));
+    }
+
+    function validNews(d) {
+      return d.keys().hasOnly(['title', 'date', 'tag', 'body', 'links', 'pinned', 'alert',
+                               'createdAt', 'createdBy', 'updatedAt', 'updatedBy'])
+        && d.keys().hasAll(['title', 'date', 'tag', 'body', 'links', 'pinned', 'alert',
+                            'createdAt', 'createdBy', 'updatedAt', 'updatedBy'])
+        && d.title is string && d.title.size() > 0 && d.title.size() <= 160
+        && d.date is string && d.date.matches('^[0-9]{4}-[0-9]{2}-[0-9]{2}$')
+        && d.tag in ['Info', 'Resultat', 'Ändring', 'Inställt', 'Valla']
+        && d.body is string && d.body.size() <= 4000
+        && validLinks(d.links)
+        && d.pinned is bool
+        && d.alert is bool
+        && d.createdAt is timestamp
+        && (d.createdBy == null || d.createdBy is string)
+        && d.updatedAt == request.time
+        && d.updatedBy == request.auth.uid;
+    }
+
+    match /news/{newsId} {
+      allow read: if true;
+      allow create: if isAdmin() && validNews(request.resource.data);
+      allow update: if isAdmin() && validNews(request.resource.data)
+        && request.resource.data.createdAt == resource.data.createdAt;
+      allow delete: if isAdmin();
+    }
+
+    match /admins/{email} {
+      // Den inloggade får bara läsa sitt eget dokument (för att veta om hen är admin).
+      allow get: if signedInWithGoogle() && email == emailKey();
+      allow list, create, update, delete: if false;
+    }
+
+    // Allt annat är stängt.
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

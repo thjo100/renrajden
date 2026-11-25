@@ -1,0 +1,580 @@
+<!doctype html>
+<html lang="sv">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Renrajden 2027 – klassiskt långlopp på Ormberget, Luleå</title>
+  <meta name="description" content="Renrajden lördag 30 januari 2027: OK Renens klassiska långlopp på Ormberget i Luleå, seedningsgrundande för Vasaloppet. 42, 21 och 10 km.">
+  <meta name="theme-color" content="#4561AE" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#0C1230" media="(prefers-color-scheme: dark)">
+  <link rel="canonical" href="https://renrajden.se/">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <meta property="og:type" content="website">
+  <meta property="og:locale" content="sv_SE">
+  <meta property="og:site_name" content="Renrajden">
+  <meta property="og:title" content="Renrajden 2027 – lördag 30 januari på Ormberget">
+  <meta property="og:description" content="Seedningsgrundande klassiskt långlopp inför Vasaloppet. Arrangör: OK Renen, Luleå.">
+  <meta property="og:url" content="https://renrajden.se/">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "SportsEvent",
+    "name": "Renrajden 2027",
+    "description": "Seedningsgrundande klassiskt långlopp inför Vasaloppet.",
+    "sport": "Längdskidåkning",
+    "startDate": "2027-01-30",
+    "eventStatus": "https://schema.org/EventScheduled",
+    "eventAttendanceMode": "https://schema.org/OfflineEventAttendanceMode",
+    "location": { "@type": "Place", "name": "Ormbergsstadion", "address": { "@type": "PostalAddress", "addressLocality": "Luleå", "addressCountry": "SE" } },
+    "organizer": { "@type": "SportsOrganization", "name": "OK Renen", "url": "https://www.okrenen.se/" },
+    "url": "https://renrajden.se/"
+  }
+  </script>
+  <script type="module" src="/src/main.js"></script>
+</head>
+<body>
+<a class="skip" href="#main">Hoppa till innehållet</a>
+
+<div class="rail" aria-hidden="true">
+  <div class="rail-track">
+    <div class="rail-mark" style="top: 12px"><span>START</span></div>
+    <div class="rail-mark" style="top: calc(12px + (100% - 24px) * .25)"><span>10,5<i>Anmälan</i></span></div>
+    <div class="rail-mark" style="top: calc(12px + (100% - 24px) * .5)"><span>21<i>Bana</i></span></div>
+    <div class="rail-mark" style="top: calc(12px + (100% - 24px) * .75)"><span>31,5<i>Resultat</i></span></div>
+    <div class="rail-mark" style="top: calc(100% - 12px)"><span>42 MÅL</span></div>
+  </div>
+  <div class="rail-skier"></div>
+  <div class="rail-readout"><b id="rail-km">0,0 km</b><span id="rail-lap">varv 1</span></div>
+</div>
+
+<header class="site-header">
+  <div class="wrap header-inner">
+    <a class="brand" href="#top">
+      <svg viewBox="0 0 300 340" aria-hidden="true"><use href="#ren"/></svg>
+      <span><span class="brand-name">Renrajden</span><span class="brand-sub">OK Renen · Luleå</span></span>
+    </a>
+    <button class="btn btn-quiet btn-sm menu-btn" id="menu-btn" aria-expanded="false" aria-controls="site-nav">Meny</button>
+    <nav class="site-nav" id="site-nav" aria-label="Huvudmeny">
+      <ul>
+        <li><a href="#loppet">Loppet</a></li>
+        <li><a href="#seedning">Seedning</a></li>
+        <li><a href="#anmalan">Anmälan</a></li>
+        <li><a href="#pm">PM &amp; tider</a></li>
+        <li><a href="#bana">Bana &amp; före</a></li>
+        <li><a href="#nyheter">Nyheter</a></li>
+        <li><a href="#resultat">Resultat</a></li>
+        <li><a href="#kontakt">Kontakt</a></li>
+      </ul>
+    </nav>
+  </div>
+  <div class="progress-mobile" aria-hidden="true"><span id="progress-mobile"></span></div>
+</header>
+
+<section class="admin-bar on-blue" id="admin-bar" aria-label="Administratörsverktyg" hidden>
+  <div class="wrap">
+    <div class="admin-who"><img id="admin-avatar" alt=""><span><span class="admin-badge">Admin</span> Inloggad som <b id="admin-name">administratör</b></span></div>
+    <button class="btn btn-red btn-sm" type="button" data-action="new-news">+ Ny nyhet</button>
+    <button class="btn btn-quiet btn-sm" type="button" id="logout-btn">Logga ut</button>
+  </div>
+</section>
+
+<main id="main" tabindex="-1">
+  <section class="alert-bar on-blue" id="alert-bar" aria-labelledby="alert-h" hidden>
+    <div class="wrap"><h2 id="alert-h" class="alert-title">Viktigt</h2><p id="alert-text"></p><a id="alert-link" href="#nyheter">Läs mer<span class="sr-only"> om det viktiga meddelandet</span></a></div>
+  </section>
+  <div class="latest on-blue" id="latest" hidden>
+    <div class="wrap"><span class="latest-label">Senaste nytt</span><a id="latest-link" href="#nyheter"></a><time id="latest-date"></time></div>
+  </div>
+
+  <section class="hero on-blue" id="top" aria-labelledby="hero-title">
+    <svg class="hero-wave" viewBox="0 0 1440 90" preserveAspectRatio="none" aria-hidden="true">
+      <path d="M0 22 C300 92 560 92 820 52 C1060 16 1260 12 1440 40 V90 H0 Z" fill="currentColor"/>
+      <path d="M0 8 C300 78 560 78 820 38 C1060 2 1260 -2 1440 26" fill="none" stroke="#FFFFFF" stroke-width="4" opacity=".6"/>
+    </svg>
+    <div class="hero-stripe" aria-hidden="true"></div>
+    <svg class="hero-ren" viewBox="0 0 300 340" aria-hidden="true"><use href="#ren"/></svg>
+    <div class="wrap hero-grid">
+      <div class="hero-copy">
+        <p class="eyebrow">Ormberget · Luleå · Klassisk stil · Arrangör OK Renen</p>
+        <h1 class="hero-title" id="hero-title">
+          <span class="sr-only">Renrajden 2027</span>
+          <svg viewBox="0 0 600 250" aria-hidden="true" style="color:#FFFFFF">
+            <defs><path id="arc" d="M30 222 A300 190 0 0 1 570 222"/></defs>
+            <text font-size="108" fill="currentColor" letter-spacing="5"><textPath href="#arc" startOffset="50%" text-anchor="middle">RENRAJDEN</textPath></text>
+            <text x="300" y="232" font-size="64" fill="currentColor" text-anchor="middle" letter-spacing="6">2027</text>
+          </svg>
+        </h1>
+        <p class="hero-date"><time datetime="2027-01-30">Lördag 30 januari 2027</time></p>
+        <p class="hero-lede">Seedningsgrundande långlopp inför Vasaloppet. Klassisk stil i dubbelspår, fyra varv runt Ormberget.</p>
+        <div class="hero-cta">
+          <a class="btn btn-light" id="cta-1" href="#anmalan">Så anmäler du dig</a>
+          <a class="btn btn-ghost" id="cta-2" href="#nyheter">Senaste nytt</a>
+        </div>
+      </div>
+      <p class="bib" id="countdown" aria-live="off">
+        <span class="bib-holes" aria-hidden="true"></span>
+        <span class="bib-head">Renrajden · 2027</span>
+        <span class="bib-num" id="count-num">–</span>
+        <span class="bib-label" id="count-label">dagar kvar till start</span>
+        <a class="bib-link" id="count-link" href="#resultat" hidden>Se resultaten</a>
+        <span class="bib-foot">Lördag 30 januari · Ormbergsstadion</span>
+      </p>
+    </div>
+  </section>
+
+  <!-- LOPPET -->
+  <section class="section tint" id="loppet" aria-labelledby="loppet-h">
+    <div class="wrap">
+      <div class="section-head">
+        <p class="eyebrow">Klassiskt långlopp · Luleå</p>
+        <h2 id="loppet-h">Loppet</h2>
+        <p class="section-intro">Renrajden är OK Renens klassiska långlopp på Ormberget i Luleå. Resultatet är seedningsgrundande för Vasaloppet, så här kan du åka till dig ett bättre startled.</p>
+      </div>
+      <dl class="facts">
+        <div class="fact"><dt>Datum</dt><dd>30 januari 2027<small>Lördag. Inbjudan och mer info kommer.</small></dd></div>
+        <div class="fact"><dt>Start</dt><dd>Meddelas<small>2025 startade alla distanser kl 10:00.</small></dd></div>
+        <div class="fact"><dt>Plats</dt><dd>Ormbergsstadion<small>Ormberget, Luleå · <a class="ext" href="https://www.google.com/maps/search/?api=1&amp;query=Ormbergsstadion%2C%20Lule%C3%A5" target="_blank" rel="noopener">Hitta hit<span class="sr-only"> (karta, öppnas i ny flik)</span></a></small></dd></div>
+        <div class="fact"><dt>Stil</dt><dd>Klassisk<small>Dubbelspår, stilkontroll längs banan</small></dd></div>
+        <div class="fact"><dt>Distanser <span class="chip chip-outline">Prel.</span></dt><dd>42 · 21 · 10 km<small>Enligt 2025. Bekräftas i inbjudan 2027.</small></dd></div>
+        <div class="fact"><dt>Seedning</dt><dd>Vasaloppet<small>Seedningsgrundande lopp</small></dd></div>
+      </dl>
+
+      <div class="dist">
+        <fieldset>
+          <legend>Välj distans</legend>
+          <div class="seg">
+            <input type="radio" name="dist" id="d42" value="42" checked><label for="d42"><b>42</b><span>km · HD42</span></label>
+            <input type="radio" name="dist" id="d21" value="21"><label for="d21"><b>21</b><span>km · HD21</span></label>
+            <input type="radio" name="dist" id="d10" value="10"><label for="d10"><b>10</b><span>km · motion</span></label>
+          </div>
+          <p class="note dist-note">Banan är en slinga på ca 10,5 km som åks ett, två eller fyra varv. Du passerar stadion efter varje varv.</p>
+        </fieldset>
+        <div>
+          <div class="laps" aria-hidden="true">
+            <div class="lap on"><div class="lap-track"></div><span>Varv 1</span></div>
+            <div class="lap on"><div class="lap-track"></div><span>Varv 2</span></div>
+            <div class="lap on"><div class="lap-track"></div><span>Varv 3</span></div>
+            <div class="lap on"><div class="lap-track"></div><span>Varv 4</span></div>
+          </div>
+          <dl class="dist-stats" id="dist-stats">
+            <div><dt>Varv</dt><dd id="ds-laps">4</dd></div>
+            <div><dt>Höjdmeter</dt><dd id="ds-hm">ca 390</dd></div>
+            <div><dt>Vätskekontroller</dt><dd id="ds-water">8</dd></div>
+          </dl>
+          <p class="note dist-note" id="ds-prize">Prisutdelning för 1:a–3:e i HD42, direkt när de gått i mål.</p>
+          <p class="sr-only" id="dist-live" aria-live="polite"></p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SEEDNING -->
+  <section class="section" id="seedning" aria-labelledby="seed-h">
+    <div class="wrap">
+      <div class="section-head">
+        <p class="eyebrow">Från Ormberget till Sälen</p>
+        <h2 id="seed-h">Vägen till startledet</h2>
+        <p class="section-intro">Så går det till när ditt Renrajden-resultat blir seedning i Vasaloppet.</p>
+      </div>
+      <ol class="path">
+        <li><h3>Anmäl dig</h3><p>Via din klubb i IdrottOnline, eller i SSF TA om du är klubblös eller medlem i OK Renen. <a href="#anmalan">Så anmäler du dig</a></p></li>
+        <li><h3>Ta med Vasa-ID</h3><p>Behövs för automatisk seedning om du efteranmäler dig.</p></li>
+        <li><h3>Åk Renrajden</h3><p>Klassisk stil med stilkontrollanter längs banan och 83 % stavlängd.</p></li>
+        <li><h3>Vi skickar in resultatet</h3><p>Seedningen skickas till Vasaloppet samma kväll. 2024 skickades den lördag kl 20:50.</p></li>
+        <li><h3>Kolla ditt startled</h3><p>Vasaloppet publicerar seedningstabellerna. <a class="ext" href="https://www.vasaloppet.se/lopp/skidlopp/vasaloppet/seedning/seedningstabeller/" target="_blank" rel="noopener">Seedningstabeller<span class="sr-only"> (öppnas i ny flik)</span></a></p></li>
+      </ol>
+    </div>
+  </section>
+
+  <!-- ANMÄLAN -->
+  <section class="section tint" id="anmalan" aria-labelledby="anm-h">
+    <div class="wrap">
+      <div class="section-head">
+        <p class="eyebrow">Anmälan 2027</p>
+        <h2 id="anm-h">Anmälan</h2>
+        <p class="pending">Anmälan till 2027 är inte öppen än. Datum och avgifter kommer i inbjudan.</p>
+      </div>
+      <div class="routes">
+        <article class="route">
+          <span class="chip chip-red route-tag">Enklast</span>
+          <h3>Via din klubb</h3>
+          <p>Anmäl dig via din klubbs sida i IdrottOnline. Där finns dina uppgifter redan.</p>
+        </article>
+        <article class="route">
+          <span class="chip route-tag">Klubblös eller OK Renen</span>
+          <h3>Direkt i SSF TA</h3>
+          <p>Är du klubblös eller medlem i OK Renen anmäler du dig i Svenska Skidförbundets tävlingsadministration.</p>
+          <p class="note">Länken för 2027 publiceras här när anmälan öppnar.</p>
+        </article>
+        <article class="route">
+          <span class="chip chip-outline route-tag">I sista hand</span>
+          <h3>Mejla oss</h3>
+          <p>Fungerar inget av ovanstående? Mejla oss så hjälper vi dig.</p>
+          <div class="copy-row"><a class="mail" id="mail-1" href="mailto:info@renrajden.se">info@renrajden.se</a><button class="btn btn-quiet btn-sm" type="button" data-copy="mail-1">Kopiera adress</button></div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- PM -->
+  <section class="section" id="pm" aria-labelledby="pm-h">
+    <div class="wrap">
+      <div class="section-head">
+        <p class="eyebrow">PM 2025 · uppdateras inför 2027</p>
+        <h2 id="pm-h">Tävlingsdagen</h2>
+        <p class="section-intro">Så såg dagen ut 2025 (söndag 9 februari). PM för 2027 publiceras här före loppet.</p>
+      </div>
+      <div class="pm-grid">
+        <ol class="timeline">
+          <li><span class="t">Fre–lör</span><div><b>Pistning</b><p>Spåren prepareras mellan kl 22 och 00.</p></div></li>
+          <li><time datetime="08:00">08:00</time><div><b>Ombyte och dusch öppnar</b><p>Ormbergsanläggningen, öppet 8–15.</p></div></li>
+          <li><span class="t">08:00–09:45</span><div><b>Nummerlappsutdelning</b><p>Kom i god tid. Parkeringsvakter finns.</p></div></li>
+          <li><time datetime="10:00">10:00</time><div><b>Start för alla distanser</b><p>Även 10 km. Startsignal ges av startpersonal.</p></div></li>
+          <li><span class="t">Efter målgång</span><div><b>Prisutdelning, Ormbergsstadion</b><p>Direkt när 1:a–3:e i HD42 och vinnarna i HD21 gått i mål. Lottningspriser på startnummer sätts upp på anslagstavlan, priserna hämtas i sekretariatet.</p></div></li>
+          <li><time datetime="15:00">15:00</time><div><b>Dusch och ombyte stänger</b></div></li>
+        </ol>
+        <div class="know">
+          <section><h3>Före start</h3><ul>
+            <li>Kom i god tid, parkeringsvakter finns. <a class="ext" href="https://www.google.com/maps/search/?api=1&amp;query=Ormbergsstadion%2C%20Lule%C3%A5" target="_blank" rel="noopener">Hitta hit<span class="sr-only"> (karta, öppnas i ny flik)</span></a></li>
+            <li>Varm vallabod närmast gamla värmestugan.</li>
+            <li>Ta med Vasa-ID för automatisk seedning (efteranmälan).</li>
+            <li>Var beredd att betala med Swish. Gärna jämna pengar vid kontant betalning.</li>
+          </ul></section>
+          <section><h3>Starten</h3><ul>
+            <li>Seedning 1–9 för föranmälda. Snabba efteranmälda får 11–20 och startar i startled 1.</li>
+            <li>I övrigt gäller självseedning.</li>
+            <li>Inga skidor mellan spåren under starten.</li>
+          </ul></section>
+          <section><h3>I spåret</h3><ul>
+            <li>83 % stavlängd gäller. Stilkontrollanter finns längs banan.</li>
+            <li>Följ banmarkeringarna. Dubbelspår, ca 98 höjdmeter per varv.</li>
+            <li>Två vätskekontroller per varv med uppvärmd sportdryck från Umara och vatten.</li>
+            <li>Skräpzoner vid vätskekontrollerna. Fäst gels med kardborreband. Inget skräp i naturen.</li>
+          </ul></section>
+          <section><h3>Efteråt</h3><ul>
+            <li>Sedvanlig fika till försäljning.</li>
+            <li>Priser från Hermelinen, Sweco, Lappland Media, ICA Kvantum och ICA Porsön.</li>
+            <li>Tävlingsledare 2025: Maria Svanberg.</li>
+          </ul></section>
+        </div>
+      </div>
+      <div class="packlist">
+        <div class="packlist-head">
+          <h3 id="pack-h">Min packlista</h3>
+          <p class="note" id="pack-count" aria-live="polite">0 av 7 packat</p>
+        </div>
+        <ul aria-labelledby="pack-h" id="packlist">
+          <li><label class="check"><input type="checkbox" id="p-vasa"><span>Vasa-ID</span></label></li>
+          <li><label class="check"><input type="checkbox" id="p-swish"><span>Swish eller jämna kontanter</span></label></li>
+          <li><label class="check"><input type="checkbox" id="p-velcro"><span>Kardborreband för gels</span></label></li>
+          <li><label class="check"><input type="checkbox" id="p-wax"><span>Glid- och fästvalla</span></label></li>
+          <li><label class="check"><input type="checkbox" id="p-poles"><span>Stavar, max 83 % av kroppslängden</span></label></li>
+          <li><label class="check"><input type="checkbox" id="p-towel"><span>Handduk och ombyte till duschen</span></label></li>
+          <li><label class="check"><input type="checkbox" id="p-warm"><span>Varma kläder till prisutdelningen</span></label></li>
+        </ul>
+        <p class="note" style="margin-top:.75rem">Listan sparas bara i din webbläsare.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- BANA & FÖRE -->
+  <section class="section tint" id="bana" aria-labelledby="bana-h">
+    <div class="wrap">
+      <div class="section-head">
+        <p class="eyebrow">Ormberget · dubbelspår</p>
+        <h2 id="bana-h">Bana &amp; före</h2>
+        <p class="section-intro">En flack slinga under 100 höjdmeter per varv. Start och mål på Ormbergsstadion.</p>
+      </div>
+      <div class="two">
+        <div>
+          <h3 style="margin-bottom:1rem">Banan</h3>
+          <dl class="stat-row">
+            <div><dt>Slinga</dt><dd>~10,5 km</dd></div>
+            <div><dt>Höjd/varv</dt><dd>~98 m</dd></div>
+            <div><dt>Varv, 42 km</dt><dd>4</dd></div>
+          </dl>
+          <p>Banan är dubbelspårad och markerad hela vägen. Två vätskekontroller per varv, med skräpzoner direkt efter.</p>
+          <ul class="link-list">
+            <li><a href="https://renrajden.blogspot.com/p/bans.html" target="_blank" rel="noopener"><span class="ext">Banskiss och stadionkarta<span class="sr-only"> (öppnas i ny flik)</span></span><small>bild, 2022</small></a></li>
+            <li><a href="https://www.strava.com/routes/23387754" target="_blank" rel="noopener"><span class="ext">Banan i Strava<span class="sr-only"> (öppnas i ny flik)</span></span><small>rutt, 2020</small></a></li>
+            <li><a href="https://renrajden.blogspot.com/2015/01/karta-till-duscharna.html" target="_blank" rel="noopener"><span class="ext">Karta till duscharna<span class="sr-only"> (öppnas i ny flik)</span></span><small>bild</small></a></li>
+          </ul>
+        </div>
+        <div id="fore">
+          <h3 style="margin-bottom:1rem">Före och väder</h3>
+          <p>Kolla temperaturen vid stadion och webbkameran innan du vallar.</p>
+          <ul class="link-list">
+            <li><a href="https://iot.lunet.se/dashboard/198d8930-774c-11ee-bb6a-17314c01ceae?publicId=59878940-6788-11eb-afaf-e3eb52d62c89" target="_blank" rel="noopener"><span class="ext">Temperaturstation Ormbergsstadion<span class="sr-only"> (öppnas i ny flik)</span></span><small>live</small></a></li>
+            <li><a href="https://www2.lulea.se/web-camera/ormberget/imageorm.jpg" target="_blank" rel="noopener"><span class="ext">Webbkamera Ormberget<span class="sr-only"> (öppnas i ny flik)</span></span><small>Luleå kommun</small></a></li>
+            <li><a href="https://www.klart.se/se/norrbottens-l%C3%A4n/v%C3%A4der-lule%C3%A5/" target="_blank" rel="noopener"><span class="ext">Prognos timme för timme<span class="sr-only"> (öppnas i ny flik)</span></span><small>klart.se</small></a></li>
+            <li><a href="https://www.smhi.se/vader/prognoser-och-varningar/vaderprognos/q/Lule%C3%A5/2694762" target="_blank" rel="noopener"><span class="ext">Väderprognos Luleå<span class="sr-only"> (öppnas i ny flik)</span></span><small>SMHI</small></a></li>
+          </ul>
+          <div class="cold"><b>−20 °C</b><p class="note">Köldgräns: under −20 °C på banans kallaste punkt får tävlingen inte genomföras. 2014 ställdes Renrajden in på grund av kyla.</p></div>
+          <details class="archive">
+            <summary>Vallningsförslag från tidigare år</summary>
+            <div class="wax">
+              <p class="note">Historiska förslag. Fluorvalla är förbjuden i tävling sedan säsongen 2023/24.</p>
+              <div><h4>16 januari 2016, start 10:00</h4>
+                <p><b>Glid:</b> Paraffin LF Race Cold, Paraffin HF Cold.</p>
+                <p><b>Fäste, uppehåll:</b> AT grundvalla med vallajärn. 1 lager K 18 på ljummen yta, jämna ut försiktigt. Låt svalna, lägg 1 lager K 18 och 2–3 lager K 15.</p>
+                <p><b>Fäste, snöfall:</b> AT grundvalla med vallajärn. 1 lager K 15 på ljummen yta. Låt svalna, lägg 3–4 lager K 15 mixat med TAR Orange.</p></div>
+              <div><h4>Vauhti, tidigare år</h4>
+                <p><b>Glid:</b> Grundvalla med LF Blå, därefter HF Pink.</p>
+                <p><b>Fäste vid nån minusgrad:</b> Tunt K-base klister i botten, K-Violett klister täckt med K 12. Alternativt Grundvax Super, K 12, ev täckt med K 15.</p></div>
+            </div>
+          </details>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- NYHETER -->
+  <section class="section news-band on-blue" id="nyheter" aria-labelledby="news-h">
+    <div class="wrap">
+      <div class="news-toolbar">
+        <div class="section-head">
+          <p class="eyebrow">Från arrangören</p>
+          <h2 id="news-h">Nyheter</h2>
+          <p class="section-intro">Startlistor, PM, resultat och ändringar publiceras här först.</p>
+        </div>
+        <button class="btn btn-light" type="button" data-action="new-news" data-admin-only hidden>+ Ny nyhet</button>
+      </div>
+      <div id="news-state" class="news-state" role="status">
+        <b>Hämtar nyheter…</b>
+      </div>
+      <noscript><p class="news-state">Slå på JavaScript för att se nyheterna.</p></noscript>
+      <div class="news-list" id="news-list"></div>
+      <div class="news-more"><button class="btn btn-quiet" type="button" id="news-more" hidden aria-controls="news-archive" aria-expanded="false">Visa nyhetsarkivet</button></div>
+      <ul class="news-archive" id="news-archive" aria-label="Nyhetsarkiv" hidden></ul>
+    </div>
+  </section>
+
+  <!-- RESULTAT -->
+  <section class="section tint" id="resultat" aria-labelledby="res-h">
+    <div class="wrap">
+      <div class="section-head">
+        <p class="eyebrow">Resultat sedan 2013 · tre år utan tävling</p>
+        <h2 id="res-h">Resultat &amp; historik</h2>
+        <p class="section-intro">Alla resultat vi har sparat, år för år. Struket år = ingen tävling.</p>
+      </div>
+      <div class="history-grid">
+        <ol class="years" id="years">
+          <li class="year next-year"><span class="year-num">2027</span><div class="year-body"><p>Lördag 30 januari. Resultaten publiceras här samma dag.</p></div></li>
+          <li class="year"><span class="year-num">2025</span><div class="year-body"><p>9 februari 2025</p><ul class="year-links"><li><a class="ext" href="https://drive.google.com/file/d/18MDWvPwT7fYfBq7Ffobwkv2o5Ng6c-tY/view?usp=sharing" target="_blank" rel="noopener">Resultat (pdf)<span class="sr-only"> 2025 (öppnas i ny flik)</span></a></li><li><a class="ext" href="http://live.skidor.com/5583#result@46786@1@-1" target="_blank" rel="noopener">Liveresultat<span class="sr-only"> 2025 (öppnas i ny flik)</span></a></li><li><a class="ext" href="https://drive.google.com/file/d/11-cwtSXdqn99fxNKolL9g5z0oK6Qnghb/view?usp=sharing" target="_blank" rel="noopener">Startlista<span class="sr-only"> 2025 (öppnas i ny flik)</span></a></li></ul></div></li>
+          <li class="year"><span class="year-num">2024</span><div class="year-body"><p>10 februari 2024</p><ul class="year-links"><li><a class="ext" href="https://drive.google.com/file/d/1Auuj2y_SYhVtES366o7NH1-czVkCQ14x/view?usp=sharing" target="_blank" rel="noopener">Resultat (pdf)<span class="sr-only"> 2024 (öppnas i ny flik)</span></a></li><li><a class="ext" href="https://ta.skidor.com/ResultList.aspx?eventid=14793&amp;competitionid=25311&amp;orgid=2920" target="_blank" rel="noopener">SSF TA<span class="sr-only"> 2024 (öppnas i ny flik)</span></a></li></ul></div></li>
+          <li class="year"><span class="year-num">2023</span><div class="year-body"><p>11 februari 2023</p><ul class="year-links"><li><a class="ext" href="https://drive.google.com/file/d/1MLrjuAHvQ4BOJSSZ6t7kAgGW8lONGRv2/view?usp=share_link" target="_blank" rel="noopener">Resultat<span class="sr-only"> 2023 (öppnas i ny flik)</span></a></li></ul></div></li>
+          <li class="year"><span class="year-num">2022</span><div class="year-body"><p>19 februari 2022</p><ul class="year-links"><li><a class="ext" href="https://drive.google.com/file/d/1IGspsGsRtOmkcbsIR68j7WqscqUged3u/view?usp=sharing" target="_blank" rel="noopener">Resultat<span class="sr-only"> 2022 (öppnas i ny flik)</span></a></li><li><a class="ext" href="http://obasen.orientering.se/winsplits/online/sv/default.asp?page=table&amp;databaseId=80132&amp;categoryId=0" target="_blank" rel="noopener">Varvtider (chip)<span class="sr-only"> 2022 (öppnas i ny flik)</span></a></li><li><a class="ext" href="https://photos.app.goo.gl/VTYn9jouczi5rCTv9" target="_blank" rel="noopener">Bilder<span class="sr-only"> 2022 (öppnas i ny flik)</span></a></li></ul></div></li>
+          <li class="year cancelled"><span class="year-num">2021<span class="sr-only"> (ingen tävling)</span></span><div class="year-body"><p>Inställt. Tävlingen var planerad till 2 januari 2021.</p></div></li>
+          <li class="year"><span class="year-num">2020</span><div class="year-body"><p>10, 20 och 40 km på den nya fyravarvsbanan.</p><ul class="year-links"><li><a class="ext" href="https://www.okrenen.se/globalassets/ok-renen---orientering/dokument/resultat-renrajden2020.pdf" target="_blank" rel="noopener">Resultat (pdf)<span class="sr-only"> 2020 (öppnas i ny flik)</span></a></li><li><a class="ext" href="http://ta.skidor.com/ResultList.aspx?eventid=11471&amp;competitionid=19335&amp;orgid=2920" target="_blank" rel="noopener">SSF TA<span class="sr-only"> 2020 (öppnas i ny flik)</span></a></li><li><a class="ext" href="https://skidresultat.se/?cat=comp&amp;id=4553" target="_blank" rel="noopener">skidresultat.se<span class="sr-only"> 2020 (öppnas i ny flik)</span></a></li></ul></div></li>
+          <li class="year cancelled"><span class="year-num">2019<span class="sr-only"> (ingen tävling)</span></span><div class="year-body"><p>Paus. Klubben arrangerade flera stora event.</p></div></li>
+          <li class="year"><span class="year-num">2018</span><div class="year-body"><p>Även Kalvrajden för HD10–16.</p><ul class="year-links"><li><a class="ext" href="http://ta.skidor.com/ResultList.aspx?eventid=8698&amp;competitionid=14578&amp;orgid=2920" target="_blank" rel="noopener">SSF TA<span class="sr-only"> 2018 (öppnas i ny flik)</span></a></li><li><a class="ext" href="https://drive.google.com/open?id=1BeeHlL6ls90ua54wohkR_BRZpj585R7-" target="_blank" rel="noopener">Resultat (pdf)<span class="sr-only"> 2018 (öppnas i ny flik)</span></a></li><li><a class="ext" href="http://skidresultat.se/?cat=comp&amp;id=3873&amp;a1=res" target="_blank" rel="noopener">skidresultat.se<span class="sr-only"> 2018 (öppnas i ny flik)</span></a></li><li><a class="ext" href="https://www.flickr.com/photos/139458541@N05/sets/72157691084581201" target="_blank" rel="noopener">Bilder<span class="sr-only"> 2018 (öppnas i ny flik)</span></a></li></ul></div></li>
+          <li class="year"><span class="year-num">2017</span><div class="year-body"><p>14 januari 2017</p><p class="winners">Segrare 42 km: Klas Nilsson och Anna Rimpi.</p><ul class="year-links"><li><a class="ext" href="http://ta.skidor.com/ResultList.aspx?eventid=7506&amp;competitionid=12701&amp;orgid=2920" target="_blank" rel="noopener">SSF TA<span class="sr-only"> 2017 (öppnas i ny flik)</span></a></li><li><a class="ext" href="https://drive.google.com/open?id=0B1D0YYjNfoooRUxHeHkxN19YYm8" target="_blank" rel="noopener">Resultat (pdf)<span class="sr-only"> 2017 (öppnas i ny flik)</span></a></li><li><a class="ext" href="http://skidresultat.se/?cat=comp&amp;id=3597&amp;a1=res" target="_blank" rel="noopener">skidresultat.se<span class="sr-only"> 2017 (öppnas i ny flik)</span></a></li><li><a class="ext" href="http://www.kuriren.nu/nyheter/tungt-fore-gav-rejal-genomkorare-i-arets-renrajden-9091356.aspx" target="_blank" rel="noopener">Kuriren<span class="sr-only"> 2017 (öppnas i ny flik)</span></a></li><li><a class="ext" href="http://www.nsd.se/sport/vinnaren-missnojd-med-tiden-katastrof-10395936.aspx" target="_blank" rel="noopener">NSD<span class="sr-only"> 2017 (öppnas i ny flik)</span></a></li></ul></div></li>
+          <li class="year"><span class="year-num">2016</span><div class="year-body"><p>16 januari 2016</p><ul class="year-links"><li><a class="ext" href="http://www.okrenen.se/globalassets/ok-renen---orientering/tavling/renrajden2016_resultat.pdf" target="_blank" rel="noopener">Resultat (pdf)<span class="sr-only"> 2016 (öppnas i ny flik)</span></a></li><li><a class="ext" href="http://skidresultat.se/?cat=comp&amp;id=3224&amp;a1=res&amp;a2=-1" target="_blank" rel="noopener">Kalvrajden<span class="sr-only"> 2016 (öppnas i ny flik)</span></a></li><li><a class="ext" href="https://goo.gl/photos/7WFKvNaPG35Dzgkq5" target="_blank" rel="noopener">Bilder och film<span class="sr-only"> 2016 (öppnas i ny flik)</span></a></li><li><a class="ext" href="http://www.kuriren.nu/sport/landslagskille-slog-rekord-pa-ormberget-8685214.aspx" target="_blank" rel="noopener">Kuriren<span class="sr-only"> 2016 (öppnas i ny flik)</span></a></li><li><a class="ext" href="https://ninalintzen.wordpress.com/2016/01/16/antligen-tavling-renrajden/" target="_blank" rel="noopener">Damvinnaren berättar<span class="sr-only"> 2016 (öppnas i ny flik)</span></a></li></ul></div></li>
+          <li class="year"><span class="year-num">2015</span><div class="year-body"><p class="winners">Segrare: Tarjei Solli (H42) och Emma Bergström (D42).</p><ul class="year-links"><li><a class="ext" href="https://docs.google.com/spreadsheets/d/1f9HGkHk8o17EsdgJ_ZBJSgh3F4vJIVprvc4jA9HVslM/pubhtml" target="_blank" rel="noopener">Resultat<span class="sr-only"> 2015 (öppnas i ny flik)</span></a></li><li><a class="ext" href="http://fij.se/ttt/rr15.html" target="_blank" rel="noopener">Varvtider<span class="sr-only"> 2015 (öppnas i ny flik)</span></a></li><li><a class="ext" href="http://skidresultat.se/?cat=comp&amp;id=2663&amp;a1=res" target="_blank" rel="noopener">skidresultat.se<span class="sr-only"> 2015 (öppnas i ny flik)</span></a></li><li><a class="ext" href="http://www.kuriren.nu/sport/spannande-spurtduell-avgjorde-renrajden-8079740.aspx" target="_blank" rel="noopener">Kuriren<span class="sr-only"> 2015 (öppnas i ny flik)</span></a></li><li><a class="ext" href="http://www.nsd.se/sport/mental-seger-i-renrajden-9015448.aspx" target="_blank" rel="noopener">NSD<span class="sr-only"> 2015 (öppnas i ny flik)</span></a></li></ul></div></li>
+          <li class="year cancelled"><span class="year-num">2014<span class="sr-only"> (ingen tävling)</span></span><div class="year-body"><p>Inställt på grund av kyla.</p></div></li>
+          <li class="year"><span class="year-num">2013</span><div class="year-body"><ul class="year-links"><li><a class="ext" href="https://drive.google.com/file/d/0B1D0YYjNfooockxvbFIwU3hoTlk/view" target="_blank" rel="noopener">Resultat<span class="sr-only"> 2013 (öppnas i ny flik)</span></a></li></ul></div></li>
+        </ol>
+        <div>
+          <section class="side-box">
+            <h3>Segrare i arkivet</h3>
+            <ul>
+              <li><b>2017, 42 km:</b> Klas Nilsson och Anna Rimpi</li>
+              <li><b>2015, H42:</b> 1. Tarjei Solli, 2. Niklas Henriksson, 3. Andreas Berglund</li>
+              <li><b>2015, D42:</b> Emma Bergström</li>
+            </ul>
+          </section>
+          <section class="side-box">
+            <h3>Tidigare inbjudningar</h3>
+            <ul class="inv-list">
+              <li><a href="https://drive.google.com/file/d/1zls7gy47sPfDOObksWetWNeUa4RoDA6Z/view?usp=sharing" target="_blank" rel="noopener">Inbjudan 2025<span class="sr-only"> (öppnas i ny flik)</span></a></li>
+              <li><a href="https://drive.google.com/file/d/1QMQdZtp4bTciwujqiT23ZmbOjenoj-QN/view?usp=sharing" target="_blank" rel="noopener">Inbjudan 2024<span class="sr-only"> (öppnas i ny flik)</span></a></li>
+              <li><a href="https://drive.google.com/file/d/1UDaIENyTIf-ig6vSlUeimXJ261k_S6MK/view?usp=share_link" target="_blank" rel="noopener">Inbjudan 2023<span class="sr-only"> (öppnas i ny flik)</span></a></li>
+              <li><a href="https://www.okrenen.se/globalassets/ok-renen---orientering/tavling/inbjudan-renrajden-2022.pdf" target="_blank" rel="noopener">Inbjudan 2022<span class="sr-only"> (öppnas i ny flik)</span></a></li>
+              <li><a href="http://www.okrenen.se/globalassets/ok-renen---orientering/dokument/inbjudan-renrajden-2020.pdf" target="_blank" rel="noopener">Inbjudan 2020<span class="sr-only"> (öppnas i ny flik)</span></a></li>
+              <li><a href="http://ta.skidor.com/EventFiles/ae91fdbe-bcbd-4b51-b76f-5f04395fe2c6.pdf" target="_blank" rel="noopener">Renrajden och Kalvrajden 2018<span class="sr-only"> (öppnas i ny flik)</span></a></li>
+              <li><a href="http://ta.skidor.com/EventFiles/5652af6c-138d-4ce6-a0dc-858d59e502f2.pdf" target="_blank" rel="noopener">Inbjudan 2017<span class="sr-only"> (öppnas i ny flik)</span></a></li>
+            </ul>
+          </section>
+          <section class="side-box">
+            <h3>Kalvrajden</h3>
+            <p class="note">Barn- och ungdomsloppet för HD10–12 och HD14–16, kört 2016 och 2018.</p>
+          </section>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PARTNERS -->
+  <section class="section" id="partners" aria-labelledby="partners-h">
+    <div class="wrap">
+      <div class="section-head">
+        <p class="eyebrow">Tack till</p>
+        <h2 id="partners-h">Partners</h2>
+      </div>
+      <ul class="partners" aria-labelledby="partners-h">
+        <li>Umara<small>Sportdryck i spåret</small></li>
+        <li>Port of Luleå<small>Klubbpartner</small></li>
+        <li>Hermelinen<small>Priser</small></li>
+        <li>Sweco<small>Priser</small></li>
+        <li>Lappland Media<small>Priser</small></li>
+        <li>ICA Kvantum<small>Priser</small></li>
+        <li>ICA Porsön<small>Priser</small></li>
+      </ul>
+      <p class="note" style="margin-top:1rem">Tidigare år: Vauhti, Pakkala Sport, Äventyrsbutiken Hägglunds, Team Sportia, Agio, Lulebo, SCA, Nordchark, Kuriren och Vitargo.</p>
+    </div>
+  </section>
+
+  <!-- KONTAKT -->
+  <section class="section tint" id="kontakt" aria-labelledby="kontakt-h">
+    <div class="wrap">
+      <div class="section-head">
+        <p class="eyebrow">Frågor om loppet</p>
+        <h2 id="kontakt-h">Kontakt</h2>
+      </div>
+      <div class="contact-grid">
+        <div class="route">
+          <h3>Mejl</h3>
+          <div class="copy-row"><a class="mail" id="mail-2" href="mailto:info@renrajden.se">info@renrajden.se</a><button class="btn btn-quiet btn-sm" type="button" data-copy="mail-2">Kopiera adress</button></div>
+        </div>
+        <div class="route">
+          <h3>OK Renen</h3>
+          <p>Medlemmar i orienterings-, skid-, cykel- och friidrottsförbundet.</p>
+          <p><a class="ext" href="https://www.okrenen.se/" target="_blank" rel="noopener">okrenen.se<span class="sr-only"> (öppnas i ny flik)</span></a> · <a class="ext" href="https://www.facebook.com/okrenen/" target="_blank" rel="noopener">Facebook<span class="sr-only"> (öppnas i ny flik)</span></a></p>
+        </div>
+        <div class="route">
+          <h3>Dela loppet</h3>
+          <p>Tagga dina bilder med <b>#renrajden</b>.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+  <div class="toast" id="toast" hidden><span id="toast-text"></span><span><button type="button" id="toast-action" hidden>Ångra</button><button type="button" id="toast-close" aria-label="Stäng meddelandet">×</button></span></div>
+  <div class="sr-only" id="sr-live" aria-live="polite"></div>
+</main>
+
+<footer class="site-footer on-blue">
+  <div class="wrap">
+    <div class="footer-grid">
+      <div>
+        <div class="footer-brand"><svg viewBox="0 0 300 340" aria-hidden="true" style="color:#8EA2DD"><use href="#ren"/></svg><div><b>Renrajden</b><br>Arrangör: OK Renen, Luleå</div></div>
+        <p style="margin-top:1rem">Ormbergsstadion, Ormberget, Luleå · <a class="mono" href="mailto:info@renrajden.se">info@renrajden.se</a></p>
+        <div class="footer-admin">
+          <button class="btn btn-quiet btn-sm" type="button" id="login-open">Logga in som administratör</button>
+          <span>Endast för arrangörens administratörer.</span>
+        </div>
+      </div>
+      <details>
+        <summary>Om webbplatsen</summary>
+        <ul>
+          <li>All information och alla nyheter är öppna för alla. Bara arrangörens administratörer loggar in, och det görs med Google.</li>
+          <li>Vi använder inga cookies för spårning eller statistik. Din packlista sparas bara i din egen webbläsare.</li>
+          <li>Innehållet från tidigare år kommer från den gamla bloggen på renrajden.se.</li>
+        </ul>
+      </details>
+    </div>
+    <div class="finish" aria-hidden="true"><span>Mål · 42 km</span><span>Bra åkt!</span></div>
+  </div>
+</footer>
+
+<!-- Inloggning -->
+<dialog id="login-dialog" aria-labelledby="login-h" aria-describedby="login-desc">
+  <div class="login-stripe" aria-hidden="true"></div>
+  <div class="dlg-head"><h2 id="login-h">Administratör</h2><button class="dlg-close" type="button" data-close aria-label="Stäng">×</button></div>
+  <div class="dlg-body">
+    <p id="login-desc">Logga in för att skriva, ändra och ta bort nyheter. Bara administratörer har tillgång, och inloggningen sker med ditt Google-konto. Besökare behöver inte logga in.</p>
+    <button class="btn btn-google" type="button" id="google-btn">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" stroke-width="2.4"/><path d="M12 12h7" stroke="currentColor" stroke-width="2.4"/></svg>
+      <span id="google-label">Logga in med Google</span>
+    </button>
+    <div class="login-msg" id="login-msg" role="alert" hidden></div>
+  </div>
+</dialog>
+
+<!-- Redigera nyhet -->
+<dialog id="editor-dialog" aria-labelledby="editor-h">
+  <form id="editor-form" novalidate>
+    <div class="dlg-head"><h2 id="editor-h">Ny nyhet</h2><button class="dlg-close" type="button" data-close aria-label="Stäng utan att spara">×</button></div>
+    <div class="dlg-body">
+      <div class="error-summary" id="error-summary" role="group" aria-labelledby="err-h" tabindex="-1" hidden><b id="err-h">Rätta följande:</b><ul id="error-list"></ul></div>
+      <div class="field">
+        <label for="f-title">Rubrik</label>
+        <input type="text" id="f-title" maxlength="120" required aria-describedby="f-title-err">
+        <span class="err" id="f-title-err" hidden></span>
+      </div>
+      <div class="row2">
+        <div class="field">
+          <label for="f-date">Publiceringsdatum</label>
+          <input type="date" id="f-date" required aria-describedby="f-date-err">
+          <span class="err" id="f-date-err" hidden></span>
+        </div>
+        <div class="field">
+          <label for="f-tag">Etikett</label>
+          <select id="f-tag">
+            <option value="Info">Info</option>
+            <option value="Resultat">Resultat</option>
+            <option value="Ändring">Ändring</option>
+            <option value="Inställt">Inställt</option>
+            <option value="Valla">Valla</option>
+          </select>
+        </div>
+      </div>
+      <div class="field">
+        <label for="f-body">Text</label>
+        <span class="hint" id="f-body-hint">Tom rad ger nytt stycke.</span>
+        <textarea id="f-body" maxlength="4000" aria-describedby="f-body-hint f-body-err"></textarea>
+        <span class="err" id="f-body-err" hidden></span>
+      </div>
+      <fieldset class="field" style="border:0;padding:0;margin:0">
+        <legend class="lbl">Länkar</legend>
+        <span class="hint">Till exempel startlista, PM eller resultat. Adressen måste börja med https://</span>
+        <div class="link-rows" id="link-rows"></div>
+        <button class="btn btn-quiet btn-sm" type="button" id="add-link" style="justify-self:start">+ Lägg till länk</button>
+      </fieldset>
+      <fieldset class="toggles" style="border:0;padding:0;margin:0">
+        <legend class="lbl" style="font-weight:700;font-size:var(--s-sm);margin-bottom:.25rem">Visning</legend>
+        <label class="check"><input type="checkbox" id="f-pinned"><span>Fäst överst i nyhetslistan</span></label>
+        <label class="check"><input type="checkbox" id="f-alert"><span>Visa som viktigt meddelande högst upp på sidan (till exempel inställt lopp)</span></label>
+      </fieldset>
+    </div>
+    <div class="discard" id="discard" hidden>
+      <p role="alert">Stäng utan att spara? Det du har ändrat försvinner.</p>
+      <div class="discard-btns">
+        <button class="btn btn-quiet btn-sm" type="button" id="discard-keep">Fortsätt redigera</button>
+        <button class="btn btn-red btn-sm" type="button" id="discard-yes">Stäng utan att spara</button>
+      </div>
+    </div>
+    <div class="dlg-foot">
+      <button class="btn btn-quiet" type="button" data-close>Avbryt</button>
+      <button class="btn btn-red" type="submit" id="save-btn">Publicera</button>
+    </div>
+  </form>
+</dialog>
+
+<!-- Bekräfta borttagning -->
+<dialog id="confirm-dialog" aria-labelledby="confirm-h" aria-describedby="confirm-desc">
+  <div class="dlg-head"><h2 id="confirm-h">Ta bort nyheten?</h2><button class="dlg-close" type="button" data-close aria-label="Avbryt">×</button></div>
+  <div class="dlg-body"><p id="confirm-desc">Nyheten försvinner för alla besökare. Du kan ångra direkt efteråt.</p></div>
+  <div class="dlg-foot">
+    <button class="btn btn-quiet" type="button" data-close>Behåll</button>
+    <button class="btn btn-red" type="button" id="confirm-delete">Ta bort</button>
+  </div>
+</dialog>
+
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="ren" viewBox="0 0 300 340">
+    <g fill="currentColor" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+      <g fill="none" stroke-width="10">
+        <path d="M190 150 C208 112 234 84 238 44 C240 24 230 10 214 4"/>
+        <path d="M228 92 L266 70"/><path d="M238 56 L274 40"/><path d="M206 118 L186 92"/><path d="M236 30 L258 12"/>
+        <path d="M178 150 C172 112 152 82 130 62 C114 46 108 28 116 10"/>
+        <path d="M162 112 L124 106"/><path d="M142 80 L106 84"/><path d="M124 52 L90 42"/><path d="M152 94 L166 58"/>
+        <path d="M172 142 C150 140 128 150 116 170" stroke-width="9"/>
+      </g>
+      <path stroke="none" d="M262 340 C258 300 250 250 232 205 C220 175 205 158 190 150 C175 143 160 146 148 156 C120 180 92 215 66 244 C56 255 54 268 62 276 C70 284 84 286 96 282 C118 276 136 274 150 282 C162 290 168 310 170 340 Z"/>
+      <path stroke="none" d="M204 162 C226 142 250 136 264 140 C252 158 230 170 208 174 Z"/>
+    </g>
+  </symbol>
+</svg>
+</body>
+</html>

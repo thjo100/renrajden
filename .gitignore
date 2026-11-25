@@ -1,5 +1,12 @@
 node_modules/
+dist/
+.env.local
+.env.*.local
+service-account*.json
+*-debug.log
+.firebase/
 dev/preview.html
 dev/wrapped.html
 dev/shots/
+tests/out/
 .DS_Store
