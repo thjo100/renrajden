@@ -42,11 +42,12 @@ export const announce = (text) => {
 /* ---------- Toast: pausar när den har fokus eller hovras ---------- */
 let toastTimer = 0;
 let toastAction = null;
+let toastReturn = null; // vart fokus går när toasten stängs medan den har fokus
 export function hideToast() {
   const toastEl = $("#toast");
   const hadFocus = toastEl.contains(document.activeElement);
   toastEl.hidden = true; toastAction = null; clearTimeout(toastTimer);
-  if (hadFocus) focusEl($("#news-h"));
+  if (hadFocus) focusEl((toastReturn && $(toastReturn)) || $("#news-h"));
 }
 function armToast(ms) {
   const toastEl = $("#toast");
@@ -55,10 +56,12 @@ function armToast(ms) {
     (toastEl.contains(document.activeElement) || toastEl.matches(":hover")) ? armToast(3000) : hideToast();
   }, ms);
 }
+/** action = { label, run, returnTo? }. returnTo är en selektor, annars går fokus till Nyheter. */
 export function toast(text, action) {
   const toastEl = $("#toast"), btn = $("#toast-action");
   $("#toast-text").textContent = text;
   toastAction = action ? action.run : null;
+  toastReturn = action && action.returnTo || null;
   btn.hidden = !action;
   if (action) btn.textContent = action.label;
   toastEl.hidden = false;
@@ -86,18 +89,21 @@ export function closeDialog(dlg, opts = {}) {
   if (opts.target) { dlg._return = opts.target; dlg._returnSel = null; }
   dlg.close();
 }
-export function initDialogs() {
-  $$("dialog").forEach((d) => {
-    d.addEventListener("close", () => {
-      if (d._skip) { d._skip = false; return; }
-      const r = d._return, sel = d._returnSel;
-      d._return = d._returnSel = null;
-      requestAnimationFrame(() => focusEl((r && document.contains(r) && r) || (sel && $(sel)) || $("#news-h")));
-    });
-    d.addEventListener("click", (e) => {
-      if (!e.target.closest("[data-close]")) return;
-      if (typeof d._beforeClose === "function" && d._beforeClose() === false) return;
-      d.close();
-    });
+/** Stäng-knappar ([data-close]), skydd mot osparat (d._beforeClose) och fokus tillbaka. */
+export function initDialog(d) {
+  d.addEventListener("close", () => {
+    if (d._skip) { d._skip = false; return; }
+    const r = d._return, sel = d._returnSel;
+    d._return = d._returnSel = null;
+    // Ett element som ritats om (t.ex. en knapp i resultatarkivet) hittas med sel i stället.
+    requestAnimationFrame(() => focusEl((r && document.contains(r) && r) || (sel && $(sel)) || $("#news-h")));
   });
+  d.addEventListener("click", (e) => {
+    if (!e.target.closest("[data-close]")) return;
+    if (typeof d._beforeClose === "function" && d._beforeClose() === false) return;
+    d.close();
+  });
+}
+export function initDialogs() {
+  $$("dialog").forEach(initDialog);
 }

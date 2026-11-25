@@ -1,13 +1,17 @@
 // Administratörer: Google-inloggning (Firebase Auth) och hantering av nyheter.
+// Årets lopp och resultatarkivet redigeras i cms-admin.js, som startas härifrån.
 // Laddas bara när någon klickar på "Logga in som administratör", eller när enheten
 // redan har en admin-session (se ADMIN_HINT i main.js).
 //
 // Behörighet: ett Google-konto är administratör om dokumentet admins/{e-post i gemener}
 // finns i Firestore. Säkerhetsreglerna (firestore.rules) kontrollerar samma sak på servern,
 // så knapparna här är bara bekvämlighet – det är reglerna som stoppar obehöriga.
-import { $, $$, el, store, todayIso, safeUrl, focusEl, toast, openDialog, closeDialog } from "./ui.js";
+import { $, $$, store, todayIso, focusEl, toast, openDialog, closeDialog } from "./ui.js";
 import { S, refreshNews, renderNews, setAdminMode } from "./news.js";
 import { getAuthApi, getDb } from "./firebase.js";
+import { withTimeout, writeErr, formKit, repeater, linkRow, readLinks, confirmDelete, initConfirm } from "./admin-kit.js";
+import { initCms, setCmsAdmin } from "./cms-admin.js";
+import { HTTPS } from "./cms/model.js";
 
 export const ADMIN_HINT = "rr-admin";
 
@@ -47,6 +51,7 @@ function applyAdmin(on, user) {
     store.set(ADMIN_HINT, null);
   }
   setAdminMode(on);
+  setCmsAdmin(on ? user : null);
 }
 
 /* ---------- Inloggning ---------- */
@@ -102,33 +107,11 @@ export function onLoginButton() {
 
 /* ---------- Skapa / redigera ---------- */
 const edDlg = () => $("#editor-dialog");
-const rows = () => $("#link-rows");
-let linkSeq = 0, edInitial = "", saving = false, editing = null;
-
-function addLinkRow(label = "", url = "") {
-  const i = ++linkSeq;
-  const row = el("div", { class: "link-row" },
-    el("div", { class: "field" }, el("label", { for: "l-label-" + i, text: "Länktext" }), el("input", { type: "text", id: "l-label-" + i, maxlength: "80", value: label })),
-    el("div", { class: "field" }, el("label", { for: "l-url-" + i, text: "Adress" }), el("input", { type: "url", id: "l-url-" + i, inputmode: "url", placeholder: "https://", value: url, "aria-describedby": "l-url-err-" + i }), el("span", { class: "err", id: "l-url-err-" + i, hidden: true })),
-    el("button", { class: "icon-btn", type: "button", "aria-label": "Ta bort länk", "data-remove-link": "" }, "×"));
-  rows().append(row);
-  return row;
-}
-
-const formState = () => JSON.stringify([$("#f-title").value, $("#f-date").value, $("#f-tag").value, $("#f-body").value, $("#f-pinned").checked, $("#f-alert").checked, ...$$("input", rows()).map((i) => i.value)]);
-const showDiscard = () => { $("#discard").hidden = false; $("#discard-keep").focus(); };
-const hideDiscard = (refocus) => { $("#discard").hidden = true; if (refocus) $("#f-title").focus(); };
-
-function clearErrors() {
-  const form = $("#editor-form");
-  $("#error-summary").hidden = true; $("#error-list").replaceChildren();
-  $$("[aria-invalid]", form).forEach((i) => i.removeAttribute("aria-invalid"));
-  $$(".err", form).forEach((e) => { e.hidden = true; e.textContent = ""; });
-}
+let kit = null, links = null, saving = false, editing = null;
 
 function openEditor(n) {
   editing = n || null;
-  clearErrors(); $("#discard").hidden = true;
+  kit.clear();
   $("#editor-h").textContent = n ? "Redigera nyhet" : "Ny nyhet";
   $("#save-btn").textContent = n ? "Spara ändringar" : "Publicera";
   $("#f-title").value = n ? n.title : "";
@@ -137,31 +120,12 @@ function openEditor(n) {
   $("#f-body").value = n ? n.body : "";
   $("#f-pinned").checked = !!(n && n.pinned);
   $("#f-alert").checked = !!(n && n.alert);
-  rows().replaceChildren();
-  (n && n.links.length ? n.links : [{ label: "", url: "" }]).forEach((l) => addLinkRow(l.label, l.url));
-  edInitial = formState();
+  links.reset(n && n.links.length ? n.links : [{}]);
+  kit.snapshot();
   if (n) S.openIds.add(n.id);
   openDialog(edDlg(), n ? '[data-edit="' + n.id + '"]' : null);
   $("#f-title").focus();
 }
-
-const fieldError = (input, errEl, msg, list) => { input.setAttribute("aria-invalid", "true"); errEl.textContent = msg; errEl.hidden = false; list.push({ id: input.id, msg }); };
-const writeErr = (e) => {
-  const code = e && e.code;
-  if (code === "permission-denied") return "Ändringen nekades. Ditt konto har inte administratörsbehörighet längre.";
-  if (code === "invalid-argument") return "Nyheten kunde inte sparas eftersom något fält har fel format.";
-  if (code === "resource-exhausted") return "För många ändringar på kort tid. Vänta en stund och försök igen.";
-  if (code === "deadline") return "Svaret dröjer. Kontrollera om ändringen syns i listan innan du försöker igen.";
-  return "Det gick inte att spara just nu. Kontrollera anslutningen och försök igen.";
-};
-function showErrors(msgs) {
-  const list = $("#error-list");
-  msgs.forEach((x) => list.append(el("li", {}, x.id ? el("a", { href: "#" + x.id, text: x.msg }) : x.msg)));
-  $("#error-summary").hidden = false; $("#error-summary").focus();
-}
-
-// Skrivningar som inte fått svar efter 15 s räknas som osäkra (de kan ändå ha gått igenom).
-const withTimeout = (p) => Promise.race([p, new Promise((_, reject) => setTimeout(() => reject({ code: "deadline" }), 15000))]);
 
 /** Fälten som säkerhetsreglerna kräver vid varje skrivning. */
 const stamp = (fields, n) => ({
@@ -175,24 +139,16 @@ const stamp = (fields, n) => ({
 async function onSubmit(e) {
   e.preventDefault();
   if (saving) return;
-  clearErrors(); $("#discard").hidden = true;
+  kit.clear();
   const errs = [];
   const title = $("#f-title").value.trim(), date = $("#f-date").value, body = $("#f-body").value.trim();
-  if (!title) fieldError($("#f-title"), $("#f-title-err"), "Skriv en rubrik.", errs);
-  if (!/^\d{4}-\d{2}-\d{2}$/.test(date)) fieldError($("#f-date"), $("#f-date-err"), "Välj ett datum.", errs);
-  const links = []; let anyLink = false;
-  $$(".link-row", rows()).forEach((row) => {
-    const [lab, url] = $$("input", row); const errEl = $(".err", row);
-    const L = lab.value.trim(), U = url.value.trim();
-    if (!L && !U) return;
-    anyLink = true;
-    if (!safeUrl(U)) { fieldError(url, errEl, U ? "Adressen måste börja med https://" : "Skriv adressen till länken.", errs); return; }
-    links.push({ label: L || U.replace(/^https:\/\//, "").split("/")[0], url: U });
-  });
-  if (!body && !anyLink) fieldError($("#f-body"), $("#f-body-err"), "Skriv en text eller lägg till minst en länk.", errs);
-  if (errs.length) { showErrors(errs); return; }
+  if (!title) kit.error($("#f-title"), "Skriv en rubrik.", errs);
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(date)) kit.error($("#f-date"), "Välj ett datum.", errs);
+  const { links: list, any: anyLink } = readLinks($("#link-rows"), kit, errs, HTTPS, "Adressen måste börja med https://");
+  if (!body && !anyLink) kit.error($("#f-body"), "Skriv en text eller lägg till minst en länk.", errs);
+  if (errs.length) { kit.show(errs); return; }
 
-  const fields = { title, date, tag: $("#f-tag").value, body, links, pinned: $("#f-pinned").checked, alert: $("#f-alert").checked };
+  const fields = { title, date, tag: $("#f-tag").value, body, links: list, pinned: $("#f-pinned").checked, alert: $("#f-alert").checked };
   const save = $("#save-btn"), old = save.textContent, wasEdit = !!editing;
   saving = true; save.setAttribute("aria-disabled", "true"); save.textContent = "Sparar…";
   try {
@@ -205,43 +161,42 @@ async function onSubmit(e) {
     renderNews();
     toast(wasEdit ? "Ändringarna är sparade" : "Nyheten är publicerad");
   } catch (err) {
-    showErrors([{ msg: writeErr(err) }]);
+    kit.show([{ msg: writeErr(err, "Nyheten") }]);
   } finally {
     saving = false; save.removeAttribute("aria-disabled"); save.textContent = old;
   }
 }
 
 /* ---------- Ta bort (med ångra) ---------- */
-let pendingDelete = null, deleting = false;
-async function onConfirmDelete() {
-  const n = pendingDelete;
-  if (!n || deleting) return;
-  const btn = $("#confirm-delete");
-  deleting = true; btn.setAttribute("aria-disabled", "true");
-  try {
-    await withTimeout(fs.deleteDoc(fs.doc(db, "news", n.id)));
-    closeDialog($("#confirm-dialog"), { skipReturn: true });
-    refreshNews(true);
-    const { id, title, date, tag, body, links, pinned, alert } = n;
-    toast("Nyheten är borttagen", {
-      label: "Ångra",
-      run: async () => {
-        try {
-          await withTimeout(fs.setDoc(fs.doc(db, "news", id), stamp({ title, date, tag, body, links, pinned, alert }, n)));
-          await refreshNews(true);
-          S.focusAfter = { id, until: Date.now() + 6000 };
-          renderNews();
-          toast("Nyheten är återställd");
-        } catch (err) { toast(writeErr(err)); }
-      },
-    });
-    requestAnimationFrame(() => $("#toast-action").focus());
-  } catch (err) {
-    closeDialog($("#confirm-dialog"));
-    toast(writeErr(err));
-  } finally {
-    deleting = false; btn.removeAttribute("aria-disabled"); pendingDelete = null;
-  }
+function askDelete(n) {
+  confirmDelete({
+    title: "Ta bort ”" + n.title + "”?",
+    desc: "Nyheten försvinner för alla besökare. Du kan ångra direkt efteråt.",
+    run: async () => {
+      try {
+        await withTimeout(fs.deleteDoc(fs.doc(db, "news", n.id)));
+        closeDialog($("#confirm-dialog"), { skipReturn: true });
+        refreshNews(true);
+        const { id, title, date, tag, body, links: l, pinned, alert } = n;
+        toast("Nyheten är borttagen", {
+          label: "Ångra",
+          run: async () => {
+            try {
+              await withTimeout(fs.setDoc(fs.doc(db, "news", id), stamp({ title, date, tag, body, links: l, pinned, alert }, n)));
+              await refreshNews(true);
+              S.focusAfter = { id, until: Date.now() + 6000 };
+              renderNews();
+              toast("Nyheten är återställd");
+            } catch (err) { toast(writeErr(err, "Nyheten")); }
+          },
+        });
+        requestAnimationFrame(() => $("#toast-action").focus());
+      } catch (err) {
+        closeDialog($("#confirm-dialog"));
+        toast(writeErr(err, "Nyheten"));
+      }
+    },
+  });
 }
 
 /* ---------- Start ---------- */
@@ -254,30 +209,13 @@ export function init() {
     $("#google-btn").addEventListener("click", signInWithGoogle);
     $("#logout-btn").addEventListener("click", () => logout($("#main")));
 
-    // Redigeraren
-    rows().addEventListener("click", (e) => {
-      const b = e.target.closest("[data-remove-link]");
-      if (!b) return;
-      const row = b.closest(".link-row"), next = row.nextElementSibling || row.previousElementSibling;
-      row.remove();
-      (next ? next.querySelector("input") : $("#add-link")).focus();
-    });
-    $("#add-link").addEventListener("click", () => addLinkRow().querySelector("input").focus());
-    edDlg()._beforeClose = () => { if (formState() !== edInitial) { showDiscard(); return false; } return true; };
-    edDlg().addEventListener("cancel", (e) => {
-      if (formState() === edInitial) return;
-      e.preventDefault();
-      $("#discard").hidden ? showDiscard() : hideDiscard(true);
-    });
-    $("#discard-keep").addEventListener("click", () => hideDiscard(true));
-    $("#discard-yes").addEventListener("click", () => { $("#discard").hidden = true; edDlg().close(); });
+    // Redigeraren för nyheter
+    kit = formKit(edDlg());
+    links = repeater($("#link-rows"), $("#add-link"), { build: (v, n) => linkRow(v, n), max: 12 });
     $("#editor-form").addEventListener("submit", onSubmit);
-    $("#error-list").addEventListener("click", (e) => {
-      const a = e.target.closest("a"); if (!a) return;
-      e.preventDefault();
-      const t = document.getElementById(a.getAttribute("href").slice(1)); if (t) t.focus();
-    });
-    $("#confirm-delete").addEventListener("click", onConfirmDelete);
+    initConfirm();
+    // Årets lopp och resultatarkivet
+    initCms({ db, fs });
 
     document.addEventListener("click", (e) => {
       if (!currentUser) return;
@@ -285,10 +223,7 @@ export function init() {
       const ed = e.target.closest("[data-edit]");
       if (ed) { const n = S.news.find((x) => x.id === ed.dataset.edit); if (n) openEditor(n); return; }
       const del = e.target.closest("[data-delete]");
-      if (del) {
-        pendingDelete = S.news.find((x) => x.id === del.dataset.delete) || null;
-        if (pendingDelete) { $("#confirm-h").textContent = "Ta bort ”" + pendingDelete.title + "”?"; openDialog($("#confirm-dialog")); }
-      }
+      if (del) { const n = S.news.find((x) => x.id === del.dataset.delete); if (n) askDelete(n); }
     });
 
     // Fel från omdirigeringsflödet (om popup blockerades)

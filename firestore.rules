@@ -2,8 +2,9 @@ rules_version = '2';
 
 // Renrajden – säkerhetsregler
 //
-// * Nyheter (news) kan läsas av alla, även utan inloggning.
-// * Bara administratörer får skapa, ändra och ta bort nyheter.
+// * Nyheter (news), årets lopp (settings/event) och resultatarkivet (years) kan läsas av alla,
+//   även utan inloggning.
+// * Bara administratörer får skapa, ändra och ta bort dem.
 // * Administratör = inloggad med Google, verifierad e-post, och dokumentet
 //   admins/{e-post i gemener} finns. Adminlistan hanteras med `npm run admin`
 //   (firebase-admin) eller i Firebase-konsolen – aldrig från webbläsaren.
@@ -74,6 +75,137 @@ service cloud.firestore {
       allow create: if isAdmin() && validNews(request.resource.data);
       allow update: if isAdmin() && validNews(request.resource.data)
         && request.resource.data.createdAt == resource.data.createdAt;
+      allow delete: if isAdmin();
+    }
+
+    // ---------- Årets lopp (settings/event) och resultatarkivet (years/{år}) ----------
+    // Alla kan läsa, bara admins kan skriva. Gränserna ska stämma med LIMITS i src/cms/model.js.
+
+    function isoDate(s) {
+      return s is string && s.matches('^[0-9]{4}-[0-9]{2}-[0-9]{2}$');
+    }
+
+    function optionalHttps(u) {
+      return u is string && u.size() <= 2000 && (u == '' || u.matches('^https://[^ <>"]+$'));
+    }
+
+    // Arkivet har gamla länkar som bara finns på http, så här godtas både http och https.
+    function validWebLink(l) {
+      return l is map
+        && l.keys().hasOnly(['label', 'url']) && l.keys().hasAll(['label', 'url'])
+        && l.label is string && l.label.size() <= 80
+        && l.url is string && l.url.size() <= 2000
+        && l.url.matches('^https?://[^ <>"]+$');
+    }
+
+    function validWebLinks(ls) {
+      return ls is list && ls.size() <= 12
+        && (ls.size() < 1 || validWebLink(ls[0]))
+        && (ls.size() < 2 || validWebLink(ls[1]))
+        && (ls.size() < 3 || validWebLink(ls[2]))
+        && (ls.size() < 4 || validWebLink(ls[3]))
+        && (ls.size() < 5 || validWebLink(ls[4]))
+        && (ls.size() < 6 || validWebLink(ls[5]))
+        && (ls.size() < 7 || validWebLink(ls[6]))
+        && (ls.size() < 8 || validWebLink(ls[7]))
+        && (ls.size() < 9 || validWebLink(ls[8]))
+        && (ls.size() < 10 || validWebLink(ls[9]))
+        && (ls.size() < 11 || validWebLink(ls[10]))
+        && (ls.size() < 12 || validWebLink(ls[11]));
+    }
+
+    function validDistance(d) {
+      return d is map
+        && d.keys().hasOnly(['km', 'laps', 'classes', 'fee', 'lateFee', 'note'])
+        && d.keys().hasAll(['km', 'laps', 'classes', 'fee', 'lateFee', 'note'])
+        && d.km is number && d.km > 0 && d.km <= 100
+        && d.laps is int && d.laps >= 1 && d.laps <= 6
+        && d.classes is string && d.classes.size() > 0 && d.classes.size() <= 40
+        && d.fee is int && d.fee >= 0 && d.fee <= 10000
+        && d.lateFee is int && d.lateFee >= 0 && d.lateFee <= 10000
+        && d.note is string && d.note.size() <= 200;
+    }
+
+    function validDistances(ls) {
+      return ls is list && ls.size() >= 1 && ls.size() <= 4
+        && validDistance(ls[0])
+        && (ls.size() < 2 || validDistance(ls[1]))
+        && (ls.size() < 3 || validDistance(ls[2]))
+        && (ls.size() < 4 || validDistance(ls[3]));
+    }
+
+    function validEvent(d) {
+      return d.keys().hasOnly(['date', 'startTime', 'status', 'venue', 'venueArea', 'mapUrl', 'deadline',
+                               'registrationUrl', 'startListUrl', 'liveResultsUrl', 'email',
+                               'lapKm', 'climbPerLap', 'waterPerLap', 'coldLimit', 'distances',
+                               'updatedAt', 'updatedBy'])
+        && d.keys().hasAll(['date', 'startTime', 'status', 'venue', 'venueArea', 'mapUrl', 'deadline',
+                            'registrationUrl', 'startListUrl', 'liveResultsUrl', 'email',
+                            'lapKm', 'climbPerLap', 'waterPerLap', 'coldLimit', 'distances',
+                            'updatedAt', 'updatedBy'])
+        && isoDate(d.date)
+        && d.startTime is string && d.startTime.matches('^([01][0-9]|2[0-3]):[0-5][0-9]$')
+        && d.status in ['planned', 'cancelled']
+        && d.venue is string && d.venue.size() > 0 && d.venue.size() <= 60
+        && d.venueArea is string && d.venueArea.size() <= 60
+        && optionalHttps(d.mapUrl)
+        && d.deadline is string && (d.deadline == '' || isoDate(d.deadline))
+        && optionalHttps(d.registrationUrl)
+        && optionalHttps(d.startListUrl)
+        && optionalHttps(d.liveResultsUrl)
+        && d.email is string && d.email.size() <= 100 && d.email.matches('^[^@ <>"]+@[^@ <>"]+[.][^@ <>"]+$')
+        && d.lapKm is number && d.lapKm > 0 && d.lapKm <= 50
+        && d.climbPerLap is int && d.climbPerLap >= 0 && d.climbPerLap <= 2000
+        && d.waterPerLap is int && d.waterPerLap >= 0 && d.waterPerLap <= 10
+        && d.coldLimit is int && d.coldLimit >= -50 && d.coldLimit <= 0
+        && validDistances(d.distances)
+        && d.updatedAt == request.time
+        && d.updatedBy == request.auth.uid;
+    }
+
+    function validWinner(w) {
+      return w is map
+        && w.keys().hasOnly(['class', 'names']) && w.keys().hasAll(['class', 'names'])
+        && w['class'] is string && w['class'].size() <= 40
+        && w.names is string && w.names.size() > 0 && w.names.size() <= 200;
+    }
+
+    function validWinners(ls) {
+      return ls is list && ls.size() <= 6
+        && (ls.size() < 1 || validWinner(ls[0]))
+        && (ls.size() < 2 || validWinner(ls[1]))
+        && (ls.size() < 3 || validWinner(ls[2]))
+        && (ls.size() < 4 || validWinner(ls[3]))
+        && (ls.size() < 5 || validWinner(ls[4]))
+        && (ls.size() < 6 || validWinner(ls[5]));
+    }
+
+    function validYear(d, id) {
+      return d.keys().hasOnly(['year', 'status', 'date', 'text', 'winners', 'links', 'invitation', 'updatedAt', 'updatedBy'])
+        && d.keys().hasAll(['year', 'status', 'date', 'text', 'winners', 'links', 'invitation', 'updatedAt', 'updatedBy'])
+        && id.matches('^[0-9]{4}$')
+        && d.year is int && d.year == int(id) && d.year >= 1990 && d.year <= 2100
+        && d.status in ['held', 'cancelled']
+        && d.date is string && (d.date == '' || isoDate(d.date))
+        && d.text is string && d.text.size() <= 300
+        && validWinners(d.winners)
+        && validWebLinks(d.links)
+        && (d.invitation == null || validWebLink(d.invitation))
+        && d.updatedAt == request.time
+        && d.updatedBy == request.auth.uid;
+    }
+
+    // Bara dokumentet "event" finns. Det kan inte tas bort, bara ändras.
+    match /settings/{docId} {
+      allow read: if true;
+      allow create, update: if isAdmin() && docId == 'event' && validEvent(request.resource.data);
+      allow delete: if false;
+    }
+
+    // Dokument-ID är årtalet, t.ex. years/2025.
+    match /years/{yearId} {
+      allow read: if true;
+      allow create, update: if isAdmin() && validYear(request.resource.data, yearId);
       allow delete: if isAdmin();
     }
 

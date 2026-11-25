@@ -5,6 +5,10 @@ on:
     branches: [main]
   pull_request:
   workflow_dispatch:
+  # Varje natt: bygg om och publicera, så att sidans HTML (för sökmotorer, delningar och besökare
+  # utan JavaScript) får med det som administratörerna har ändrat i årets lopp och resultatarkivet.
+  schedule:
+    - cron: "17 3 * * *"
 
 permissions:
   contents: read
@@ -29,6 +33,7 @@ jobs:
           java-version: 21
       - run: npm ci
       - run: npx playwright install --with-deps chromium
+      - run: npm run test:unit
       - run: npm run test:rules
       - run: npm run test:e2e
       - if: always()
@@ -70,8 +75,8 @@ jobs:
   deploy:
     name: Publicera renrajden.se
     needs: test
-    # Publicerar vid push till main, eller manuellt via Actions → "Run workflow" på main.
-    if: (github.event_name == 'push' || github.event_name == 'workflow_dispatch') && github.ref == 'refs/heads/main' && vars.VITE_FIREBASE_PROJECT_ID != ''
+    # Publicerar vid push till main, varje natt, eller manuellt via Actions → "Run workflow" på main.
+    if: (github.event_name == 'push' || github.event_name == 'workflow_dispatch' || github.event_name == 'schedule') && github.ref == 'refs/heads/main' && vars.VITE_FIREBASE_PROJECT_ID != ''
     runs-on: ubuntu-latest
     env: # Webbkonfigurationen för Firebase (repository variables). Inte i testjobbet: där gäller .env.emulator.
       VITE_FIREBASE_API_KEY: ${{ vars.VITE_FIREBASE_API_KEY }}
@@ -85,7 +90,7 @@ jobs:
           node-version: 22
           cache: npm
       - run: npm ci
-      - run: npm run build
+      # Reglerna först: bygget läser årets lopp och resultatarkivet från Firestore och behöver de nya reglerna.
       - name: Publicera säkerhetsregler för Firestore
         env:
           SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
@@ -93,6 +98,10 @@ jobs:
           printf '%s' "$SERVICE_ACCOUNT" > "$RUNNER_TEMP/sa.json"
           GOOGLE_APPLICATION_CREDENTIALS="$RUNNER_TEMP/sa.json" npx firebase deploy --only firestore:rules --project "$VITE_FIREBASE_PROJECT_ID" --non-interactive
           rm -f "$RUNNER_TEMP/sa.json"
+      - name: Bygg (med innehållet från Firestore)
+        env:
+          CMS_REQUIRE_FIRESTORE: "true" # avbryt hellre än att publicera gammalt innehåll
+        run: npm run build
       - uses: FirebaseExtended/action-hosting-deploy@v0
         with:
           repoToken: ${{ secrets.GITHUB_TOKEN }}

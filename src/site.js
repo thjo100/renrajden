@@ -1,30 +1,57 @@
 // Sidans interaktivitet som inte kräver Firebase: lägen kring tävlingsdagen, meny, km-mätare,
-// distansväljare, packlista och kopiera-knappar.
-import { $, $$, store, toast } from "./ui.js";
+// distansväljare, packlista och kopiera-knappar. Datum, distanser och länkar kommer från
+// årets lopp (src/cms/), och allt räknas om när innehållet uppdateras.
+import { $, $$, el, store, toast } from "./ui.js";
+import { getContent, onContent } from "./cms/runtime.js";
+import { distanceSummary } from "./cms/render.js";
+
+const ev = () => getContent().event;
 
 /* ---------- Lägen: före, tävlingsvecka, tävlingsdag, efter loppet ---------- */
-export const RACE_DATE = new Date(2027, 0, 30); // lördag 30 januari 2027
-const daysLeft = () => { const n = new Date(); return Math.round((RACE_DATE - new Date(n.getFullYear(), n.getMonth(), n.getDate())) / 86400000); };
+const raceDate = () => { const [y, m, d] = ev().date.split("-").map(Number); return new Date(y, m - 1, d); };
+const daysLeft = () => { const n = new Date(); return Math.round((raceDate() - new Date(n.getFullYear(), n.getMonth(), n.getDate())) / 86400000); };
 const phaseFor = (d) => (d > 7 ? "before" : d > 0 ? "raceweek" : d === 0 ? "raceday" : "after");
 // Förhandsvisning: ?lage=tavlingsvecka | tavlingsdag | efter
 const PREVIEW = { tavlingsvecka: ["raceweek", 3], tavlingsdag: ["raceday", 0], efter: ["after", -1] };
 
+// Knappar och länkar som kan gå till en extern sida (startlista, liveresultat) får ↗ och öppnas i ny flik.
+function setLink(a, text, href) {
+  const external = /^https:/.test(href);
+  a.replaceChildren(text, external ? el("span", { class: "sr-only", text: " (öppnas i ny flik)" }) : "");
+  a.href = href;
+  a.classList.toggle("ext", external);
+  a.toggleAttribute("target", external);
+  a.toggleAttribute("rel", external);
+  if (external) { a.target = "_blank"; a.rel = "noopener"; }
+}
+
 function applyPhase() {
+  const e = ev();
   const preview = PREVIEW[new URLSearchParams(location.search).get("lage")];
   const d = preview ? preview[1] : daysLeft();
   const phase = preview ? preview[0] : phaseFor(d);
+  const cancelled = e.status === "cancelled";
   document.body.dataset.phase = phase;
+  document.body.dataset.status = e.status;
   const num = $("#count-num"), label = $("#count-label"), link = $("#count-link");
   link.hidden = true;
-  if (d > 1) { num.textContent = d; label.textContent = "dagar kvar till start"; }
+  setLink(link, "Se resultaten", "#resultat");
+  if (cancelled) { num.textContent = "–"; label.textContent = "Loppet är inställt"; setLink(link, "Läs mer under Nyheter", "#nyheter"); link.hidden = false; }
+  else if (d > 1) { num.textContent = d; label.textContent = "dagar kvar till start"; }
   else if (d === 1) { num.textContent = "1"; label.textContent = "dag kvar till start"; }
   else if (d === 0) { num.textContent = "0"; label.textContent = "Tävlingsdag! Tider finns i PM"; }
   else { num.textContent = "✓"; label.textContent = "Loppet är kört"; link.hidden = false; }
-  const set = (a, text, href) => { a.textContent = text; a.href = href; };
   const c1 = $("#cta-1"), c2 = $("#cta-2");
-  if (phase === "before") { set(c1, "Så anmäler du dig", "#anmalan"); set(c2, "Senaste nytt", "#nyheter"); }
-  else if (phase === "after") { set(c1, "Resultat", "#resultat"); set(c2, "Senaste nytt", "#nyheter"); }
-  else { set(c1, "PM och tider", "#pm"); set(c2, "Startlista och liveresultat", "#nyheter"); }
+  if (cancelled) { setLink(c1, "Senaste nytt", "#nyheter"); setLink(c2, "Resultat", "#resultat"); }
+  else if (phase === "before") { setLink(c1, "Så anmäler du dig", "#anmalan"); setLink(c2, "Senaste nytt", "#nyheter"); }
+  else if (phase === "after") { setLink(c1, "Resultat", "#resultat"); setLink(c2, "Senaste nytt", "#nyheter"); }
+  else {
+    setLink(c1, "PM och tider", "#pm");
+    // Tävlingsdagen: liveresultat i första hand. Veckan före: startlistan i första hand.
+    const order = phase === "raceday" ? [["Liveresultat", e.liveResultsUrl], ["Startlista", e.startListUrl]] : [["Startlista", e.startListUrl], ["Liveresultat", e.liveResultsUrl]];
+    const [text, href] = order.find(([, u]) => u) || ["Startlista och liveresultat", "#nyheter"];
+    setLink(c2, text, href);
+  }
 }
 
 /* ---------- Meny ---------- */
@@ -83,26 +110,37 @@ function initRail() {
 }
 
 /* ---------- Distansväljare ---------- */
-const DIST = {
-  42: { laps: 4, prize: "Prisutdelning för 1:a–3:e i HD42, direkt när de gått i mål." },
-  21: { laps: 2, prize: "Pris till vinnarna i HD21." },
-  10: { laps: 1, prize: "Motionsdistans på 10,5 km. Start kl 10:00, samtidigt som de långa." },
-};
+// Väljaren ritas av src/cms/render.js. Radioknapparnas värde är distansens plats i listan.
+let distIdx = 0;
+function showDistance(i) {
+  const e = ev(), d = e.distances[i];
+  if (!d || !$("#ds-laps")) return null;
+  distIdx = i;
+  $$(".lap").forEach((l, j) => l.classList.toggle("on", j < d.laps));
+  $("#ds-laps").textContent = d.laps;
+  $("#ds-hm").textContent = "ca " + d.laps * e.climbPerLap;
+  $("#ds-water").textContent = d.laps * e.waterPerLap;
+  $("#ds-prize").textContent = d.note;
+  return d;
+}
 function initDistances() {
-  $$('input[name="dist"]').forEach((r) => r.addEventListener("change", () => {
-    const d = DIST[r.value];
-    $$(".lap").forEach((l, i) => l.classList.toggle("on", i < d.laps));
-    $("#ds-laps").textContent = d.laps;
-    $("#ds-hm").textContent = "ca " + d.laps * 98;
-    $("#ds-water").textContent = d.laps * 2;
-    $("#ds-prize").textContent = d.prize;
-    $("#dist-live").textContent = `${r.value === "10" ? "10,5" : r.value} km: ${d.laps} varv, cirka ${d.laps * 98} höjdmeter och ${d.laps * 2} vätskekontroller. ${d.prize}`;
-  }));
+  document.addEventListener("change", (e) => {
+    const r = e.target.closest && e.target.closest('input[name="dist"]');
+    if (!r) return;
+    const d = showDistance(Number(r.value));
+    if (d) $("#dist-live").textContent = distanceSummary(ev(), d);
+  });
+  // Efter en uppdatering: behåll besökarens val om distansen finns kvar.
+  onContent((c) => {
+    if (distIdx >= c.event.distances.length) distIdx = 0;
+    const r = $("#d" + distIdx);
+    if (r) { r.checked = true; showDistance(distIdx); }
+  });
 }
 
 /* ---------- Packlista (bara i webbläsaren) ---------- */
 function initPacklist() {
-  const key = "rr-pack-2027";
+  const key = "rr-pack-" + ev().date.slice(0, 4); // ny packlista varje år
   const state = store.get(key) || {};
   const boxes = $$("#packlist input");
   const count = () => { $("#pack-count").textContent = `${boxes.filter((b) => b.checked).length} av ${boxes.length} packat`; };
@@ -129,6 +167,7 @@ function initCopy() {
 
 export function initSite() {
   applyPhase();
+  onContent(applyPhase);
   initMenu();
   initRail();
   initDistances();

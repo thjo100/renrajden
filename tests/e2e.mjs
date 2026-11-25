@@ -1,11 +1,13 @@
 // Ände-till-ände-test mot Firebase-emulatorerna (Auth + Firestore) och den byggda sajten.
 // Körs med: npm run test:e2e   (bygger i emulator-läge och startar emulatorerna)
-import { mkdirSync, writeFileSync } from "node:fs";
+import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { chromium } from "playwright";
 import { preview } from "vite";
 import { initializeApp } from "firebase-admin/app";
 import { getFirestore } from "firebase-admin/firestore";
 import { seedNews } from "../scripts/seed-news.mjs";
+import { fetchContent } from "../scripts/vite-cms.mjs";
+import { fillHtml } from "../src/cms/render.js";
 
 if (!process.env.FIRESTORE_EMULATOR_HOST) {
   console.error("Kör via `npm run test:e2e` så att emulatorerna startas.");
@@ -144,6 +146,122 @@ await step("admin-sessionen finns kvar efter omladdning", async () => {
   await page.waitForSelector("#admin-bar:not([hidden])", { timeout: 15000 });
 });
 
+/* ---------- Årets lopp och resultatarkivet ---------- */
+const isOpen = (sel) => page.evaluate((s) => document.querySelector(s)?.open === true, sel);
+
+await step("admin ändrar årets lopp, och första sparningen kopierar arkivet till Firestore", async () => {
+  assert(!(await db.doc("settings/event").get()).exists, "settings/event fanns redan före testet");
+  await page.click('#admin-bar [data-action="edit-event"]');
+  await page.waitForSelector("#event-dialog[open]");
+  assert((await page.inputValue("#ev-date")) === "2027-01-30", "formuläret har fel datum");
+  assert((await page.locator("#ev-dists .sub-row").count()) === 3, "formuläret har fel antal distanser");
+  await page.fill("#ev-reg", "http://example.com/anmalan");
+  await page.click("#event-dialog [type=submit]");
+  await page.waitForFunction(() => document.activeElement?.classList.contains("error-summary"), null, { timeout: 5000 })
+    .catch(() => { throw new Error("felsammanfattningen fick inte fokus"); });
+  assert((await page.getAttribute("#ev-reg", "aria-invalid")) === "true", "fältet markerades inte som fel");
+  await page.fill("#ev-reg", "https://example.com/anmalan");
+  await page.fill("#ev-deadline", "2027-01-20");
+  await page.locator('#ev-dists .sub-row >> nth=0 >> input[id^="dlate-"]').fill("650");
+  await page.screenshot({ path: `${OUT}/arets-lopp.png` });
+  await page.click("#event-dialog [type=submit]");
+  await page.waitForFunction(() => !document.querySelector("#event-dialog").open, null, { timeout: 10000 });
+  await page.waitForFunction(() => document.querySelector('[data-cms="fees"]').textContent.includes("Efteranmälan 650 kr"), null, { timeout: 5000 })
+    .catch(() => { throw new Error("avgiften uppdaterades inte på sidan"); });
+  assert((await page.textContent('[data-cms="deadline"]')).includes("onsdag 20 januari 2027"), "sista anmälningsdag uppdaterades inte");
+  assert((await page.getAttribute('[data-cms="registration"] a', "href")) === "https://example.com/anmalan", "anmälningslänken syns inte");
+  await page.waitForTimeout(200);
+  assert(await page.evaluate(() => document.activeElement?.dataset.action === "edit-event"), "fokus kom inte tillbaka till knappen");
+  const ev = (await db.doc("settings/event").get()).data();
+  assert(ev.deadline === "2027-01-20" && ev.distances[0].lateFee === 650 && ev.distances[2].km === 10.5, "årets lopp sparades fel");
+  assert(ev.updatedBy === uid, "updatedBy saknas");
+  assert((await db.collection("years").get()).size === 13, "resultatarkivet kopierades inte till Firestore");
+});
+
+await step("besökare ser det nya innehållet, även i inbjudan", async () => {
+  const p = await browser.newPage();
+  await p.goto(BASE);
+  await p.waitForFunction(() => document.documentElement.dataset.cms === "db", null, { timeout: 10000 });
+  assert((await p.textContent('[data-cms="fees"]')).includes("Efteranmälan 650 kr"), "besökaren ser inte den nya avgiften");
+  assert((await p.locator("#years > li").count()) === 14, "resultatarkivet har fel antal år efter kopieringen");
+  await p.goto(BASE + "inbjudan");
+  await p.waitForFunction(() => document.documentElement.dataset.cms === "db", null, { timeout: 10000 });
+  assert((await p.textContent('[data-cms="inv-fees"]')).includes("650 kr"), "inbjudan visar inte den nya avgiften");
+  assert((await p.textContent('[data-cms="inv-deadline"]')).includes("onsdag 20 januari 2027"), "inbjudan visar fel sista anmälningsdag");
+  await p.close();
+});
+
+await step("admin lägger in resultatet för 2027", async () => {
+  await page.click('[data-year-new="2027"]');
+  await page.waitForSelector("#year-dialog[open]");
+  assert((await page.inputValue("#yr-year")) === "2027" && (await page.inputValue("#yr-date")) === "2027-01-30", "förslaget för 2027 är fel");
+  await page.fill("#yr-links input[type=text]", "Resultat (pdf)");
+  await page.fill("#yr-links input[type=url]", "https://example.com/resultat-2027.pdf");
+  await page.click("#year-dialog >> text=+ Lägg till segrare");
+  await page.fill("#yr-winners input >> nth=0", "H42");
+  await page.fill("#yr-winners input >> nth=1", "Testa Testsson");
+  await page.screenshot({ path: `${OUT}/resultat-2027.png` });
+  await page.click("#year-dialog [type=submit]");
+  await page.waitForSelector('#years > li[data-year="2027"]', { timeout: 10000 });
+  assert((await page.locator("#years .next-year").count()) === 0, "2027 visas fortfarande som kommande lopp");
+  await page.waitForFunction(() => document.activeElement?.dataset.yearEdit === "2027", null, { timeout: 5000 })
+    .catch(() => { throw new Error("fokus hamnade inte på Redigera för 2027"); });
+  assert((await page.textContent('[data-cms="history-side"]')).includes("2027, H42: Testa Testsson"), "segraren syns inte i sidorutan");
+  const y = (await db.doc("years/2027").get()).data();
+  assert(y && y.links[0].url === "https://example.com/resultat-2027.pdf" && y.winners[0].names === "Testa Testsson", "2027 sparades fel");
+  await page.locator("#resultat").screenshot({ path: `${OUT}/resultatarkiv-admin.png` });
+});
+
+await step("dialogen för årets lopp fungerar på mobil 360 px", async () => {
+  const p = await context.newPage(); // samma inloggning
+  await p.setViewportSize({ width: 360, height: 780 });
+  await p.goto(BASE);
+  await p.waitForSelector("#admin-bar:not([hidden])", { timeout: 15000 });
+  await p.click('#anmalan [data-action="edit-event"]');
+  await p.waitForSelector("#event-dialog[open]");
+  assert(await p.evaluate(() => document.activeElement?.id === "ev-deadline"), "knappen under Anmälan ska ge fokus på sista anmälningsdag");
+  assert(await p.evaluate(() => { const d = document.querySelector("#event-dialog"); return d.scrollWidth <= d.clientWidth; }), "dialogen scrollar i sidled");
+  await p.locator("#ev-dists").scrollIntoViewIfNeeded();
+  await p.screenshot({ path: `${OUT}/arets-lopp-mobil.png` });
+  await p.keyboard.press("Escape");
+  assert(!(await p.evaluate(() => document.querySelector("#event-dialog").open)), "Esc stängde inte en orörd dialog");
+  await p.close();
+});
+
+await step("admin kan inte lägga till ett år som redan finns", async () => {
+  await page.click('[data-action="new-year"]');
+  await page.waitForSelector("#year-dialog[open]");
+  await page.fill("#yr-year", "2025");
+  await page.click("#year-dialog [type=submit]");
+  await page.waitForSelector("#yr-year-err:not([hidden])");
+  assert((await page.textContent("#yr-year-err")).includes("finns redan"), "fel meddelande för dubblett");
+  await page.keyboard.press("Escape"); // visar "Stäng utan att spara?"
+  assert(await page.locator("#year-dialog .discard").isVisible(), "varningen för osparat visas inte");
+  await page.click("#year-dialog [data-discard-yes]");
+  assert(!(await isOpen("#year-dialog")), "dialogen stängdes inte");
+});
+
+await step("ta bort ett år ger Ångra, och ångra återställer det", async () => {
+  await page.click('[data-year-delete="2013"]');
+  await page.click("#confirm-delete");
+  await page.waitForFunction(() => document.activeElement?.id === "toast-action", null, { timeout: 10000 });
+  assert(!(await db.doc("years/2013").get()).exists, "2013 finns kvar i Firestore");
+  assert((await page.locator('#years > li[data-year="2013"]').count()) === 0, "2013 syns kvar");
+  assert((await page.textContent('[data-cms="results-eyebrow"]')).startsWith("Resultat sedan 2015"), "överrubriken räknades inte om");
+  await page.keyboard.press("Enter");
+  await page.waitForFunction(() => document.activeElement?.dataset.yearEdit === "2013", null, { timeout: 10000 });
+  assert((await db.doc("years/2013").get()).exists, "2013 återställdes inte");
+});
+
+await step("bygget hämtar det sparade innehållet från Firestore", async () => {
+  const { content } = await fetchContent({ projectId: "demo-renrajden", emulator: true });
+  assert(content.source === "db", "bygget hittade inte innehållet i Firestore");
+  assert(content.event.deadline === "2027-01-20" && content.event.distances[2].km === 10.5, "årets lopp lästes fel");
+  assert(content.years.length === 14 && content.years[0].year === 2027, "resultatarkivet lästes fel");
+  const html = fillHtml(readFileSync("index.html", "utf8"), content);
+  assert(html.includes("Efteranmälan 650 kr") && html.includes("Testa Testsson"), "den byggda sidan saknar det sparade innehållet");
+});
+
 await step("admin tar bort testnyheten och loggar ut", async () => {
   await page.click(`[data-delete="${newId}"]`);
   await page.click("#confirm-delete");
@@ -175,6 +293,8 @@ await step("inbjudan nås från startsidan och ryms på en utskriven A4-sida", a
   await p.goto(BASE);
   await p.click('#loppet a[href="/inbjudan"]');
   await p.waitForSelector(".sheet");
+  // Inbjudan ska rymmas även med innehållet som admin sparade ovan.
+  await p.waitForFunction(() => document.documentElement.dataset.cms === "db", null, { timeout: 10000 });
   await p.evaluate(() => document.fonts.ready);
   // Utskriften räknas fram med webbläsarens utskriftsmotor.
   const printed = await p.pdf({ preferCSSPageSize: true, printBackground: true });
