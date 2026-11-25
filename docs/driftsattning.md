@@ -109,10 +109,39 @@ GitHub Actions behöver en nyckel för att få publicera sajten och säkerhetsre
    - **Value:** samma adress
 5. Klicka på **Save**. Upprepa för fler administratörer med **Add document** i samlingen `admins`.
 
-### 6b. Importera de 22 nyheterna från bloggen (kräver dator)
+### 6b. Importera de 22 nyheterna från bloggen
 
-1. Installera Google Cloud CLI: https://cloud.google.com/sdk/docs/install
-2. Hämta koden och installera beroendena:
+Importen görs efter att sajten publicerats i steg 7, eftersom arbetsflödet finns i GitHub först när koden ligger på `main`. Fram till dess visar sajten "Inga nyheter än".
+
+#### Utan egen dator: via GitHub Actions (rekommenderas)
+
+1. Ge servicekontot rätt att skriva i databasen:
+   1. Gå till Google Cloud-konsolen → **IAM & Admin → IAM**.
+   2. Hitta `github-deploy@<projekt-id>.iam.gserviceaccount.com` och klicka på pennan (**Edit principal**).
+   3. **Add another role → Cloud Datastore User → Save**.
+2. GitHub → fliken **Actions** → **Importera bloggens nyheter** i listan till vänster → **Run workflow** → gren `main` → **Run workflow**.
+3. Efter en till två minuter visas en grön bock. Klicka på körningen och öppna steget **Importera**. Det ska stå `22 nyheter importerade, 0 fanns redan`.
+4. Ta bort rollen **Cloud Datastore User** igen på samma ställe, med papperskorgen vid rollen. Servicekontot behöver den inte för vanlig publicering.
+
+Arbetsflödet hoppar över nyheter som redan finns, så det är ofarligt att köra det igen.
+
+#### Alternativ: Google Cloud Shell (terminal i webbläsaren)
+
+Cloud Shell är gratis och har redan `gcloud`, `git` och Node installerade.
+
+1. Gå till https://shell.cloud.google.com och logga in med kontot som äger projektet.
+2. Repot är privat, så git behöver en GitHub-token:
+   1. Gå till GitHub → **Settings → Developer settings → Personal access tokens → Fine-grained tokens → Generate new token**.
+   2. Välj repot `renrajden` och ge rätten **Contents: Read-only**.
+3. Kör kommandona ett i taget och byt `<projekt-id>` mot ditt ID. Vid `git clone` är användarnamnet `thjo100` och lösenordet din token.
+
+   ```bash
+   gcloud config set project <projekt-id>
+   ```
+
+   ```bash
+   gcloud auth application-default login
+   ```
 
    ```bash
    git clone https://github.com/thjo100/renrajden.git
@@ -123,41 +152,29 @@ GitHub Actions behöver en nyckel för att få publicera sajten och säkerhetsre
    ```
 
    ```bash
-   npm install
+   npm ci
    ```
-
-3. Logga in med kontot som äger projektet. Kör kommandona ett i taget och byt `<projekt-id>` mot ditt ID:
-
-   ```bash
-   gcloud auth application-default login
-   ```
-
-   ```bash
-   gcloud auth application-default set-quota-project <projekt-id>
-   ```
-
-4. Importera nyheterna:
 
    ```bash
    npm run seed -- --project <projekt-id>
    ```
 
-   Svaret ska bli `22 nyheter importerade, 0 fanns redan`. Skriptet kan köras igen utan dubbletter.
-5. Administratörer kan också hanteras härifrån i stället för som i 6a:
+#### Alternativ: egen dator
 
-   ```bash
-   npm run admin -- add fornamn.efternamn@gmail.com --project <projekt-id>
-   ```
+Gör som i Cloud Shell, men installera först Node 20+, git och Google Cloud CLI (https://cloud.google.com/sdk/docs/install). Kör `gcloud auth application-default set-quota-project <projekt-id>` efter inloggningen.
 
-   ```bash
-   npm run admin -- list --project <projekt-id>
-   ```
+Administratörer kan också hanteras från terminalen i stället för som i 6a:
+
+```bash
+npm run admin -- add fornamn.efternamn@gmail.com --project <projekt-id>
+```
 
 ## 7. Publicera
 
 1. Slå ihop pull requesten (thjo100/renrajden#1) till `main`. Säg till Claude, eller klicka på **Merge pull request** på GitHub.
 2. Fliken **Actions** i GitHub visar körningen "Test och publicering". Först körs testerna (cirka 5 minuter), sedan publiceras säkerhetsreglerna och sajten.
 3. När körningen är grön finns sajten på **https://<projekt-id>.web.app**.
+4. Importera nu nyheterna enligt steg 6b.
 
 **Kontroll:**
 

@@ -1,0 +1,43 @@
+name: Importera bloggens nyheter
+
+# Körs manuellt: Actions → "Importera bloggens nyheter" → Run workflow.
+# Importerar de 22 nyheterna från den gamla bloggen (prototyp/seed-news.json) till Firestore.
+# Nyheter som redan finns hoppas över, så det är ofarligt att köra igen.
+# Servicekontot i FIREBASE_SERVICE_ACCOUNT behöver rollen "Cloud Datastore User" medan importen körs.
+on:
+  workflow_dispatch:
+    inputs:
+      force:
+        description: "Skriv över nyheter som redan finns (normalt nej)"
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+
+jobs:
+  seed:
+    name: Importera nyheter till Firestore
+    if: vars.VITE_FIREBASE_PROJECT_ID != ''
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - name: Importera
+        env:
+          SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+          PROJECT: ${{ vars.VITE_FIREBASE_PROJECT_ID }}
+          FORCE: ${{ inputs.force }}
+        run: |
+          printf '%s' "$SERVICE_ACCOUNT" > "$RUNNER_TEMP/sa.json"
+          export GOOGLE_APPLICATION_CREDENTIALS="$RUNNER_TEMP/sa.json"
+          if [ "$FORCE" = "true" ]; then
+            node scripts/seed-news.mjs --project "$PROJECT" --force
+          else
+            node scripts/seed-news.mjs --project "$PROJECT"
+          fi
+          rm -f "$RUNNER_TEMP/sa.json"
