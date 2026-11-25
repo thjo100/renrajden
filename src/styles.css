@@ -345,6 +345,8 @@ a:hover { text-decoration-thickness: 2px; }
 .stat-row div { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 1rem; }
 .stat-row dt { font: 600 .75rem/1.2 var(--f-mono); letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
 .stat-row dd { margin: .25rem 0 0; font: 900 2rem/1 var(--f-display); font-variant-numeric: tabular-nums; }
+.fees-row { margin-top: 1.5rem; }
+.fees-row dd small { display: block; margin-top: .375rem; font: 400 var(--s-sm)/1.4 var(--f-body); color: var(--muted); }
 .link-list { list-style: none; margin: 1.25rem 0 0; padding: 0; display: grid; gap: .5rem; }
 .link-list a { display: flex; justify-content: space-between; gap: 1rem; align-items: center; padding: .875rem 1rem; background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); text-decoration: none; font-weight: 600; }
 .link-list a:hover { border-color: var(--accent); }

@@ -79,6 +79,7 @@ För att se lägena kring tävlingsdagen, lägg till `?lage=tavlingsvecka`, `?la
 | Fil | Innehåll |
 |---|---|
 | `index.html` | Allt sidinnehåll: text, fakta, PM, resultatarkiv, dialoger |
+| `inbjudan.html` | Inbjudan till årets lopp som ett utskrivbart A4-ark, på `/inbjudan` |
 | `src/main.js` | Ingång. Laddar CSS, typsnitt, nyheter och (vid behov) admin |
 | `src/site.js` | Nedräkning, lägen, meny, km-mätare, distansväljare, packlista |
 | `src/news.js` | Hämtar och visar nyheter |
@@ -86,6 +87,7 @@ För att se lägena kring tävlingsdagen, lägg till `?lage=tavlingsvecka`, `?la
 | `src/firebase.js` | Firebase-konfiguration och emulatorstöd |
 | `src/ui.js` | Gemensamma hjälpfunktioner, toast och dialoger |
 | `src/styles.css` | All design |
+| `src/inbjudan.js`, `src/inbjudan.css` | Typsnitt, utskriftsknapp och A4-layout för inbjudan |
 | `firestore.rules` | Säkerhetsregler |
 | `scripts/admin.mjs` | Lägg till, ta bort och lista administratörer |
 | `scripts/seed-news.mjs` | Importerar gamla nyheter från `prototyp/seed-news.json` |
@@ -102,7 +104,8 @@ För att se lägena kring tävlingsdagen, lägg till `?lage=tavlingsvecka`, `?la
 | Jag vill … | Ändra här |
 |---|---|
 | Ändra text, fakta eller PM | `index.html` |
-| Ändra tävlingsdatum | `src/site.js` (`RACE_DATE`) och texterna i `index.html` |
+| Ändra tävlingsdatum | `src/site.js` (`RACE_DATE`) och texterna i `index.html` och `inbjudan.html` |
+| Ändra inbjudan, avgifter eller sista anmälningsdag | `inbjudan.html` och avgifterna under Anmälan i `index.html`. Kontrollera med Skriv ut att inbjudan fortfarande ryms på en A4 (`npm run test:e2e` kontrollerar det också) |
 | Lägga till ett års resultat | `index.html`, listan `<ol class="years">` |
 | Ändra färger eller layout | `src/styles.css` (färgerna är variabler överst) |
 | Lägga till en nyhetsetikett | Samma lista på tre ställen, se nedan |

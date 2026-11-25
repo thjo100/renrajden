@@ -170,6 +170,22 @@ await step("mobil 360 px: ingen sidledsscroll och läget tävlingsdag fungerar",
   await p.close();
 });
 
+await step("inbjudan nås från startsidan och ryms på ett A4", async () => {
+  const p = await browser.newPage({ viewport: { width: 1280, height: 900 } });
+  await p.goto(BASE);
+  await p.click('#loppet a[href="/inbjudan"]');
+  await p.waitForSelector(".sheet");
+  await p.evaluate(() => document.fonts.ready);
+  const pdf = await p.pdf({ preferCSSPageSize: true, printBackground: true });
+  const pages = (pdf.toString("latin1").match(/\/Type\s*\/Page[^s]/g) || []).length;
+  assert(pages === 1, `inbjudan blir ${pages} sidor`);
+  assert(await p.evaluate(() => { const s = document.querySelector(".sheet"), f = document.querySelector(".bottom"), last = f.previousElementSibling; return last.getBoundingClientRect().bottom <= f.getBoundingClientRect().top && f.getBoundingClientRect().bottom <= s.getBoundingClientRect().bottom + 1; }), "innehållet ryms inte på arket");
+  writeFileSync(`${OUT}/inbjudan.pdf`, pdf);
+  await p.setViewportSize({ width: 360, height: 780 });
+  assert((await p.evaluate(() => document.documentElement.scrollWidth)) <= 360, "sidledsscroll på mobil");
+  await p.close();
+});
+
 await browser.close();
 await new Promise((r) => server.httpServer.close(r));
 console.log(results.join("\n"));
