@@ -9,7 +9,7 @@ Webbplats för **Renrajden**, OK Renens klassiska långlopp på Ormberget i Lule
 
 | | |
 |---|---|
-| Live (Firebase) | https://renrajden-ae53c.web.app |
+| Live (Firebase) | https://renrajden.web.app (webbplatsen `renrajden` i projektet) |
 | Domän | renrajden.se (pekar på gamla Blogger tills DNS flyttas, se [docs/driftsattning.md](docs/driftsattning.md) steg 8) |
 | Firebase-projekt | `renrajden-ae53c` |
 | Publicering | Automatisk vid push till `main` (GitHub Actions) |
