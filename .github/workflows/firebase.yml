@@ -70,7 +70,8 @@ jobs:
   deploy:
     name: Publicera renrajden.se
     needs: test
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main' && vars.VITE_FIREBASE_PROJECT_ID != ''
+    # Publicerar vid push till main, eller manuellt via Actions → "Run workflow" på main.
+    if: (github.event_name == 'push' || github.event_name == 'workflow_dispatch') && github.ref == 'refs/heads/main' && vars.VITE_FIREBASE_PROJECT_ID != ''
     runs-on: ubuntu-latest
     env: # Webbkonfigurationen för Firebase (repository variables). Inte i testjobbet: där gäller .env.emulator.
       VITE_FIREBASE_API_KEY: ${{ vars.VITE_FIREBASE_API_KEY }}

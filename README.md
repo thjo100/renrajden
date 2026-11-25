@@ -83,33 +83,15 @@ npm test
 
 ## Driftsättning (en gång)
 
-1. **Firebase-projekt.** Skapa ett projekt på https://console.firebase.google.com. Om projekt-ID:t inte blir `renrajden`, ändra det i `.firebaserc`.
-2. **Firestore.** Skapa databasen i produktionsläge och välj en plats i Europa.
-3. **Inloggning.** Under Authentication → Sign-in method, aktivera **Google**.
-4. **Webbapp.** Under Projektinställningar → Dina appar, lägg till en webbapp och kopiera konfigurationen:
-   - **Lokalt:** lägg den i `.env.local` (se `.env.example`).
-   - **I GitHub:** Settings → Secrets and variables → Actions → **Variables**, lägg in `VITE_FIREBASE_API_KEY`, `VITE_FIREBASE_AUTH_DOMAIN`, `VITE_FIREBASE_PROJECT_ID` och `VITE_FIREBASE_APP_ID`.
-5. **Servicekonto för GitHub Actions.**
-   - Skapa ett servicekonto i Google Cloud (IAM → Service accounts) med rollerna *Firebase Hosting Admin*, *Firebase Rules Admin* och *API Keys Viewer*.
-   - Skapa en JSON-nyckel och lägg hela innehållet som **secret** `FIREBASE_SERVICE_ACCOUNT`.
-   - Förhandsversioner för pull requests kräver även *Firebase Authentication Admin*, eftersom deras adresser läggs till som godkända domäner.
-6. **Nyheter och administratörer.** Logga in en gång med `gcloud auth application-default login` och kör:
+Följ den detaljerade guiden i [docs/driftsattning.md](docs/driftsattning.md). I korthet:
 
-   ```bash
-   npm run seed -- --project <projekt-id>
-   ```
+1. Skapa ett Firebase-projekt med Firestore (Europa) och slå på Google-inloggning.
+2. Lägg webbkonfigurationen som GitHub-variabler (`VITE_FIREBASE_*`) och ett servicekonto som secret (`FIREBASE_SERVICE_ACCOUNT`).
+3. Lägg till administratörer och importera bloggens nyheter.
+4. Slå ihop till `main`. GitHub Actions testar och publicerar till `<projekt-id>.web.app`.
+5. Peka om renrajden.se från Blogger, ta bort den anpassade domänen i Blogger och godkänn domänen för inloggning.
 
-   ```bash
-   npm run admin -- add namn@gmail.com --project <projekt-id>
-   ```
-
-7. **Publicera.** Slå ihop till `main`. Arbetsflödet testar, publicerar säkerhetsreglerna och lägger ut sajten.
-8. **Domänen renrajden.se.**
-   - Under Hosting → Lägg till anpassad domän, ange `renrajden.se` och `www.renrajden.se`.
-   - Ändra DNS-posterna hos domänleverantören. I dag pekar de på Blogger.
-   - Under Authentication → Settings → Authorized domains, lägg till `renrajden.se`.
-   - Sätt `VITE_FIREBASE_AUTH_DOMAIN` till `renrajden.se`, så att Google-inloggningen fungerar även i webbläsare som blockerar tredjepartscookies.
-   - Lägg till `https://renrajden.se/__/auth/handler` som godkänd omdirigerings-URI för OAuth-klienten i Google Cloud (APIs & Services → Credentials).
+Guiden har också ett avsnitt om gratisplanens tak inför tävlingsdagen, och en felsökningstabell.
 
 ### Administratörer
 
