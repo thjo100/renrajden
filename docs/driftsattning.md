@@ -173,7 +173,8 @@ npm run admin -- add fornamn.efternamn@gmail.com --project <projekt-id>
 
 1. Slå ihop pull requesten (thjo100/renrajden#1) till `main`. Säg till Claude, eller klicka på **Merge pull request** på GitHub.
 2. Fliken **Actions** i GitHub visar körningen "Test och publicering". Först körs testerna (cirka 5 minuter), sedan publiceras säkerhetsreglerna och sajten.
-3. När körningen är grön finns sajten på **https://<projekt-id>.web.app**.
+3. När körningen är grön finns sajten på **https://renrajden.web.app** (webbplatsen `renrajden`, satt i `firebase.json`).
+   Adressen `renrajden.web.app` måste finnas under **Authentication → Settings → Authorized domains**, annars fungerar inte inloggningen.
 4. Importera nu nyheterna enligt steg 6b.
 
 **Kontroll:**
@@ -232,7 +233,7 @@ Inloggningen fungerar bäst om den sker via er egen domän, eftersom vissa webbl
 - **Fler ägare:** Firebase → kugghjulet → **Users and permissions** → lägg till en reservansvarig i klubben som **Owner**.
 - **Begränsa API-nyckeln:**
   1. Google Cloud → **APIs & Services → Credentials** → klicka på nyckeln **Browser key (auto created by Firebase)**.
-  2. Under **Application restrictions → Websites**, lägg till `renrajden.se/*`, `www.renrajden.se/*`, `<projekt-id>.web.app/*` och `<projekt-id>.firebaseapp.com/*`.
+  2. Under **Application restrictions → Websites**, lägg till `renrajden.se/*`, `www.renrajden.se/*`, `renrajden.web.app/*` och `<projekt-id>.firebaseapp.com/*`.
   3. Sajten fungerar även utan detta, eftersom säkerhetsreglerna skyddar datan.
 
 ---
