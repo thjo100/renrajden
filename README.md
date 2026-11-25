@@ -96,6 +96,7 @@ För att se lägena kring tävlingsdagen, lägg till `?lage=tavlingsvecka`, `?la
 | `docs/driftsattning.md` | Steg-för-steg för Firebase, GitHub och domän |
 | `docs/ux-utvardering.md` | UX- och tillgänglighetsutvärdering |
 | `prototyp/`, `dev/` | Den ursprungliga UX-prototypen och dess verktyg |
+| `prototyp/v2/` | UX-översyn med tre konceptprototyper (Klungan, Mellantid, Målfoto). Öppna `prototyp/v2/index.html` i webbläsaren |
 
 ## Vanliga ändringar
 

@@ -1,0 +1,768 @@
+<!doctype html>
+<html lang="sv">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Renrajden · Klungan</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@700;800;900&family=Familjen+Grotesk:wght@400;500;700&family=JetBrains+Mono:wght@500;700&display=swap">
+<script src="data.js"></script>
+<style>
+/* Layout: snövit sida där en klunga åkare glider genom heron. Under den sex snabbsvar som byter innehåll
+   efter läget (före, tävlingsvecka, tävlingsdag, efter), sedan verktyget "Hitta din klunga" och fyra innehållsblock. */
+:root {
+  --snow: #F5F7FC; --surface: #FFFFFF; --ice: #E6ECF8; --line: #CBD4EA; --track: #D3DBEF;
+  --ink: #121933; --muted: #4D5779;
+  --blue: #3451A3; --vest: #4561AE; --red: #C8102E; --red-ink: #A50D26; --go: #1C7A4B;
+  --f-display: "Big Shoulders Display", "Arial Narrow", "Roboto Condensed", sans-serif;
+  --f-body: "Familjen Grotesk", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --f-mono: "JetBrains Mono", ui-monospace, Menlo, monospace;
+  --finish: #3451A3;
+  --wrap: 76rem; --r: 6px;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --snow: #0B1029; --surface: #121A3B; --ice: #18224B; --line: #2B3769; --track: #263160;
+    --ink: #E8EDFB; --muted: #A5B0D4; --blue: #9DB3F7; --vest: #7089D9; --red: #E3314D; --red-ink: #FF8396; --go: #5FD39A; --finish: #24397F;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --snow: #0B1029; --surface: #121A3B; --ice: #18224B; --line: #2B3769; --track: #263160;
+  --ink: #E8EDFB; --muted: #A5B0D4; --blue: #9DB3F7; --vest: #7089D9; --red: #E3314D; --red-ink: #FF8396; --go: #5FD39A; --finish: #24397F;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+:root { padding-top: env(safe-area-inset-top, 0px); padding-bottom: env(safe-area-inset-bottom, 0px); }
+html { scroll-behavior: smooth; scroll-padding-top: 4.5rem; }
+body { margin: 0; background: var(--snow); color: var(--ink); font: 400 1.0625rem/1.6 var(--f-body); -webkit-font-smoothing: antialiased; }
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 60; background: var(--surface); }
+[hidden] { display: none !important; }
+h1, h2, h3 { margin: 0; line-height: 1.05; text-wrap: balance; }
+p { margin: 0; }
+a { color: var(--blue); text-underline-offset: .18em; }
+:focus-visible { outline: 3px solid var(--blue); outline-offset: 3px; border-radius: 2px; }
+.sr-only { position: absolute !important; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+.wrap { max-width: var(--wrap); margin-inline: auto; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+@media (min-width: 760px) { .wrap { padding-left: max(32px, env(safe-area-inset-left, 0px)); padding-right: max(32px, env(safe-area-inset-right, 0px)); } }
+.label { font: 700 .75rem/1.2 var(--f-mono); letter-spacing: .1em; text-transform: uppercase; color: var(--muted); }
+.ext::after { content: " ↗" / ""; font-family: var(--f-mono); font-size: .85em; }
+.num { font-variant-numeric: tabular-nums; }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } *, *::before, *::after { animation: none !important; transition: none !important; } }
+
+.btn { display: inline-flex; align-items: center; gap: .5rem; min-height: 48px; padding: .6rem 1.2rem; border-radius: 999px; border: 2px solid transparent; font: 700 1rem/1.1 var(--f-body); text-decoration: none; cursor: pointer; }
+.btn-red { background: var(--red); color: #FFFFFF; }
+.btn-line { border-color: var(--line); color: var(--ink); background: var(--surface); }
+.btn:hover { filter: brightness(1.05); }
+
+/* ---------- Header ---------- */
+.top { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 50; background: var(--surface); border-bottom: 1px solid var(--line); }
+.top-in { display: flex; align-items: center; gap: 1rem; min-height: 4rem; }
+.brand { display: flex; align-items: center; gap: .5rem; color: var(--ink); text-decoration: none; margin-right: auto; }
+.brand svg { width: 2.1rem; height: 2.1rem; color: var(--blue); }
+.brand b { font: 900 1.6rem/1 var(--f-display); letter-spacing: .04em; text-transform: uppercase; color: var(--blue); }
+.nav { display: flex; gap: .125rem; overflow-x: auto; scrollbar-width: none; }
+.nav::-webkit-scrollbar { display: none; }
+.nav a { white-space: nowrap; padding: .5rem .65rem; border-radius: var(--r); color: var(--ink); text-decoration: none; font-weight: 500; font-size: .9375rem; }
+.nav a:hover { background: var(--ice); }
+@media (max-width: 899px) {
+  .top-in { flex-wrap: wrap; gap: 0; padding-top: .25rem; }
+  .nav { flex-basis: 100%; margin-inline: -.65rem; padding-bottom: .25rem; }
+}
+
+/* ---------- Hero ---------- */
+.hero { padding-top: clamp(2rem, 5vw, 4rem); background: linear-gradient(var(--surface), var(--snow)); }
+.hero-grid { display: grid; gap: 2rem; align-items: end; }
+@media (min-width: 900px) { .hero-grid { grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr); } }
+.hero h1 { font: 900 clamp(4.2rem, 13vw, 9.5rem)/.82 var(--f-display); text-transform: uppercase; letter-spacing: .01em; color: var(--blue); margin-top: .75rem; }
+.hero h1 span { display: block; font-size: .42em; letter-spacing: .06em; color: var(--red); margin-top: .35rem; }
+.lede { max-width: 34rem; margin-top: 1.25rem; font-size: 1.1875rem; }
+.status { border-left: 3px solid var(--red); padding: .25rem 0 .25rem 1.25rem; display: grid; gap: .5rem; }
+.status-big { font: 800 clamp(3.5rem, 9vw, 6rem)/.9 var(--f-display); color: var(--ink); font-variant-numeric: tabular-nums; }
+.status-sub { font-weight: 700; font-size: 1.125rem; }
+.status-note { color: var(--muted); font-size: .9375rem; }
+.status-cta { display: flex; flex-wrap: wrap; gap: .5rem; margin-top: .5rem; }
+
+.pack { position: relative; margin-top: clamp(1.5rem, 4vw, 2.5rem); }
+.pack canvas { display: block; width: 100%; height: clamp(170px, 22vw, 240px); }
+.pack-bar { display: flex; flex-wrap: wrap; gap: .5rem 1rem; align-items: center; justify-content: space-between; padding-block: .6rem 1rem; }
+.pack-cap { color: var(--muted); font-size: .875rem; max-width: 52rem; }
+.pause { font: 700 .75rem/1 var(--f-mono); letter-spacing: .08em; text-transform: uppercase; background: var(--surface); color: var(--ink); border: 1px solid var(--line); border-radius: 999px; padding: .55rem .9rem; cursor: pointer; min-height: 36px; }
+
+/* ---------- Snabbsvar ---------- */
+.answers { padding-block: 1.5rem 3rem; }
+.answers ul { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1px; background: var(--line); border: 1px solid var(--line); border-radius: var(--r); overflow: hidden; }
+.ans { background: var(--surface); padding: 1rem 1.1rem 1.1rem; display: grid; gap: .3rem; align-content: start; position: relative; }
+.ans::before { content: ""; position: absolute; inset: 0 0 auto; height: 3px; background: transparent; }
+.ans[data-tone="now"]::before { background: var(--red); }
+.ans[data-tone="ok"]::before { background: var(--go); }
+.ans[data-tone="wait"]::before { background: repeating-linear-gradient(90deg, var(--muted) 0 6px, transparent 6px 10px); }
+.ans .v { font: 800 1.7rem/1.02 var(--f-display); letter-spacing: .01em; overflow-wrap: anywhere; }
+@media (min-width: 700px) { .answers ul { grid-template-columns: repeat(3, minmax(0, 1fr)); } .ans .v { font-size: 1.85rem; } }
+@media (min-width: 1180px) { .answers ul { grid-template-columns: repeat(6, minmax(0, 1fr)); } .ans .v { font-size: 1.6rem; } }
+.ans .s { color: var(--muted); font-size: .9375rem; }
+.ans .s a { color: var(--blue); }
+.live-dot { display: inline-block; width: .55rem; height: .55rem; border-radius: 50%; background: var(--red); margin-right: .35rem; animation: blink 1.4s ease-in-out infinite; vertical-align: .1em; }
+@keyframes blink { 50% { opacity: .25; } }
+
+/* ---------- Sektioner ---------- */
+.sec { padding-block: clamp(3rem, 7vw, 5rem); border-top: 1px solid var(--line); }
+.sec.tint { background: var(--surface); }
+.sec-head { display: grid; gap: .6rem; margin-bottom: 2rem; max-width: 44rem; }
+.sec-head h2 { font: 900 clamp(2.4rem, 6vw, 3.6rem)/.92 var(--f-display); text-transform: uppercase; color: var(--blue); }
+.sec-head p { color: var(--muted); font-size: 1.125rem; }
+.kicker { font: 700 .8125rem/1.2 var(--f-mono); letter-spacing: .1em; text-transform: uppercase; color: var(--red-ink); }
+
+/* ---------- Hitta din klunga ---------- */
+.tool { display: grid; gap: 2rem; }
+@media (min-width: 900px) { .tool { grid-template-columns: minmax(0, 20rem) minmax(0, 1fr); gap: 3rem; } }
+.ctl { display: grid; gap: 1.5rem; align-content: start; }
+fieldset { border: 0; padding: 0; margin: 0; }
+legend { font-weight: 700; margin-bottom: .5rem; padding: 0; }
+.seg { display: grid; grid-template-columns: repeat(3, 1fr); gap: .375rem; }
+.seg input { position: absolute; opacity: 0; pointer-events: none; }
+.seg label { display: grid; place-items: center; min-height: 64px; border: 2px solid var(--line); border-radius: var(--r); background: var(--surface); cursor: pointer; }
+.seg label b { font: 800 1.9rem/1 var(--f-display); }
+.seg label span { font: 600 .75rem/1 var(--f-mono); color: var(--muted); }
+.seg input:checked + label { border-color: var(--red); box-shadow: inset 0 0 0 1px var(--red); }
+.seg input:checked + label b { color: var(--red-ink); }
+.seg input:focus-visible + label { outline: 3px solid var(--blue); outline-offset: 2px; }
+.goal { display: grid; gap: .5rem; }
+.goal label { font-weight: 700; }
+.goal output { font: 800 3.4rem/1 var(--f-display); font-variant-numeric: tabular-nums; }
+input[type="range"] { width: 100%; accent-color: var(--red); min-height: 32px; }
+.range-ends { display: flex; justify-content: space-between; font: 500 .75rem/1 var(--f-mono); color: var(--muted); }
+
+.res { display: grid; gap: 1.5rem; min-width: 0; }
+.res-top { display: grid; grid-template-columns: repeat(auto-fit, minmax(9rem, 1fr)); gap: 1rem; }
+.res-top div { border-top: 2px solid var(--ink); padding-top: .5rem; }
+.res-top b { display: block; font: 800 2rem/1.05 var(--f-display); font-variant-numeric: tabular-nums; }
+.swarm-box { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); padding: 1rem 1rem .75rem; }
+.swarm-box svg { display: block; width: 100%; height: auto; overflow: visible; }
+.swarm-head { display: flex; flex-wrap: wrap; gap: .25rem 1rem; justify-content: space-between; align-items: baseline; margin-bottom: .5rem; }
+.swarm-head p { font-weight: 700; }
+.splits { width: 100%; border-collapse: collapse; font-variant-numeric: tabular-nums; }
+.splits th, .splits td { text-align: left; padding: .5rem .25rem; border-bottom: 1px solid var(--line); }
+.splits th { font: 700 .75rem/1.2 var(--f-mono); letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+.splits td:last-child, .splits th:last-child { text-align: right; }
+.tip { border-left: 3px solid var(--blue); padding-left: 1rem; color: var(--muted); }
+
+/* ---------- Startledet ---------- */
+.path { list-style: none; margin: 0; padding: 0; display: grid; gap: 0; counter-reset: st; position: relative; }
+@media (min-width: 900px) {
+  .path { grid-template-columns: repeat(5, 1fr); gap: 1.25rem; padding-top: 2.75rem; }
+  .path::before, .path::after { content: ""; position: absolute; left: 0; right: 0; height: 3px; background: var(--red); }
+  .path::before { top: .9rem; } .path::after { top: 1.45rem; }
+}
+.path li { position: relative; padding: 0 0 1.5rem 3rem; counter-increment: st; }
+.path li::before { content: counter(st); position: absolute; left: 0; top: 0; width: 2.25rem; height: 2.25rem; border-radius: 50%; display: grid; place-items: center; background: var(--surface); border: 3px solid var(--red); font: 800 1.1rem/1 var(--f-display); color: var(--ink); z-index: 1; }
+@media (max-width: 899px) { .path li::after { content: ""; position: absolute; left: 1.05rem; top: 2.25rem; bottom: 0; width: 3px; background: var(--line); } .path li:last-child::after { display: none; } }
+@media (min-width: 900px) { .path li { padding: 0; } .path li::before { top: -2.75rem; left: 0; } }
+.path h3 { font: 800 1.45rem/1.05 var(--f-display); text-transform: uppercase; margin-bottom: .35rem; }
+.path p { color: var(--muted); font-size: .96875rem; }
+.routes { display: grid; gap: 1rem; grid-template-columns: repeat(auto-fit, minmax(min(100%, 15rem), 1fr)); margin-top: 2.5rem; }
+.route { background: var(--snow); border: 1px solid var(--line); border-radius: var(--r); padding: 1.1rem 1.2rem; display: grid; gap: .4rem; align-content: start; }
+.route h3 { font-size: 1.125rem; }
+.chip { justify-self: start; font: 700 .72rem/1 var(--f-mono); letter-spacing: .08em; text-transform: uppercase; padding: .35rem .5rem; border-radius: 3px; background: var(--ice); color: var(--ink); }
+.chip.red { background: var(--red); color: #FFFFFF; }
+.reg { display: flex; flex-wrap: wrap; gap: .5rem 1rem; align-items: center; margin-top: 1.5rem; font-weight: 700; }
+.copy { font: 600 .8125rem/1 var(--f-mono); background: transparent; color: var(--blue); border: 1px solid var(--line); border-radius: 999px; padding: .5rem .75rem; cursor: pointer; min-height: 36px; }
+
+/* ---------- Tävlingsdagen ---------- */
+.day { display: grid; gap: 2.5rem; }
+@media (min-width: 900px) { .day { grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr); gap: 3rem; } }
+.sched { list-style: none; margin: 0; padding: 0; }
+.sched li { display: grid; grid-template-columns: 6.5rem minmax(0, 1fr); gap: .75rem; padding: .8rem 0; border-bottom: 1px solid var(--line); position: relative; }
+.sched .t { font: 700 .875rem/1.5 var(--f-mono); font-variant-numeric: tabular-nums; }
+.sched b { display: block; }
+.sched small { color: var(--muted); font-size: .9rem; }
+.sched li[data-s="done"] { opacity: .55; }
+.sched li[data-s="done"] b::after { content: " · klart"; font-weight: 400; color: var(--muted); }
+.sched li[data-s="now"] { background: linear-gradient(90deg, color-mix(in srgb, var(--red) 12%, transparent), transparent); margin-inline: -.75rem; padding-inline: .75rem; }
+.sched li[data-s="now"] .t::before { content: "NU "; color: var(--red-ink); }
+.sched li[data-s="next"] .t::before { content: "SEN "; color: var(--blue); }
+.sched-note { margin-top: .75rem; color: var(--muted); font-size: .9375rem; }
+.profile { background: var(--snow); border: 1px solid var(--line); border-radius: var(--r); padding: 1rem; }
+.profile svg { display: block; width: 100%; height: auto; }
+.profile-head { display: flex; flex-wrap: wrap; justify-content: space-between; gap: .5rem; align-items: baseline; margin-bottom: .5rem; }
+.stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: .75rem; margin-top: 1rem; }
+.stats b { display: block; font: 800 1.75rem/1 var(--f-display); }
+.rules { list-style: none; margin: 1.5rem 0 0; padding: 0; display: grid; gap: .5rem; }
+.rules li { padding-left: 1.25rem; position: relative; }
+.rules li::before { content: ""; position: absolute; left: 0; top: .62em; width: .6rem; height: 3px; background: var(--red); box-shadow: 0 5px 0 var(--red); }
+.extra { display: grid; gap: 2rem; margin-top: 3rem; }
+@media (min-width: 900px) { .extra { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+.extra h3 { font: 800 1.5rem/1 var(--f-display); text-transform: uppercase; margin-bottom: .75rem; }
+.links { list-style: none; margin: 0; padding: 0; }
+.links a { display: flex; justify-content: space-between; gap: 1rem; padding: .7rem 0; border-bottom: 1px solid var(--line); text-decoration: none; color: var(--ink); font-weight: 500; }
+.links a small { color: var(--muted); font: 500 .75rem/1.6 var(--f-mono); white-space: nowrap; }
+.links a:hover span { text-decoration: underline; }
+.cold { display: flex; gap: 1rem; align-items: center; margin-top: 1rem; padding: .9rem 1rem; border: 1px dashed var(--blue); border-radius: var(--r); }
+.cold b { font: 800 2rem/1 var(--f-display); color: var(--blue); white-space: nowrap; }
+.packlist { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: .5rem; }
+.packlist label { display: inline-flex; align-items: center; gap: .5rem; padding: .5rem .8rem; min-height: 44px; border: 1px solid var(--line); border-radius: 999px; background: var(--surface); cursor: pointer; font-size: .9375rem; }
+.packlist input { accent-color: var(--red); width: 1.1rem; height: 1.1rem; }
+.packlist input:checked + span { text-decoration: line-through; color: var(--muted); }
+
+/* ---------- Nyheter ---------- */
+.news { display: grid; gap: 1px; background: var(--line); border: 1px solid var(--line); border-radius: var(--r); overflow: hidden; }
+@media (min-width: 900px) { .news { grid-template-columns: 1.4fr 1fr 1fr; } .news article:first-child { grid-row: span var(--rows, 2); } .news article.wide { grid-column: span 2; } }
+.news article { background: var(--surface); padding: 1.2rem 1.3rem; display: grid; gap: .5rem; align-content: start; }
+.news article:first-child h3 { font: 800 2.2rem/1 var(--f-display); text-transform: uppercase; }
+.news h3 { font-size: 1.15rem; }
+.news .meta { display: flex; gap: .5rem; align-items: center; flex-wrap: wrap; }
+.news time { font: 600 .8rem/1 var(--f-mono); color: var(--muted); }
+.news p { color: var(--muted); }
+
+/* ---------- Historik ---------- */
+.years { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 14.5rem), 1fr)); gap: 1rem; }
+@media (max-width: 559px) { .years { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .5rem; } .yr { padding: .8rem; font-size: .9375rem; } .yr .y { font-size: 2.2rem; } .yr p, .yr .w { overflow-wrap: anywhere; } }
+.yr { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); padding: 1rem 1.1rem 1.1rem; display: grid; gap: .45rem; align-content: start; }
+.yr .y { font: 900 2.8rem/.9 var(--f-display); color: var(--blue); font-variant-numeric: tabular-nums; }
+.yr .d { font: 600 .8rem/1.2 var(--f-mono); color: var(--muted); }
+.yr .w { font-weight: 700; }
+.yr .q { font-style: italic; }
+.yr ul { list-style: none; margin: .25rem 0 0; padding: 0; display: flex; flex-wrap: wrap; gap: .35rem .9rem; font-size: .9375rem; }
+.yr.dns { background: repeating-linear-gradient(135deg, var(--snow) 0 10px, var(--ice) 10px 20px); }
+.yr.dns .y { color: var(--muted); text-decoration: line-through; text-decoration-color: var(--red); text-decoration-thickness: 4px; }
+.yr.next { border: 2px solid var(--red); }
+.yr.next .y { color: var(--red-ink); }
+
+/* ---------- Mål ---------- */
+.finish { background: var(--finish); color: #FFFFFF; padding-block: 3rem 2rem; }
+.arch { display: flex; align-items: stretch; gap: 0; margin-bottom: 2.5rem; }
+.arch i { width: 10px; background: #FFFFFF; border-radius: 3px 3px 0 0; }
+.arch span { flex: 1; text-align: center; font: 900 clamp(2.5rem, 9vw, 6rem)/1 var(--f-display); letter-spacing: .1em; padding: .4rem 0; background: var(--red); border-block: 4px solid #FFFFFF; margin-bottom: 2.5rem; }
+.foot { display: grid; gap: 1.5rem; grid-template-columns: repeat(auto-fit, minmax(min(100%, 15rem), 1fr)); }
+.finish a { color: #FFFFFF; }
+.finish .copy { color: #FFFFFF; border-color: rgba(255,255,255,.5); }
+.finish small { color: #DCE3F7; }
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="wrap top-in">
+    <a class="brand" href="#top"><svg viewBox="0 0 300 340" aria-hidden="true"><use href="#ren"/></svg><b>Renrajden</b></a>
+    <nav class="nav" aria-label="Huvudmeny">
+      <a href="#snabbsvar">Snabbsvar</a>
+      <a href="#klunga">Din klunga</a>
+      <a href="#startledet">Anmälan &amp; seedning</a>
+      <a href="#dagen">Tävlingsdagen</a>
+      <a href="#nyheter">Nyheter</a>
+      <a href="#historik">Historik</a>
+    </nav>
+  </div>
+</header>
+
+<main id="top">
+  <section class="hero" aria-labelledby="h1">
+    <div class="wrap hero-grid">
+      <div>
+        <p class="label">OK Renen · Ormberget, Luleå · Klassisk stil</p>
+        <h1 id="h1">Renrajden <span>2027 · lör 30 januari</span></h1>
+        <p class="lede">Långlopp i dubbelspår som ger seedning till Vasaloppet. Fyra varv runt Ormberget, och alltid en klunga att hänga på.</p>
+      </div>
+      <div class="status" id="status" aria-live="polite"></div>
+    </div>
+    <div class="pack">
+      <canvas id="pack" aria-hidden="true"></canvas>
+      <div class="wrap pack-bar">
+        <p class="pack-cap">Illustration med 84 påhittade åkare, sedd från din plats i loppet. Klungor bildas när snabbare åkare kommer ikapp och lägger sig i spåret bakom. <b id="you-cap"></b></p>
+        <button class="pause" type="button" id="pause" aria-pressed="false">Pausa klungan</button>
+      </div>
+    </div>
+  </section>
+
+  <section class="answers" id="snabbsvar" aria-labelledby="ans-h">
+    <div class="wrap">
+      <h2 class="sr-only" id="ans-h">Snabbsvar</h2>
+      <ul id="answers"></ul>
+    </div>
+  </section>
+
+  <section class="sec tint" id="klunga" aria-labelledby="klunga-h">
+    <div class="wrap">
+      <div class="sec-head">
+        <p class="kicker">Tempo och mellantider</p>
+        <h2 id="klunga-h">Hitta din klunga</h2>
+        <p>Välj distans och måltid. Du får tempo per kilometer, tid per varv och var i fältet du hamnar.</p>
+      </div>
+      <div class="tool">
+        <form class="ctl" id="tool" onsubmit="return false">
+          <fieldset>
+            <legend>Distans</legend>
+            <div class="seg">
+              <input type="radio" name="dist" id="d42" value="42" checked><label for="d42"><b>42</b><span>4 varv</span></label>
+              <input type="radio" name="dist" id="d21" value="21"><label for="d21"><b>21</b><span>2 varv</span></label>
+              <input type="radio" name="dist" id="d10" value="10"><label for="d10"><b>10</b><span>1 varv</span></label>
+            </div>
+          </fieldset>
+          <div class="goal">
+            <label for="goal">Måltid</label>
+            <output id="goal-out" for="goal" class="num">3:10</output>
+            <input type="range" id="goal" min="110" max="330" step="1" value="190" aria-describedby="goal-ends">
+            <div class="range-ends" id="goal-ends"><span id="g-min">1:50</span><span id="g-max">5:30</span></div>
+          </div>
+          <p class="tip">Lägg dig i en klunga som håller ditt tempo första varvet. Det är lätt att gå för hårt när hela startfältet drar iväg.</p>
+        </form>
+        <div class="res" aria-live="polite">
+          <div class="res-top">
+            <div><span class="label">Tempo</span><b id="r-pace">4:31</b><small>min per km</small></div>
+            <div><span class="label">Per varv</span><b id="r-lap">47:30</b><small>10,5 km</small></div>
+            <div><span class="label">I mål ca</span><b id="r-finish">13:10</b><small>om start kl 10:00</small></div>
+          </div>
+          <div class="swarm-box">
+            <div class="swarm-head"><p id="r-pack">Du hamnar i klunga 5 av 9</p><span class="ex">exempelfält</span></div>
+            <svg id="swarm" viewBox="0 0 640 150" role="img" aria-labelledby="r-pack"></svg>
+          </div>
+          <table class="splits">
+            <caption class="sr-only">Mellantider per varv</caption>
+            <thead><tr><th scope="col">Varv</th><th scope="col">Km</th><th scope="col">Mellantid</th><th scope="col">Klockan</th></tr></thead>
+            <tbody id="splits"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec" id="startledet" aria-labelledby="start-h">
+    <div class="wrap">
+      <div class="sec-head">
+        <p class="kicker">Från Ormberget till Sälen</p>
+        <h2 id="start-h">Vägen till startledet</h2>
+        <p>Ditt Renrajden-resultat blir seedning i Vasaloppet. Så går det till.</p>
+      </div>
+      <ol class="path">
+        <li><h3>Anmäl dig</h3><p>Via din klubb i IdrottOnline, eller i SSF TA om du är klubblös eller i OK Renen.</p></li>
+        <li><h3>Ta med Vasa-ID</h3><p>Behövs för automatisk seedning om du efteranmäler dig.</p></li>
+        <li><h3>Åk Renrajden</h3><p>Klassisk stil, 83 % stavlängd och stilkontroll längs banan.</p></li>
+        <li><h3>Samma kväll</h3><p>Vi skickar resultatet till Vasaloppet. 2024 gick det iväg kl 20:50.</p></li>
+        <li><h3>Kolla startledet</h3><p>Vasaloppet publicerar <a class="ext" href="https://www.vasaloppet.se/lopp/skidlopp/vasaloppet/seedning/seedningstabeller/" target="_blank" rel="noopener">seedningstabellerna</a>.</p></li>
+      </ol>
+      <p class="reg" id="reg"></p>
+      <div class="routes">
+        <article class="route"><span class="chip red">Enklast</span><h3>Via din klubb</h3><p>Anmäl dig på klubbens sida i IdrottOnline. Där finns dina uppgifter redan.</p></article>
+        <article class="route"><span class="chip">Klubblös eller OK Renen</span><h3>Direkt i SSF TA</h3><p>Svenska Skidförbundets tävlingsadministration. Länken kommer när anmälan öppnar.</p></article>
+        <article class="route"><span class="chip">I sista hand</span><h3>Mejla oss</h3><p><span id="mail">info@renrajden.se</span> <button class="copy" type="button" data-copy="info@renrajden.se">Kopiera</button></p></article>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec tint" id="dagen" aria-labelledby="dagen-h">
+    <div class="wrap">
+      <div class="sec-head">
+        <p class="kicker" id="dagen-kicker">PM 2025 som mall</p>
+        <h2 id="dagen-h">Tävlingsdagen</h2>
+        <p id="dagen-intro">Så såg dagen ut 2025. PM för 2027 kommer före loppet.</p>
+      </div>
+      <div class="day">
+        <div>
+          <ol class="sched" id="sched"></ol>
+          <ul class="rules">
+            <li>83 % stavlängd. Stilkontrollanter längs banan.</li>
+            <li>Inga skidor mellan spåren under starten.</li>
+            <li>Fäst gels med kardborreband. Skräpzon efter varje vätska.</li>
+          </ul>
+        </div>
+        <div class="profile">
+          <div class="profile-head"><h3 id="prof-h">Banan, 42 km</h3><span class="label">Schematisk profil</span></div>
+          <svg id="profile" viewBox="0 0 620 190" role="img" aria-labelledby="prof-h prof-d"></svg>
+          <p class="sr-only" id="prof-d"></p>
+          <div class="stats">
+            <div><span class="label">Varv</span><b id="s-laps">4</b></div>
+            <div><span class="label">Höjdmeter</span><b id="s-hm">~390</b></div>
+            <div><span class="label">Vätskor</span><b id="s-water">8</b></div>
+          </div>
+        </div>
+      </div>
+      <div class="extra">
+        <div>
+          <h3>Före och väder</h3>
+          <ul class="links" id="weather"></ul>
+          <div class="cold"><b>−20 °C</b><p>Kallare än så på banans kallaste punkt, och loppet ställs in. Det hände 2014.</p></div>
+        </div>
+        <div>
+          <h3>Packa</h3>
+          <ul class="packlist" id="packlist"></ul>
+          <p class="sched-note">Bockarna sparas bara i din webbläsare.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec" id="nyheter" aria-labelledby="news-h">
+    <div class="wrap">
+      <div class="sec-head">
+        <p class="kicker">Från arrangören</p>
+        <h2 id="news-h">Nyheter</h2>
+      </div>
+      <div class="news" id="news"></div>
+    </div>
+  </section>
+
+  <section class="sec tint" id="historik" aria-labelledby="hist-h">
+    <div class="wrap">
+      <div class="sec-head">
+        <p class="kicker">Sedan 2013 · tre år utan start</p>
+        <h2 id="hist-h">Klungan genom åren</h2>
+        <p>Resultat, segrare och tidningsrubriker. Randiga år kördes inte.</p>
+      </div>
+      <ol class="years" id="years"></ol>
+    </div>
+  </section>
+</main>
+
+<footer class="finish">
+  <div class="wrap">
+    <div class="arch" aria-hidden="true"><i></i><span>MÅL</span><i></i></div>
+    <div class="foot">
+      <div><b>Renrajden</b><br><small>Arrangör OK Renen, Luleå. Ormbergsstadion, Ormberget.</small></div>
+      <div><b>Frågor?</b><br><small>info@renrajden.se</small> <button class="copy" type="button" data-copy="info@renrajden.se">Kopiera</button></div>
+      <div><b>Bra åkt!</b><br><small>Tagga dina bilder med #renrajden.</small></div>
+    </div>
+  </div>
+</footer>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="ren" viewBox="0 0 300 340">
+    <g fill="currentColor" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+      <g fill="none" stroke-width="10">
+        <path d="M190 150 C208 112 234 84 238 44 C240 24 230 10 214 4"/>
+        <path d="M228 92 L266 70"/><path d="M238 56 L274 40"/><path d="M206 118 L186 92"/><path d="M236 30 L258 12"/>
+        <path d="M178 150 C172 112 152 82 130 62 C114 46 108 28 116 10"/>
+        <path d="M162 112 L124 106"/><path d="M142 80 L106 84"/><path d="M124 52 L90 42"/><path d="M152 94 L166 58"/>
+        <path d="M172 142 C150 140 128 150 116 170" stroke-width="9"/>
+      </g>
+      <path stroke="none" d="M262 340 C258 300 250 250 232 205 C220 175 205 158 190 150 C175 143 160 146 148 156 C120 180 92 215 66 244 C56 255 54 268 62 276 C70 284 84 286 96 282 C118 276 136 274 150 282 C162 290 168 310 170 340 Z"/>
+      <path stroke="none" d="M204 162 C226 142 250 136 264 140 C252 158 230 170 208 174 Z"/>
+    </g>
+  </symbol>
+</svg>
+
+<script>
+(() => {
+  const $ = (s) => document.querySelector(s);
+  const css = (n) => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+  const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  let dist = 42, goal = 190;
+
+  /* ---------- Status i heron ---------- */
+  function renderStatus(st) {
+    const el = $("#status"), now = st.now;
+    const bibLeft = (9 * 60 + 45) - (now.getHours() * 60 + now.getMinutes());
+    const v = {
+      fore: [st.days, st.days === 1 ? "dag till start" : "dagar till start", "Lördag 30 januari. Starttiden meddelas i inbjudan.", [["Hitta din klunga", "#klunga", 1], ["Så seedas du", "#startledet"]]],
+      vecka: [st.days, st.days === 1 ? "dag kvar" : "dagar kvar", "PM och startlista är ute. Kolla före och valla." + " " + RR.ex, [["PM och tider", "#dagen", 1], ["Nyheter", "#nyheter"]]],
+      dag: [RR.dur(st.toStart), "till start kl 10:00", (bibLeft > 0 ? `<span class="live-dot"></span>Nummerlapparna delas ut i ${RR.dur(bibLeft * 60000)} till.` : "Nummerlappsutdelningen är stängd.") + " " + RR.ex, [["Liveresultat", "#nyheter", 1], ["Hitta hit", RR.MAP]]],
+      efter: ["Mål!", "Tack för i år", "Resultaten är klara och seedningen är skickad till Vasaloppet." + " " + RR.ex, [["Resultat", "#nyheter", 1], ["Seedningstabeller", RR.SEED_TABLES]]],
+    }[st.phase];
+    el.innerHTML = `<span class="status-big">${v[0]}</span><span class="status-sub">${v[1]}</span><p class="status-note">${v[2]}</p>
+      <div class="status-cta">${v[3].map(([t, h, p]) => `<a class="btn ${p ? "btn-red" : "btn-line"}${h.startsWith("http") ? " ext" : ""}" href="${h}"${h.startsWith("http") ? ' target="_blank" rel="noopener"' : ""}>${t}</a>`).join("")}</div>`;
+  }
+
+  /* ---------- Snabbsvar ---------- */
+  function renderAnswers(st) {
+    const now = st.now, m = now.getHours() * 60 + now.getMinutes();
+    const map = `<a class="ext" href="${RR.MAP}" target="_blank" rel="noopener">Hitta hit</a>`;
+    const A = {
+      fore: [
+        ["När", "Lör 30 jan", `om ${st.days} dagar`],
+        ["Var", "Ormberget", "Ormbergsstadion, Luleå · " + map],
+        ["Hur långt", "42 · 21 · 10 km", "Varv på 10,5 km, ~98 höjdmeter"],
+        ["Start", "Meddelas", "2025 startade alla kl 10:00", "wait"],
+        ["Anmälan", "Inte öppen än", "Öppnar med inbjudan", "wait"],
+        ["Seedning", "Vasaloppet", "Resultatet skickas samma kväll", "ok"],
+      ],
+      vecka: [
+        ["Start", "Lör 10:00" + RR.ex, "Alla distanser samtidigt"],
+        ["Nummerlapp", "08:00–09:45", "Ormbergsstadion"],
+        ["Före", "−9 °C" + RR.ex, "Prognos lördag kl 10"],
+        ["Anmälan", "Efteranmälan" + RR.ex, "På plats. Ta med Vasa-ID", "now"],
+        ["Startlista", "Publicerad" + RR.ex, "Hitta ditt nummer under Nyheter", "ok"],
+        ["Var", "Ormberget", "Parkeringsvakter visar vägen · " + map],
+      ],
+      dag: [
+        ["Start", "om " + RR.dur(st.toStart), "Kl 10:00, alla distanser" + RR.ex, "now"],
+        ["Nummerlapp", m < 585 ? "Öppen" : "Stängd", m < 585 ? `Stänger 09:45, om ${RR.dur((585 - m) * 60000)}` : "Stängde 09:45", m < 585 ? "now" : ""],
+        ["Temperatur", "−7,8 °C" + RR.ex, "Vid stadion · gränsen är −20 °C", "ok"],
+        ["Liveresultat", "Följ loppet", "Länk publiceras under Nyheter"],
+        ["Dusch", "Öppen 08–15", "Ormbergsanläggningen"],
+        ["Hitta hit", "Ormberget", "Ormbergsstadion · " + map],
+      ],
+      efter: [
+        ["Resultat", "Klara" + RR.ex, "Publicerade 20:50", "ok"],
+        ["Seedning", "Skickad" + RR.ex, `<a class="ext" href="${RR.SEED_TABLES}" target="_blank" rel="noopener">Seedningstabeller</a>`, "ok"],
+        ["Priser", "Anslagstavlan", "Lottade priser på startnummer, hämtas i sekretariatet"],
+        ["Bilder", "#renrajden", "Tagga dina bilder"],
+        ["Nästa år", "2028", "Datum meddelas", "wait"],
+        ["Frågor", "Mejla oss", "info@renrajden.se"],
+      ],
+    }[st.phase];
+    $("#answers").innerHTML = A.map(([k, v, s, tone]) => `<li class="ans" data-tone="${tone || ""}"><span class="label">${tone === "now" ? '<span class="live-dot" aria-hidden="true"></span>' : ""}${k}</span><span class="v">${v}</span><span class="s">${s}</span></li>`).join("");
+  }
+
+  /* ---------- Registreringsrad ---------- */
+  function renderReg(st) {
+    const t = { fore: ["Anmälan till 2027 är inte öppen än.", "Datum och avgifter kommer i inbjudan."], vecka: ["Föranmälan är stängd.", "Efteranmälan på plats på tävlingsdagen." + RR.ex], dag: ["Efteranmälan på plats.", "Ta med Vasa-ID." + RR.ex], efter: ["Anmälan till 2028 öppnar nästa säsong.", ""] }[st.phase];
+    $("#reg").innerHTML = `<span class="chip">${st.phase === "fore" ? "Status" : "Nu"}</span>${t[0]} <span style="font-weight:400;color:var(--muted)">${t[1]}</span>`;
+  }
+
+  /* ---------- Dagens schema ---------- */
+  function renderDay(st) {
+    const s = RR.dayStatus(st.now);
+    $("#sched").innerHTML = RR.DAY.map((e, i) => `<li data-s="${s[i]}"><span class="t">${e.t}</span><div><b>${e.what}</b>${e.note ? `<small>${e.note}</small>` : ""}</div></li>`).join("");
+    const race = st.phase === "dag" || st.phase === "efter";
+    $("#dagen-kicker").textContent = race ? "Lördag 30 januari 2027" : st.phase === "vecka" ? "PM 2027" : "PM 2025 som mall";
+    $("#dagen-intro").innerHTML = race ? "Klockan styr listan. Det som pågår just nu ligger markerat." + RR.ex : st.phase === "vecka" ? "Tiderna från PM för 2027." + RR.ex : "Så såg dagen ut 2025. PM för 2027 kommer före loppet.";
+  }
+
+  /* ---------- Hitta din klunga ---------- */
+  function packsOf(times, gap) {
+    const g = []; let cur = [times[0]];
+    for (let i = 1; i < times.length; i++) { if (times[i] - times[i - 1] > gap) { g.push(cur); cur = []; } cur.push(times[i]); }
+    g.push(cur); return g;
+  }
+  function renderTool() {
+    const d = RR.DIST[dist], km = d.laps * RR.LAP_KM;
+    const r = $("#goal");
+    r.min = d.min; r.max = d.max;
+    goal = Math.min(d.max, Math.max(d.min, goal));
+    r.value = goal;
+    $("#g-min").textContent = RR.hm(d.min); $("#g-max").textContent = RR.hm(d.max);
+    $("#goal-out").textContent = RR.hm(goal);
+    r.setAttribute("aria-valuetext", RR.hm(goal).replace(":", " timmar ") + " minuter");
+    const secKm = goal * 60 / km;
+    $("#r-pace").textContent = RR.pace(secKm).replace(" min/km", "");
+    $("#r-lap").textContent = RR.hm(goal / d.laps).replace(/^0:/, "") + (goal / d.laps < 60 ? " min" : "");
+    $("#r-finish").textContent = RR.clock(new Date(RR.START.getTime() + goal * 60000));
+    $("#splits").innerHTML = Array.from({ length: d.laps }, (_, i) => {
+      const t = goal * (i + 1) / d.laps;
+      return `<tr><td>${i + 1 === d.laps ? "Mål" : "Varv " + (i + 1)}</td><td>${RR.km(RR.LAP_KM * (i + 1))}</td><td>${RR.hm(t)}</td><td>${RR.clock(new Date(RR.START.getTime() + t * 60000))}</td></tr>`;
+    }).join("");
+
+    // Exempelfält som prickdiagram, grupperat i klungor
+    const times = RR.field(dist, 160), W = Math.max(320, Math.round($("#swarm").clientWidth || 640)), H = 150, L = 16, R = 16, base = 112;
+    $("#swarm").setAttribute("viewBox", `0 0 ${W} ${H}`);
+    const x = (t) => L + (t - d.min) / (d.max - d.min) * (W - L - R);
+    const packs = packsOf(times, (d.max - d.min) / 70).filter((p) => p.length >= 4);
+    const bins = {}; let dots = "";
+    times.forEach((t) => { const b = Math.round(x(t) / 7); bins[b] = (bins[b] || 0) + 1; });
+    const stepY = Math.min(7, 92 / Math.max(...Object.values(bins))), seen = {};
+    times.forEach((t) => { const b = Math.round(x(t) / 7); const k = (seen[b] = (seen[b] || 0) + 1); dots += `<circle cx="${b * 7}" cy="${base - (k - 1) * stepY - 3}" r="${Math.min(2.9, stepY / 2.2)}" fill="var(--muted)" opacity=".75"/>`; });
+    let bands = "", you = 0, nearest = 1, best = 1e9;
+    packs.forEach((p, i) => {
+      const a = x(p[0]) - 4, b = x(p[p.length - 1]) + 4;
+      bands += `<rect x="${a}" y="14" width="${Math.max(6, b - a)}" height="${base - 6}" rx="4" fill="var(--ice)"/>`;
+      if (goal >= p[0] - 0.5 && goal <= p[p.length - 1] + 0.5) you = i + 1;
+      const dd = Math.min(Math.abs(goal - p[0]), Math.abs(goal - p[p.length - 1])); if (dd < best) { best = dd; nearest = i + 1; }
+    });
+    const near = times.filter((t) => Math.abs(t - goal) <= goal * 0.02).length;
+    const ticks = []; for (let t = Math.ceil(d.min / 30) * 30; t <= d.max; t += 30) ticks.push(t);
+    const yx = x(goal);
+    $("#swarm").innerHTML = bands + dots +
+      `<line x1="${L}" x2="${W - R}" y1="${base + 4}" y2="${base + 4}" stroke="var(--line)" stroke-width="1"/>` +
+      ticks.map((t) => `<line x1="${x(t)}" x2="${x(t)}" y1="${base + 4}" y2="${base + 9}" stroke="var(--muted)"/><text x="${x(t)}" y="${base + 24}" font-family="JetBrains Mono, monospace" font-size="11" fill="var(--muted)" text-anchor="middle">${RR.hm(t)}</text>`).join("") +
+      `<line x1="${yx}" x2="${yx}" y1="6" y2="${base + 4}" stroke="var(--red)" stroke-width="2.5"/><rect x="${Math.min(W - 54, Math.max(0, yx - 22))}" y="0" width="44" height="18" rx="3" fill="var(--red)"/><text x="${Math.min(W - 32, Math.max(22, yx))}" y="13" font-family="JetBrains Mono, monospace" font-size="11" font-weight="700" fill="#FFFFFF" text-anchor="middle">DU</text>` +
+      `<text x="${W - R}" y="${base + 40}" font-family="JetBrains Mono, monospace" font-size="11" fill="var(--muted)" text-anchor="end">sluttid →</text>`;
+    $("#r-pack").textContent = (you ? `Du hamnar i klunga ${you} av ${packs.length}` : `Du åker mellan klungorna, närmast klunga ${nearest} av ${packs.length}`) + `. Ungefär ${near} åkare har en sluttid inom två procent av din.`;
+    $("#you-cap").textContent = `Den röda åkaren håller ${RR.hm(goal)} på ${d.name}.`;
+    pack.setYou(d.typical / goal);
+    renderProfile();
+  }
+  document.querySelectorAll('input[name="dist"]').forEach((i) => i.addEventListener("change", () => { const old = RR.DIST[dist]; dist = +i.value; const n = RR.DIST[dist]; goal = Math.round(n.min + (goal - old.min) / (old.max - old.min) * (n.max - n.min)); renderTool(); }));
+  $("#goal").addEventListener("input", (e) => { goal = +e.target.value; renderTool(); });
+  addEventListener("resize", () => { clearTimeout(window.__rt); window.__rt = setTimeout(renderTool, 150); });
+
+  /* ---------- Höjdprofil ---------- */
+  function renderProfile() {
+    const d = RR.DIST[dist], km = d.laps * RR.LAP_KM, W = 620, H = 190, L = 34, R = 10, T = 22, B = 30;
+    const x = (k) => L + k / km * (W - L - R), y = (e) => H - B - e / (RR.ELEV_MAX * 1.15) * (H - T - B);
+    let p = `M${x(0)},${y(0)}`;
+    for (let k = 0; k <= km + 1e-6; k += km / 240) p += ` L${x(k).toFixed(1)},${y(RR.elev(k)).toFixed(1)}`;
+    const area = p + ` L${x(km)},${H - B} L${x(0)},${H - B} Z`;
+    let marks = "";
+    for (let l = 0; l < d.laps; l++) {
+      if (l) marks += `<line x1="${x(l * RR.LAP_KM)}" x2="${x(l * RR.LAP_KM)}" y1="${T - 6}" y2="${H - B}" stroke="var(--blue)" stroke-dasharray="3 4"/>`;
+      marks += `<text x="${x(l * RR.LAP_KM + RR.LAP_KM / 2)}" y="${T - 8}" font-family="JetBrains Mono, monospace" font-size="11" fill="var(--muted)" text-anchor="middle">VARV ${l + 1}</text>`;
+      RR.WATER_AT.forEach((w) => { const k = l * RR.LAP_KM + w; marks += `<circle cx="${x(k)}" cy="${y(RR.elev(k)) - 9}" r="4.5" fill="var(--surface)" stroke="var(--blue)" stroke-width="2"/>`; });
+    }
+    const kt = []; for (let k = 0; k <= km; k += d.laps > 2 ? 10.5 : d.laps > 1 ? 5.25 : 2.1) kt.push(k);
+    $("#profile").innerHTML = `<path d="${area}" fill="var(--ice)"/><path d="${p}" fill="none" stroke="var(--blue)" stroke-width="2.5" stroke-linejoin="round"/>` + marks +
+      `<line x1="${L}" x2="${W - R}" y1="${H - B}" y2="${H - B}" stroke="var(--line)"/>` +
+      kt.map((k) => `<text x="${x(k)}" y="${H - B + 18}" font-family="JetBrains Mono, monospace" font-size="11" fill="var(--muted)" text-anchor="middle">${RR.km(k)}</text>`).join("") +
+      `<text x="${L - 6}" y="${y(0) + 4}" font-family="JetBrains Mono, monospace" font-size="10" fill="var(--muted)" text-anchor="end">0</text><text x="${L - 6}" y="${y(RR.ELEV_MAX) + 4}" font-family="JetBrains Mono, monospace" font-size="10" fill="var(--muted)" text-anchor="end">+${Math.round(RR.ELEV_MAX)}</text>` +
+      `<text x="${W - R}" y="${H - 2}" font-family="JetBrains Mono, monospace" font-size="10" fill="var(--muted)" text-anchor="end">km · ringar = vätska</text>`;
+    $("#prof-h").textContent = "Banan, " + d.name;
+    $("#prof-d").textContent = `${d.laps} varv på 10,5 km med ungefär ${d.laps * RR.HM_PER_LAP} höjdmeter och ${d.laps * 2} vätskekontroller.`;
+    $("#s-laps").textContent = d.laps; $("#s-hm").textContent = "~" + d.laps * RR.HM_PER_LAP; $("#s-water").textContent = d.laps * 2;
+  }
+
+  /* ---------- Nyheter och historik ---------- */
+  function renderNews(st) {
+    const list = RR.newsAt(st.now).slice(0, 5), rest = list.length - 1;
+    $("#news").style.setProperty("--rows", Math.max(1, Math.ceil(rest / 2)));
+    $("#news").innerHTML = list.map((n, i) => `<article${rest % 2 && i === list.length - 1 ? ' class="wide"' : ""}><div class="meta"><span class="chip${n.tag === "Resultat" ? " red" : ""}">${n.tag}</span><time datetime="${n.date}">${RR.dateSv(n.date)}${n.time ? " " + n.time : ""}</time>${n.ex ? RR.ex : ""}</div><h3>${RR.esc(n.title)}</h3><p>${RR.esc(n.body)}</p></article>`).join("");
+  }
+  $("#years").innerHTML = RR.YEARS.map((y) => `<li class="yr${y.kind ? " " + y.kind : ""}"><span class="y">${y.y}</span>${y.kind === "dns" ? `<span class="chip red">DNS · ${y.reason}</span>` : y.kind === "next" ? '<span class="chip red">Nästa start</span>' : ""}${y.date ? `<span class="d">${y.date}</span>` : ""}${y.winners ? `<span class="w">Segrare 42 km: ${y.winners}</span>` : ""}${y.text ? `<p>${y.text}</p>` : ""}${y.press ? `<p class="q"><a class="ext" href="${y.press[2]}" target="_blank" rel="noopener">${y.press[0]}: ”${y.press[1]}”</a></p>` : ""}${y.links ? `<ul>${y.links.map(([t, h]) => `<li><a class="ext" href="${h}" target="_blank" rel="noopener">${t}<span class="sr-only"> ${y.y}</span></a></li>`).join("")}</ul>` : ""}</li>`).join("");
+  $("#weather").innerHTML = RR.WEATHER.map(([t, h, s]) => `<li><a href="${h}" target="_blank" rel="noopener"><span class="ext">${t}</span><small>${s}</small></a></li>`).join("");
+
+  /* ---------- Packlista ---------- */
+  const packState = RR.store.get("rr2-pack") || {};
+  $("#packlist").innerHTML = RR.PACK.map((p, i) => `<li><label><input type="checkbox" id="pk${i}"${packState[i] ? " checked" : ""}><span>${p}</span></label></li>`).join("");
+  $("#packlist").addEventListener("change", (e) => { packState[e.target.id.slice(2)] = e.target.checked; RR.store.set("rr2-pack", packState); });
+  document.querySelectorAll("[data-copy]").forEach((b) => b.addEventListener("click", () => RR.copy(b.dataset.copy, b)));
+
+  /* ---------- Klungan (canvas) ---------- */
+  const pack = (() => {
+    const cv = $("#pack"), ctx = cv.getContext("2d");
+    let W = 0, H = 0, L = 0, cam = 0, last = 0, running = !reduce, visible = true, looping = false, col = {};
+    const V = 46; // grundfart, px/s
+    const times = RR.field(42, 84), typical = RR.DIST[42].typical;
+    const sk = times.map((t, i) => ({ rel: typical / t, x: 0, lane: 0, ly: 0, ph: Math.random() * 6.28, hue: i % 11 === 0 ? "vest" : i % 17 === 0 ? "red" : "ink" }));
+    const you = { rel: 1, x: 0, lane: 1, ly: 1, ph: 0, hue: "you", you: true };
+    sk.push(you);
+    let u = 1;
+    const readColors = () => { col = { ink: css("--ink"), muted: css("--muted"), vest: css("--vest"), red: css("--red"), line: css("--line"), track: css("--track"), snow: css("--snow"), ice: css("--ice"), blue: css("--blue") }; };
+    const mod = (a, n) => ((a % n) + n) % n;
+    function resize() {
+      const dpr = Math.min(2, devicePixelRatio || 1);
+      W = cv.clientWidth; H = cv.clientHeight; u = H / 200;
+      cv.width = W * dpr; cv.height = H * dpr; ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      if (!placed) place();
+      readColors(); draw(0);
+    }
+    // Startläge: snabbast längst fram, uppdelade i klungor med luckor emellan
+    let placed = false;
+    function place() {
+      const order = sk.slice().sort((a, b) => b.rel - a.rel), sizes = [3, 7, 13, 19, 15, 10, 8, 6, 3, 1];
+      let x = 0, i = 0;
+      sizes.forEach((n, g) => {
+        for (let k = 0; k < n && i < order.length; k++, i++) { const m = order[i]; m.lane = m.ly = k % 3; m.x = x - Math.floor(k / 3) * 24 * u - (k % 3) * 8 * u; }
+        x -= Math.ceil(n / 3) * 24 * u + (110 + ((g * 53) % 120)) * u;
+      });
+      L = Math.max(W + 520, -x + 160 * u);
+      cam = you.x - W * 0.42; placed = true;
+    }
+    const laneY = (ly) => H * 0.5 + ly * (H * 0.17);
+    const laneS = (ly) => (0.78 + ly * 0.14) * Math.max(0.8, Math.min(1.25, H / 200));
+    function skier(x, y, h, ph, c, accent) {
+      const sw = Math.sin(ph), lw = Math.max(1.6, h * 0.085);
+      const hip = { x, y: y - h * 0.48 }, sh = { x: x + h * 0.2, y: y - h * 0.84 };
+      ctx.lineCap = "round"; ctx.lineJoin = "round"; ctx.strokeStyle = c; ctx.fillStyle = c;
+      const feet = [x + sw * h * 0.32, x - sw * h * 0.32];
+      ctx.lineWidth = Math.max(1.2, h * 0.06);
+      feet.forEach((f, i) => { const lift = i === 1 ? Math.max(0, sw) * h * 0.06 : Math.max(0, -sw) * h * 0.06; ctx.beginPath(); ctx.moveTo(f - h * 0.42, y - lift); ctx.lineTo(f + h * 0.55, y - lift * 1.6); ctx.stroke(); });
+      ctx.lineWidth = lw;
+      feet.forEach((f) => { const kx = (hip.x + f) / 2 + h * 0.07, ky = (hip.y + y) / 2; ctx.beginPath(); ctx.moveTo(hip.x, hip.y); ctx.lineTo(kx, ky); ctx.lineTo(f, y - h * 0.03); ctx.stroke(); });
+      ctx.strokeStyle = accent || c; ctx.lineWidth = lw * 1.5;
+      ctx.beginPath(); ctx.moveTo(hip.x, hip.y); ctx.lineTo(sh.x, sh.y); ctx.stroke();
+      ctx.strokeStyle = c; ctx.lineWidth = lw;
+      [sw * 0.95, -sw * 0.95].forEach((a) => {
+        const hx = sh.x + Math.sin(a) * h * 0.36, hy = sh.y + Math.cos(a) * h * 0.3;
+        ctx.beginPath(); ctx.moveTo(sh.x, sh.y); ctx.lineTo(hx, hy); ctx.stroke();
+        const P = h * 0.83 * 0.92, dy = y - hy, dx = Math.sqrt(Math.max(0, P * P - dy * dy));
+        ctx.lineWidth = Math.max(1, h * 0.04); ctx.beginPath(); ctx.moveTo(hx, hy - h * 0.04); ctx.lineTo(hx - dx * 0.8, y); ctx.stroke(); ctx.lineWidth = lw;
+      });
+      ctx.beginPath(); ctx.arc(sh.x + h * 0.09, sh.y - h * 0.11, h * 0.075, 0, 7); ctx.fill();
+    }
+    function step(dt) {
+      for (const s of sk) {
+        let want = V * (0.55 + 0.45 * s.rel);
+        // Draft: närmaste framför i samma spår
+        let ahead = null, ad = 1e9;
+        for (const o of sk) { if (o === s || o.lane !== s.lane) continue; const d = mod(o.x - s.x, L); if (d < ad) { ad = d; ahead = o; } }
+        if (ahead && ad < 28 * u) {
+          const av = V * (0.55 + 0.45 * ahead.rel);
+          if (av < want) {
+            // Försök byta spår, annars lägg dig i rygg
+            const alt = [s.lane - 1, s.lane + 1].filter((l) => l >= 0 && l <= 2).find((l) => !sk.some((o) => o !== s && o.lane === l && Math.abs(mod(o.x - s.x + L / 2, L) - L / 2) < 22 * u));
+            if (alt !== undefined && Math.random() < 0.006) s.lane = alt; else want = av;
+          } else if (av < want * 1.12) want = av; // häng på
+        }
+        s.v = s.v ? s.v + (want - s.v) * Math.min(1, dt * 2) : want;
+        s.x += s.v * dt;
+        s.ly += (s.lane - s.ly) * Math.min(1, dt * 3);
+        s.ph += dt * (4.6 + s.v / V * 1.2);
+      }
+      // Kameran följer den röda åkaren
+      const target = you.x - W * 0.42;
+      cam += (target - cam) * Math.min(1, dt * 1.5);
+    }
+    function draw() {
+      ctx.clearRect(0, 0, W, H);
+      // granar och km-skyltar
+      const tree = H * 0.22;
+      for (let i = -1; i < W / 70 + 2; i++) {
+        const bx = mod(i * 70 - cam * 0.35, W + 140) - 70, hh = tree * (0.6 + ((i * 37) % 5) / 10);
+        ctx.fillStyle = col.ice; ctx.beginPath(); ctx.moveTo(bx, H * 0.36); ctx.lineTo(bx + hh * 0.35, H * 0.36 - hh); ctx.lineTo(bx + hh * 0.7, H * 0.36); ctx.fill();
+      }
+      ctx.fillStyle = col.track; ctx.fillRect(0, H * 0.36, W, 1);
+      for (let l = 0; l < 3; l++) { const y = laneY(l) + 2; ctx.fillStyle = col.track; ctx.fillRect(0, y, W, 1.5); ctx.fillRect(0, y + 4, W, 1.5); }
+      const sign = 260, first = Math.floor((cam - 200) / sign);
+      ctx.font = `700 ${Math.round(Math.max(10, H * 0.055))}px JetBrains Mono, monospace`; ctx.textAlign = "center";
+      for (let k = first; k < first + W / sign + 3; k++) {
+        const sx = k * sign - cam + 200; if (sx < -60 || sx > W + 60) continue;
+        const kmv = RR.km(mod(k * 0.5, 42) || 42);
+        ctx.fillStyle = col.line; ctx.fillRect(sx - 1, H * 0.2, 2, H * 0.16);
+        ctx.fillStyle = col.blue; ctx.fillText(kmv + " km", sx, H * 0.18);
+      }
+      // åkarna, bakre spår först
+      const order = sk.slice().sort((a, b) => a.ly - b.ly);
+      const pos = [];
+      for (const s of order) {
+        const sx = mod(s.x - cam + 200, L) - 200; if (sx < -40 || sx > W + 40) continue;
+        const y = laneY(s.ly), h = 22 * laneS(s.ly) * (H / 200);
+        const c = s.you ? col.red : s.hue === "vest" ? col.vest : s.hue === "red" ? col.red : col.ink;
+        ctx.globalAlpha = s.you ? 1 : 0.55 + s.ly * 0.18;
+        skier(sx, y, h, s.ph, c, s.you ? col.red : s.hue === "ink" ? col.blue : c);
+        ctx.globalAlpha = 1;
+        pos.push({ x: sx, you: s.you, y: y - h });
+      }
+      // klungetiketter
+      pos.sort((a, b) => a.x - b.x);
+      const groups = []; let g = [];
+      pos.forEach((p, i) => { if (i && p.x - pos[i - 1].x > 44 * u) { groups.push(g); g = []; } g.push(p); }); if (g.length) groups.push(g);
+      ctx.font = `700 ${Math.round(Math.max(10, H * 0.052))}px JetBrains Mono, monospace`;
+      groups.forEach((gr) => {
+        if (gr.length < 4) return;
+        const a = gr[0].x - 6, b = gr[gr.length - 1].x + 18, top = Math.min(...gr.map((p) => p.y)) - 10;
+        if (b < 0 || a > W) return;
+        ctx.strokeStyle = col.muted; ctx.lineWidth = 1; ctx.beginPath(); ctx.moveTo(a, top + 6); ctx.lineTo(a, top); ctx.lineTo(b, top); ctx.lineTo(b, top + 6); ctx.stroke();
+        ctx.fillStyle = col.muted; ctx.textAlign = "center"; ctx.fillText("KLUNGA · " + gr.length, Math.min(W - 50, Math.max(50, (a + b) / 2)), top - 5);
+      });
+      const y = pos.find((p) => p.you);
+      if (y) { ctx.fillStyle = col.red; ctx.textAlign = "center"; ctx.fillText("DU", y.x + 4, y.y - 6); }
+    }
+    function loop(t) {
+      const dt = Math.min(0.05, (t - (last || t)) / 1000); last = t;
+      if (running && visible) { step(dt); draw(); }
+      requestAnimationFrame(loop);
+    }
+    addEventListener("resize", resize);
+    matchMedia("(prefers-color-scheme: dark)").addEventListener("change", () => { readColors(); draw(); });
+    new IntersectionObserver((e) => (visible = e[0].isIntersecting)).observe(cv);
+    resize();
+    for (let i = 0; i < 400; i++) step(0.05); // låt klungorna hinna bildas
+    draw();
+    if (!reduce) { looping = true; requestAnimationFrame(loop); }
+    const btn = $("#pause");
+    if (reduce) { btn.textContent = "Starta klungan"; btn.setAttribute("aria-pressed", "true"); }
+    btn.addEventListener("click", () => {
+      running = !running; btn.setAttribute("aria-pressed", String(!running)); btn.textContent = running ? "Pausa klungan" : "Starta klungan";
+      if (running && !looping) { looping = true; last = 0; requestAnimationFrame(loop); }
+    });
+    return { setYou(rel) { you.rel = rel; draw(); } };
+  })();
+
+  /* ---------- Läge ---------- */
+  RR.on((st) => { renderStatus(st); renderAnswers(st); renderReg(st); renderDay(st); renderNews(st); });
+  setInterval(() => { const st = RR.state(); if (st.phase === "dag" || st.phase === "vecka") { renderStatus(st); renderAnswers(st); renderDay(st); } }, 30000);
+  renderTool();
+})();
+</script>
+</body>
+</html>
