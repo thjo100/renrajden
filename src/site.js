@@ -86,7 +86,7 @@ function initRail() {
 const DIST = {
   42: { laps: 4, prize: "Prisutdelning för 1:a–3:e i HD42, direkt när de gått i mål." },
   21: { laps: 2, prize: "Pris till vinnarna i HD21." },
-  10: { laps: 1, prize: "Motionsdistans. Startade samtidigt som de långa, kl 10:00, år 2025." },
+  10: { laps: 1, prize: "Motionsdistans på 10,5 km. Start kl 10:00, samtidigt som de långa." },
 };
 function initDistances() {
   $$('input[name="dist"]').forEach((r) => r.addEventListener("change", () => {
@@ -96,7 +96,7 @@ function initDistances() {
     $("#ds-hm").textContent = "ca " + d.laps * 98;
     $("#ds-water").textContent = d.laps * 2;
     $("#ds-prize").textContent = d.prize;
-    $("#dist-live").textContent = `${r.value} km: ${d.laps} varv, cirka ${d.laps * 98} höjdmeter och ${d.laps * 2} vätskekontroller. ${d.prize}`;
+    $("#dist-live").textContent = `${r.value === "10" ? "10,5" : r.value} km: ${d.laps} varv, cirka ${d.laps * 98} höjdmeter och ${d.laps * 2} vätskekontroller. ${d.prize}`;
   }));
 }
 
