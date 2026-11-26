@@ -1,26 +1,28 @@
 /* Layout: klubbvästen som gränssnitt – blå "väst"-hero med välvd text och ren, en röd/vit sidopanel
-   som blir en dubbelspårig km-mätare (0–42 km) längs sidan, därefter snövita sektioner på ett 12-kolumnsrutnät. */
+   som blir en dubbelspårig km-mätare (0–42 km) längs sidan, därefter snövita sektioner på ett 12-kolumnsrutnät.
+   Färgerna utgår från OK Renens logoark (public/grafik/okrenen-logoark.pdf):
+   Renenblå #005DB9 (Pantone 300C) och Renenröd #E12627 (Pantone 485C). Övriga toner är blandade från dem. */
 :root {
-  --bg: #F4F6FB;        /* snö med blå ton */
+  --bg: #F3F6FA;        /* snö med blå ton */
   --surface: #FFFFFF;
-  --ice: #E4EAF7;
-  --line: #C5CFE8;
-  --text: #131A33;
-  --muted: #4B5578;
-  --accent: #3451A3;    /* västblå, mörkad för text */
-  --hero: #4561AE;      /* västens blå */
+  --ice: #E2EBF5;
+  --line: #C3D2E4;
+  --text: #0E1B2E;
+  --muted: #46566E;
+  --accent: #005DB9;    /* Renenblå, 6,4:1 mot vitt */
+  --hero: #005DB9;      /* Renenblå */
   --hero-ink: #FFFFFF;
-  --hero-soft: #E4EAF7;
-  --reindeer: #8EA2DD;  /* renens ljusblå */
-  --red: #C8102E;       /* västens röda */
-  --red-text: #A50D26;
-  --footer: #1B2754;
-  --footer-ink: #C8D2F0;
-  --focus: #1B2754;
-  --control: #6E7AA3;   /* fältramar, minst 3:1 */
+  --hero-soft: #DDE9F7;
+  --reindeer: #1F72C6;  /* renhuvudet i bakgrunden, ljusare Renenblå (vit text över den klarar 4,9:1) */
+  --red: #E12627;       /* Renenröd, 4,7:1 mot vit text */
+  --red-text: #C81E1F;  /* mörkare Renenröd för röd text */
+  --footer: #0A2A52;
+  --footer-ink: #C3D3E8;
+  --focus: #0A2A52;
+  --control: #6A7F9A;   /* fältramar, minst 3:1 */
   --bib-paper: #FFFFFF;
-  --bib-ink: #131A33;
-  --shadow: 0 1px 2px rgba(19, 26, 51, .06), 0 8px 24px rgba(19, 26, 51, .08);
+  --bib-ink: #0E1B2E;
+  --shadow: 0 1px 2px rgba(14, 27, 46, .06), 0 8px 24px rgba(14, 27, 46, .08);
 
   --f-display: "Big Shoulders Display", "Arial Narrow", "Roboto Condensed", sans-serif;
   --f-body: "Familjen Grotesk", system-ui, -apple-system, "Segoe UI", sans-serif;
@@ -34,20 +36,20 @@
 }
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
-    --bg: #0C1230; --surface: #141C40; --ice: #1A2450; --line: #2C386A;
-    --text: #E7ECFA; --muted: #A6B1D4; --accent: #9DB3F7;
-    --hero: #263A80; --hero-ink: #FFFFFF; --hero-soft: #C8D2F0; --reindeer: #3F56A6;
-    --red: #B4102B; --red-text: #FF7A8E; --footer: #070B20; --footer-ink: #A6B1D4;
-    --focus: #FFFFFF; --control: #6878B8; --shadow: 0 1px 2px rgba(0,0,0,.3), 0 8px 24px rgba(0,0,0,.35);
+    --bg: #08162A; --surface: #0F2038; --ice: #152B48; --line: #26426A;
+    --text: #E6EEF8; --muted: #A2B4CC; --accent: #7DB5F0;
+    --hero: #004A94; --hero-ink: #FFFFFF; --hero-soft: #C6D8EE; --reindeer: #1460AA;
+    --red: #C81E1F; --red-text: #FF8A8A; --footer: #040D1A; --footer-ink: #A2B4CC;
+    --focus: #FFFFFF; --control: #5A7BA6; --shadow: 0 1px 2px rgba(0,0,0,.3), 0 8px 24px rgba(0,0,0,.35);
     color-scheme: dark;
   }
 }
 :root[data-theme="dark"] {
-  --bg: #0C1230; --surface: #141C40; --ice: #1A2450; --line: #2C386A;
-  --text: #E7ECFA; --muted: #A6B1D4; --accent: #9DB3F7;
-  --hero: #263A80; --hero-ink: #FFFFFF; --hero-soft: #C8D2F0; --reindeer: #3F56A6;
-  --red: #B4102B; --red-text: #FF7A8E; --footer: #070B20; --footer-ink: #A6B1D4;
-  --focus: #FFFFFF; --control: #6878B8; --shadow: 0 1px 2px rgba(0,0,0,.3), 0 8px 24px rgba(0,0,0,.35);
+  --bg: #08162A; --surface: #0F2038; --ice: #152B48; --line: #26426A;
+  --text: #E6EEF8; --muted: #A2B4CC; --accent: #7DB5F0;
+  --hero: #004A94; --hero-ink: #FFFFFF; --hero-soft: #C6D8EE; --reindeer: #1460AA;
+  --red: #C81E1F; --red-text: #FF8A8A; --footer: #040D1A; --footer-ink: #A2B4CC;
+  --focus: #FFFFFF; --control: #5A7BA6; --shadow: 0 1px 2px rgba(0,0,0,.3), 0 8px 24px rgba(0,0,0,.35);
   color-scheme: dark;
 }
 
@@ -95,7 +97,7 @@ a:hover { text-decoration-thickness: 2px; }
   transition: transform .15s ease, background-color .15s ease;
 }
 .btn:hover { transform: translateY(-1px); }
-.btn-light { background: #FFFFFF; color: #1B2754; }
+.btn-light { background: #FFFFFF; color: #0A2A52; }
 .btn-ghost { background: transparent; color: var(--hero-ink); border-color: currentColor; }
 .btn-primary { background: var(--accent); color: var(--surface); }
 .btn-red { background: var(--red); color: #FFFFFF; }
@@ -110,7 +112,7 @@ a:hover { text-decoration-thickness: 2px; }
 }
 .header-inner { display: flex; align-items: center; gap: 1rem; min-height: 4.25rem; }
 .brand { display: flex; align-items: center; gap: .625rem; text-decoration: none; color: var(--text); margin-right: auto; }
-.brand svg { width: 2.5rem; height: 2.5rem; flex: none; }
+.brand-logo { width: auto; height: 3.25rem; flex: none; display: block; }
 .brand-name { font: 900 1.75rem/1 var(--f-display); letter-spacing: .04em; text-transform: uppercase; color: var(--accent); }
 .brand-sub { display: block; font: 600 .75rem/1.2 var(--f-mono); letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
 .menu-btn { display: none; }
@@ -157,7 +159,7 @@ a:hover { text-decoration-thickness: 2px; }
     box-shadow: 0 0 0 2px var(--surface);
     font: 600 .75rem/1.25 var(--f-mono); white-space: nowrap; font-variant-numeric: tabular-nums;
   }
-  .rail-readout span { display: block; font-weight: 400; color: #C8D2F0; }
+  .rail-readout span { display: block; font-weight: 400; color: #C3D3E8; }
   .rail-mark span i { display: none; font-style: normal; font-weight: 400; }
   .rail-mark.near span { visibility: hidden; }
 }
@@ -183,7 +185,14 @@ a:hover { text-decoration-thickness: 2px; }
 .hero-wave { position: absolute; left: 0; right: 0; bottom: -1px; width: 100%; height: 90px; z-index: 0; color: var(--surface); }
 .hero-stripe { position: absolute; left: 0; top: 0; bottom: 0; width: 34px; z-index: -1;
   background: linear-gradient(90deg, #FFFFFF 0 7px, var(--red) 7px 27px, #FFFFFF 27px 34px); }
-.hero-ren { position: absolute; z-index: -1; right: -50px; bottom: 20px; width: min(52vw, 540px); height: auto; color: var(--reindeer); }
+/* Renhuvudet ur OK Renens logotyp. På bred skärm hamnar nosen och ögat precis till vänster om nummerlappen
+   (300 px bred, i rutnätets högerkant) och halsen går ner bakom den mot vågen. */
+.hero-ren {
+  --ren-w: min(46vw, 620px);
+  position: absolute; z-index: -1; bottom: 0; width: var(--ren-w); height: auto; color: var(--reindeer);
+  right: calc(max(0px, (100% - var(--wrap)) / 2) + 352px - var(--ren-w) * .55);
+}
+@media (max-width: 899px) { .hero-ren { --ren-w: min(72vw, 440px); right: -16vw; bottom: auto; top: 28%; } }
 @media (min-width: 1360px) { .hero-stripe { display: none; } }
 .hero-grid {
   display: grid; gap: 2rem; align-items: end;
@@ -204,7 +213,7 @@ a:hover { text-decoration-thickness: 2px; }
 .bib {
   position: relative; justify-self: start; width: min(100%, 300px);
   background: var(--bib-paper); color: var(--bib-ink); border-radius: 10px;
-  padding: 0 0 1.25rem; box-shadow: 0 18px 40px rgba(8, 14, 40, .35); transform: rotate(-2.5deg);
+  padding: 0 0 1.25rem; box-shadow: 0 18px 40px rgba(4, 24, 52, .35); transform: rotate(-2.5deg);
   text-align: center; overflow: hidden;
 }
 @media (min-width: 900px) { .bib { justify-self: end; margin-bottom: 2.5rem; } }
@@ -215,18 +224,18 @@ a:hover { text-decoration-thickness: 2px; }
 .bib::before { left: 12px; top: 46px; } .bib::after { right: 12px; top: 46px; }
 .bib-holes::before { left: 12px; bottom: 12px; } .bib-holes::after { right: 12px; bottom: 12px; }
 .bib-head { display: block; background: var(--red); color: #FFFFFF; padding: .5rem 1rem; font: 900 1.125rem/1.2 var(--f-display); letter-spacing: .12em; text-transform: uppercase; }
-.bib-num { display: block; font: 900 clamp(5.5rem, 16vw, 7.5rem)/.9 var(--f-display); letter-spacing: -.01em; margin-top: 1rem; font-variant-numeric: tabular-nums; color: #1B2754; }
+.bib-num { display: block; font: 900 clamp(5.5rem, 16vw, 7.5rem)/.9 var(--f-display); letter-spacing: -.01em; margin-top: 1rem; font-variant-numeric: tabular-nums; color: #0A2A52; }
 .bib-label { display: block; font: 600 var(--s-xs)/1.3 var(--f-mono); letter-spacing: .1em; text-transform: uppercase; margin-top: .25rem; }
-.bib-foot { display: block; margin-top: .75rem; padding-top: .625rem; border-top: 2px dashed #C5CFE8; margin-inline: 1.5rem; font-size: var(--s-sm); }
+.bib-foot { display: block; margin-top: .75rem; padding-top: .625rem; border-top: 2px dashed #C3D2E4; margin-inline: 1.5rem; font-size: var(--s-sm); }
 
-.bib { --focus: #1B2754; }
-.bib-link { display: inline-block; margin-top: .375rem; font-weight: 700; color: #3451A3; }
+.bib { --focus: #0A2A52; }
+.bib-link { display: inline-block; margin-top: .375rem; font-weight: 700; color: #005DB9; }
 @media (max-width: 899px) { body[data-phase="raceweek"] .bib, body[data-phase="raceday"] .bib { order: -1; } }
 
 /* Senaste-remsa */
 .latest { background: var(--footer); color: #FFFFFF; }
 .latest .wrap { display: flex; flex-wrap: wrap; gap: .25rem .875rem; align-items: baseline; padding-block: .875rem; }
-.latest-label { font: 600 var(--s-xs)/1 var(--f-mono); letter-spacing: .1em; text-transform: uppercase; color: #FF9AA9; }
+.latest-label { font: 600 var(--s-xs)/1 var(--f-mono); letter-spacing: .1em; text-transform: uppercase; color: #FF9C9C; }
 .latest a { color: #FFFFFF; font-weight: 700; }
 .latest time { color: var(--footer-ink); font-size: var(--s-sm); }
 
@@ -317,6 +326,30 @@ a:hover { text-decoration-thickness: 2px; }
 .copy-row { display: flex; flex-wrap: wrap; align-items: center; gap: .5rem .75rem; }
 .copy-row .mail { font: 600 var(--s-md)/1.3 var(--f-mono); word-break: break-all; }
 
+/* Swish: QR-kod på stor skärm, knapp som öppnar appen på telefon */
+.swish {
+  margin-top: 1rem; display: grid; gap: 1.5rem; align-items: center;
+  background: var(--surface); border: 1px solid var(--line); border-left: 6px solid var(--red); border-radius: var(--radius);
+  padding: 1.5rem;
+}
+.swish-qr { display: block; width: 11rem; height: auto; border-radius: 4px; border: 1px solid var(--line); background: #FFFFFF; }
+.swish-body { display: grid; gap: .75rem; justify-items: start; min-width: 0; }
+.swish-body .eyebrow { color: var(--red-text); }
+.swish h3 { font-size: var(--s-xl); }
+.swish-how { color: var(--muted); max-width: 52ch; }
+.swish-msg { color: var(--text); background: var(--ice); font: 600 .9em/1 var(--f-mono); padding: .2em .4em; border-radius: 3px; white-space: nowrap; }
+.swish-num { font: 900 2.25rem/1 var(--f-display); letter-spacing: .02em; font-variant-numeric: tabular-nums; }
+@media (min-width: 700px) { .swish { grid-template-columns: auto minmax(0, 1fr); gap: 2rem; padding: 1.5rem 2rem 1.5rem 1.5rem; } }
+/* Med mus: QR-koden skannas med telefonen. Med pekskärm: knappen öppnar Swish med numret och meddelandet ifyllt,
+   och på en telefon döljs QR-koden (den går inte att skanna med samma telefon). */
+.swish-tap, .swish-open { display: none; }
+@media (hover: none), (pointer: coarse) {
+  .swish-open { display: inline-flex; }
+  .swish-tap { display: inline; }
+  .swish-scan { display: none; }
+}
+@media (max-width: 699px) and (hover: none), (max-width: 699px) and (pointer: coarse) { .swish-qr { display: none; } }
+
 /* PM */
 .pm-grid { display: grid; gap: 2.5rem; }
 @media (min-width: 960px) { .pm-grid { grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr); } }
@@ -373,7 +406,7 @@ details.archive h4 { margin: 0 0 .25rem; font: 700 var(--s-sm)/1.3 var(--f-mono)
   .news-card.featured .news-head h3 { font-size: 3rem; }
 }
 .news-head, .news-content { display: grid; gap: .75rem; align-content: start; min-width: 0; }
-.news-archive { list-style: none; margin: 1.5rem 0 0; padding: 0; background: var(--surface); color: var(--text); border-radius: var(--radius); box-shadow: var(--shadow); --focus: var(--focus-card, #1B2754); }
+.news-archive { list-style: none; margin: 1.5rem 0 0; padding: 0; background: var(--surface); color: var(--text); border-radius: var(--radius); box-shadow: var(--shadow); --focus: var(--focus-card, #0A2A52); }
 .news-archive > li + li { border-top: 1px solid var(--line); }
 .news-archive summary {
   display: grid; grid-template-columns: 8.5rem minmax(0, 1fr) auto; gap: .25rem 1rem; align-items: baseline;
@@ -390,7 +423,7 @@ details.archive h4 { margin: 0 0 .25rem; font: 700 var(--s-sm)/1.3 var(--f-mono)
 @media (max-width: 520px) { .news-archive summary { grid-template-columns: minmax(0, 1fr) auto; } .news-archive summary time { grid-column: 1; } .news-archive .arch-title { grid-column: 1; } .news-archive .arch-tag { grid-column: 1; } .news-archive summary::before { grid-column: 2; grid-row: 1 / span 3; align-self: center; } }
 .news-card {
   background: var(--surface); color: var(--text); border-radius: var(--radius); padding: 1.375rem 1.5rem 1.5rem;
-  display: grid; gap: .75rem; box-shadow: var(--shadow); min-width: 0; --focus: var(--focus-card, #1B2754);
+  display: grid; gap: .75rem; box-shadow: var(--shadow); min-width: 0; --focus: var(--focus-card, #0A2A52);
 }
 .news-card.pinned { box-shadow: var(--shadow), inset 0 4px 0 var(--red); }
 .news-meta { display: flex; flex-wrap: wrap; gap: .375rem .5rem; align-items: center; }
@@ -406,7 +439,7 @@ details.archive h4 { margin: 0 0 .25rem; font: 700 var(--s-sm)/1.3 var(--f-mono)
 .news-state b { font: 800 var(--s-xl)/1.2 var(--f-display); text-transform: uppercase; letter-spacing: .02em; }
 .news-more { margin-top: 1.5rem; }
 .news-more .btn-quiet { color: var(--hero-ink); border-color: rgba(255,255,255,.55); }
-:root { --focus-card: #1B2754; }
+:root { --focus-card: #0A2A52; }
 @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --focus-card: #FFFFFF; } }
 :root[data-theme="dark"] { --focus-card: #FFFFFF; }
 
@@ -436,14 +469,17 @@ details.archive h4 { margin: 0 0 .25rem; font: 700 var(--s-sm)/1.3 var(--f-mono)
 .partners li { font: 800 1.375rem/1 var(--f-display); text-transform: uppercase; letter-spacing: .04em; padding: .875rem 1.125rem; border: 2px solid var(--line); border-radius: var(--radius); background: var(--surface); }
 .partners li small { display: block; font: 400 .75rem/1.3 var(--f-mono); letter-spacing: .06em; color: var(--muted); margin-top: .25rem; }
 .contact-grid { display: grid; gap: 1rem; grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr)); margin-top: 1.5rem; }
+.route.club { grid-template-columns: auto minmax(0, 1fr); gap: 1.25rem; align-items: start; }
+.club-logo { width: auto; height: 6.5rem; display: block; }
+.club-text { display: grid; gap: .75rem; }
 
 /* Footer */
 .site-footer { background: var(--footer); color: var(--footer-ink); padding-block: 3rem; font-size: var(--s-sm); }
 .site-footer a { color: #FFFFFF; }
 .footer-grid { display: grid; gap: 2rem; }
 @media (min-width: 800px) { .footer-grid { grid-template-columns: 1.2fr 1fr; } }
-.footer-brand { display: flex; gap: .875rem; align-items: center; color: #FFFFFF; }
-.footer-brand svg { width: 3rem; height: 3rem; }
+.footer-brand { display: flex; gap: 1rem; align-items: center; color: #FFFFFF; }
+.footer-logo { width: auto; height: 5rem; flex: none; display: block; }
 .footer-brand b { font: 900 1.75rem/1 var(--f-display); text-transform: uppercase; letter-spacing: .04em; }
 .footer-admin { display: flex; flex-wrap: wrap; gap: .75rem; align-items: center; margin-top: 1rem; }
 .footer-admin .btn-quiet { color: #FFFFFF; border-color: rgba(255,255,255,.45); }
@@ -457,7 +493,7 @@ dialog {
   width: min(100% - 32px, 36rem); max-height: calc(100% - 32px); padding: 0; border: 0; border-radius: 10px;
   background: var(--surface); color: var(--text); box-shadow: 0 24px 64px rgba(0,0,0,.35);
 }
-dialog::backdrop { background: rgba(10, 16, 40, .6); }
+dialog::backdrop { background: rgba(4, 18, 38, .6); }
 .dlg-head { display: flex; justify-content: space-between; align-items: center; gap: 1rem; padding: 1.25rem 1.5rem; border-bottom: 1px solid var(--line); position: sticky; top: 0; background: var(--surface); z-index: 1; }
 .dlg-head h2 { font: 900 1.75rem/1.1 var(--f-display); text-transform: uppercase; letter-spacing: .02em; }
 .dlg-close { width: 44px; height: 44px; border-radius: 50%; border: 0; background: var(--ice); color: var(--text); font-size: 1.375rem; cursor: pointer; flex: none; }

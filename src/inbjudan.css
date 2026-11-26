@@ -1,22 +1,24 @@
-/* Inbjudan som ett A4-ark. Samma färger och typsnitt som huvudsidan (se styles.css).
-   Arket är alltid ljust, som papper. Bara bordet runt arket följer mörkt läge. */
+/* Inbjudan som ett A4-ark. Samma färger och typsnitt som huvudsidan (se styles.css), utgående från
+   OK Renens Renenblå #005DB9 och Renenröd #E12627. Arket är alltid ljust, som papper.
+   Bara bordet runt arket följer mörkt läge. */
 :root {
   --paper: #FFFFFF;
-  --text: #131A33;
-  --muted: #4B5578;
-  --line: #C5CFE8;
-  --ice: #E4EAF7;
-  --accent: #3451A3;
-  --hero: #4561AE;
-  --hero-soft: #E4EAF7;
-  --reindeer: #8EA2DD;
-  --red: #C8102E;
-  --navy: #1B2754;
-  --navy-ink: #C8D2F0;
+  --text: #0E1B2E;
+  --muted: #46566E;
+  --line: #C3D2E4;
+  --ice: #E2EBF5;
+  --accent: #005DB9;
+  --hero: #005DB9;
+  --hero-soft: #DDE9F7;
+  --reindeer: #2475C8;
+  --red: #E12627;
+  --red-text: #C81E1F;
+  --navy: #0A2A52;
+  --navy-ink: #C3D3E8;
 
-  --desk: #DCE2F0;
-  --desk-ink: #131A33;
-  --btn: #1B2754;
+  --desk: #DCE5F0;
+  --desk-ink: #0E1B2E;
+  --btn: #0A2A52;
   --btn-ink: #FFFFFF;
 
   --f-display: "Big Shoulders Display", "Arial Narrow", "Roboto Condensed", sans-serif;
@@ -25,9 +27,9 @@
   color-scheme: light;
 }
 @media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) { --desk: #0C1230; --desk-ink: #E7ECFA; --btn: #E7ECFA; --btn-ink: #0C1230; color-scheme: dark; }
+  :root:not([data-theme="light"]) { --desk: #08162A; --desk-ink: #E6EEF8; --btn: #E6EEF8; --btn-ink: #08162A; color-scheme: dark; }
 }
-:root[data-theme="dark"] { --desk: #0C1230; --desk-ink: #E7ECFA; --btn: #E7ECFA; --btn-ink: #0C1230; color-scheme: dark; }
+:root[data-theme="dark"] { --desk: #08162A; --desk-ink: #E6EEF8; --btn: #E6EEF8; --btn-ink: #08162A; color-scheme: dark; }
 
 @page { size: A4; margin: 0; }
 
@@ -58,16 +60,17 @@ h1, h2, p, dl, dd, ol, ul { margin: 0; }
 /* ---------- Arket ---------- */
 .sheet {
   width: 210mm; height: 297mm; margin: 0 auto 32px; overflow: hidden;
-  background: var(--paper); box-shadow: 0 1px 2px rgba(19, 26, 51, .1), 0 12px 40px rgba(19, 26, 51, .18);
+  background: var(--paper); box-shadow: 0 1px 2px rgba(14, 27, 46, .1), 0 12px 40px rgba(14, 27, 46, .18);
   display: flex; flex-direction: column;
   font-size: 10.5pt;
 }
 
-/* Blå väst med röd-vit rand, renen och välvd titel som på hemsidan */
+/* Blå väst med röd-vit rand, renhuvudet, OK Renens logotyp och välvd titel som på hemsidan */
 .top { position: relative; isolation: isolate; overflow: hidden; background: var(--hero); color: #FFFFFF; padding: 9mm 16mm 15mm 25mm; }
 .stripe { position: absolute; left: 0; top: 0; bottom: 0; width: 9mm; z-index: -1;
   background: linear-gradient(90deg, #FFFFFF 0 1.8mm, var(--red) 1.8mm 7.2mm, #FFFFFF 7.2mm 9mm); }
-.ren { position: absolute; z-index: -1; right: -8mm; bottom: 6mm; width: 82mm; height: auto; color: var(--reindeer); }
+.ren { position: absolute; z-index: -1; right: 30mm; bottom: 0; width: 64mm; height: auto; color: var(--reindeer); }
+.logo { position: absolute; top: 9mm; right: 12mm; width: auto; height: 36mm; --logo-bg: transparent; }
 .wave { position: absolute; left: 0; right: 0; bottom: -1px; width: 100%; height: 13mm; }
 .top-inner { position: relative; display: grid; gap: 2mm; max-width: 118mm; }
 .kicker { display: flex; align-items: center; gap: 3mm; font: 600 8pt/1.2 var(--f-mono); letter-spacing: .1em; text-transform: uppercase; color: var(--hero-soft); }
@@ -109,7 +112,7 @@ h1, h2, p, dl, dd, ol, ul { margin: 0; }
 
 /* Anmälan */
 .deadline { background: var(--ice); border-radius: 1mm; padding: 1.4mm 2.6mm; font-size: 10pt; }
-.deadline b { color: var(--red); }
+.deadline b { color: var(--red-text); }
 .steps { list-style: none; padding: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 4mm; counter-reset: step; }
 .steps li { counter-increment: step; position: relative; padding-left: 9mm; }
 .steps li::before {
@@ -126,17 +129,19 @@ h1, h2, p, dl, dd, ol, ul { margin: 0; }
 .two ul { padding-left: 4.5mm; display: grid; gap: .8mm; }
 .two li::marker { color: var(--red); }
 
-/* Fot: hänvisning till hemsidan */
+/* Fot: hänvisning till hemsidan och Swish för efteranmälan */
 .bottom {
   margin-top: auto; background: var(--navy); color: #FFFFFF;
-  display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: 6mm; align-items: center;
+  display: grid; grid-template-columns: auto minmax(0, 1fr) auto auto; gap: 5mm; align-items: center;
   padding: 6mm 16mm;
 }
 .qr { display: block; width: 23mm; height: 23mm; border-radius: 1mm; }
+.swish-qr { margin-left: 3mm; }
 .more-label { color: var(--navy-ink); }
-.url { font: 900 30pt/1 var(--f-display); letter-spacing: .02em; margin-top: 1.2mm; }
-.contact { display: grid; gap: 2mm; text-align: right; font-size: 10pt; }
-.contact span { display: block; color: var(--navy-ink); margin-bottom: .4mm; }
+.url, .swish-num { font: 900 26pt/1 var(--f-display); letter-spacing: .02em; margin-top: 1.2mm; white-space: nowrap; }
+.contact { font-size: 9.5pt; margin-top: 1.8mm; color: var(--navy-ink); }
+.bottom .contact span { font: 600 7pt/1.2 var(--f-mono); letter-spacing: .1em; text-transform: uppercase; margin-right: 2mm; color: var(--navy-ink); }
+.contact b { color: #FFFFFF; white-space: nowrap; }
 
 /* ---------- Utskrift ---------- */
 @media print {
@@ -151,7 +156,8 @@ h1, h2, p, dl, dd, ol, ul { margin: 0; }
   .sheet { width: auto; height: auto; margin: 0; box-shadow: none; font-size: 16px; }
   .top { padding: 28px 16px 56px 40px; }
   .stripe { width: 24px; background: linear-gradient(90deg, #FFFFFF 0 5px, var(--red) 5px 19px, #FFFFFF 19px 24px); }
-  .ren { width: 46vw; right: -10vw; bottom: 44px; opacity: .6; }
+  .ren { width: 46vw; right: 4vw; bottom: 0; }
+  .logo { position: static; display: block; height: 84px; margin-bottom: 16px; }
   .wave { height: 36px; }
   .top-inner { gap: 8px; max-width: none; }
   .title svg { width: min(100%, 420px); }
@@ -180,7 +186,8 @@ h1, h2, p, dl, dd, ol, ul { margin: 0; }
   .two ul { padding-left: 20px; gap: 4px; }
   .bottom { margin-top: 32px; grid-template-columns: auto minmax(0, 1fr); padding: 20px 16px; gap: 16px; }
   .qr { width: 84px; height: 84px; }
-  .url { font-size: 34px; }
+  .swish-qr { margin-left: 0; }
+  .url, .swish-num { font-size: 30px; }
   .more-label, .contact span { font-size: 10px; }
-  .contact { grid-column: 1 / -1; text-align: left; grid-template-columns: repeat(2, minmax(0, 1fr)); font-size: 15px; }
+  .contact { font-size: 15px; }
 }
