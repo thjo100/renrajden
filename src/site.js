@@ -39,7 +39,7 @@ function applyPhase() {
   if (cancelled) { num.textContent = "–"; label.textContent = "Loppet är inställt"; setLink(link, "Läs mer under Nyheter", "#nyheter"); link.hidden = false; }
   else if (d > 1) { num.textContent = d; label.textContent = "dagar kvar till start"; }
   else if (d === 1) { num.textContent = "1"; label.textContent = "dag kvar till start"; }
-  else if (d === 0) { num.textContent = "0"; label.textContent = "Tävlingsdag! Tider finns i PM"; }
+  else if (d === 0) { num.textContent = "0"; label.textContent = "Tävlingsdag! Tider finns i PM"; setLink(link, "Efteranmälan och Swish", "#swish"); link.hidden = false; }
   else { num.textContent = "✓"; label.textContent = "Loppet är kört"; link.hidden = false; }
   const c1 = $("#cta-1"), c2 = $("#cta-2");
   if (cancelled) { setLink(c1, "Senaste nytt", "#nyheter"); setLink(c2, "Resultat", "#resultat"); }

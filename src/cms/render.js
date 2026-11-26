@@ -66,6 +66,10 @@ const fees = (e) => e.distances.map((d) =>
   `<div><dt>${esc(fmtNum(d.km))} km</dt><dd>${esc(fmtKr(d.fee))}<small>Efteranmälan ${esc(fmtKr(d.lateFee))}</small></dd></div>`).join("")
   + `<div><dt>Inbjudan</dt><dd><a href="/inbjudan"><span class="sr-only">Inbjudan </span>${year(e)}</a><small>Går att skriva ut</small></dd></div>`;
 
+// Efteranmälningsavgifterna i Swish-rutan, så att man ser vad man ska swisha.
+const swishFees = (e) => e.distances.map((d) =>
+  `<li><span>${esc(fmtNum(d.km))} km</span> <b>${esc(fmtKr(d.lateFee))}</b></li>`).join("");
+
 // Utan direktlänk till tävlingen länkar vi till inloggningen i SSF TA, där man söker fram tävlingen.
 export const SSFTA_LOGIN = "https://ssfta.skidor.com/logga-in";
 const registration = (e) => (e.registrationUrl
@@ -159,6 +163,7 @@ export function renderSlots(c) {
     deadline: deadline(e),
     fees: fees(e),
     registration: registration(e),
+    "swish-fees": swishFees(e),
     mail: `<a class="mail" href="mailto:${mail}">${mail}</a>`,
     "footer-mail": `<a class="mono" href="mailto:${mail}">${mail}</a>`,
     "bana-intro": `En flack slinga med cirka ${e.climbPerLap} höjdmeter per varv. Start och mål på ${esc(e.venue)}.`,
