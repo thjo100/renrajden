@@ -66,9 +66,12 @@ const fees = (e) => e.distances.map((d) =>
   `<div><dt>${esc(fmtNum(d.km))} km</dt><dd>${esc(fmtKr(d.fee))}<small>Efteranmälan ${esc(fmtKr(d.lateFee))}</small></dd></div>`).join("")
   + `<div><dt>Inbjudan</dt><dd><a href="/inbjudan"><span class="sr-only">Inbjudan </span>${year(e)}</a><small>Går att skriva ut</small></dd></div>`;
 
+// Utan direktlänk till tävlingen länkar vi till inloggningen i SSF TA, där man söker fram tävlingen.
+export const SSFTA_LOGIN = "https://ssfta.skidor.com/logga-in";
 const registration = (e) => (e.registrationUrl
   ? `<p>${ext(e.registrationUrl, "Anmäl dig i SSF TA", NEW_TAB, "btn btn-primary btn-sm ext")}</p>`
-  : `<p class="note">Länken för ${year(e)} publiceras här när anmälan öppnar.</p>`);
+  : `<p>${ext(SSFTA_LOGIN, "Logga in i SSF TA", NEW_TAB, "btn btn-primary btn-sm ext")}</p>`
+    + `<p class="note">Sök fram Renrajden ${year(e)} när du har loggat in.</p>`);
 
 const banaStats = (e) => {
   const l = longest(e);
