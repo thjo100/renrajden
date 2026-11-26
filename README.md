@@ -96,6 +96,8 @@ För att se lägena kring tävlingsdagen, lägg till `?lage=tavlingsvecka`, `?la
 | `src/ui.js` | Gemensamma hjälpfunktioner, toast och dialoger |
 | `src/styles.css` | All design |
 | `src/inbjudan.js`, `src/inbjudan.css` | Typsnitt, utskriftsknapp och A4-layout för inbjudan |
+| `public/grafik/` | OK Renens logotyp (`okrenen-logo`, `-vit` och `-vit-rod`, som SVG och PNG), renhuvudet (`okrenen-ren`), originalet `okrenen-logoark.pdf` och Swish-QR-koden (`swish-qr.png` som den levererades, `swish-qr-kod.png` beskuren för sajten och inbjudan). Allt nås också på renrajden.se/grafik/ |
+| `public/favicon.svg`, `favicon.ico`, `apple-touch-icon.png` | Flikikonen: renhuvudet på Renenblå |
 | `firestore.rules` | Säkerhetsregler |
 | `scripts/admin.mjs` | Lägg till, ta bort och lista administratörer |
 | `scripts/seed-news.mjs` | Importerar gamla nyheter från `prototyp/seed-news.json` |
@@ -117,7 +119,8 @@ För att se lägena kring tävlingsdagen, lägg till `?lage=tavlingsvecka`, `?la
 | Lägga in årets resultat | Logga in som admin, gå till Resultat och välj **Lägg in resultat** på årets lopp |
 | Lägga till, ändra eller ta bort ett äldre år | Resultat → **+ Lägg till år**, eller **Redigera** och **Ta bort** vid året |
 | Ändra övrig text, PM eller inbjudans fasta text | `index.html` och `inbjudan.html` |
-| Ändra färger eller layout | `src/styles.css` (färgerna är variabler överst) |
+| Ändra färger eller layout | `src/styles.css` (färgerna är variabler överst) och färgerna överst i `src/inbjudan.css`. De utgår från OK Renens Renenblå `#005DB9` och Renenröd `#E12627` |
+| Byta Swishnummer | Rutan `#swish` och PM-punkten i `index.html`, foten i `inbjudan.html` och bilden `public/grafik/swish-qr-kod.png`. Numret finns också i länken till Swish-appen |
 | Lägga till en nyhetsetikett | Samma lista på tre ställen, se nedan |
 | Lägga till eller ta bort en admin | `npm run admin -- add/remove <e-post> --project renrajden-ae53c`, eller samlingen `admins` i Firebase-konsolen |
 
@@ -179,6 +182,7 @@ För att se lägena kring tävlingsdagen, lägg till `?lage=tavlingsvecka`, `?la
 - **Årets lopp och resultatarkivet** står inte i `index.html` och `inbjudan.html`. Där finns tomma platser, `<dl data-cms="facts"></dl>` och `{{cms:title}}`. När sajten byggs hämtar `scripts/vite-cms.mjs` innehållet från Firestore och fyller platserna, så att sidan fungerar utan JavaScript och sökmotorer ser rätt datum. I webbläsaren hämtar `src/cms/runtime.js` det senaste och ritar om det som ändrats. Platserna måste vara tomma i källfilen, annars stoppas bygget.
 - **Första sparningen** i adminläget kopierar standardinnehållet (`src/cms/defaults.js`) till Firestore i samma batch, så att inget år försvinner. Därefter är det Firestore som gäller, och `defaults.js` används bara om Firestore saknar innehållet.
 - **Gränserna** för årets lopp och resultatarkivet finns på två ställen som måste stämma överens: `LIMITS` i `src/cms/model.js` och `validEvent`/`validYear` i `firestore.rules`.
+- **Logotypen och renhuvudet** ligger som symbolerna `#okrenen` och `#ren` längst ner i både `index.html` och `inbjudan.html`, och ska vara likadana i båda. De är tagna direkt ur vektorerna i `public/grafik/okrenen-logoark.pdf`. Renen får färg från `currentColor`. Logotypens bakgrund styrs med `--logo-bg` (transparent på blå botten) och färgen på RENEN med `--logo-renen`.
 - **Webbkonfigurationen** (`VITE_FIREBASE_*`) läses från miljövariabler. Lokalt i `.env.local` eller `.env.emulator`, i GitHub som repository variables.
 
 ## Publicering

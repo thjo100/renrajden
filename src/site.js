@@ -1,7 +1,7 @@
 // Sidans interaktivitet som inte kräver Firebase: lägen kring tävlingsdagen, meny, km-mätare,
-// distansväljare, packlista och kopiera-knappar. Datum, distanser och länkar kommer från
+// distansväljare och packlista. Datum, distanser och länkar kommer från
 // årets lopp (src/cms/), och allt räknas om när innehållet uppdateras.
-import { $, $$, el, store, toast } from "./ui.js";
+import { $, $$, el, store } from "./ui.js";
 import { getContent, onContent } from "./cms/runtime.js";
 import { distanceSummary } from "./cms/render.js";
 
@@ -151,20 +151,6 @@ function initPacklist() {
   count();
 }
 
-/* ---------- Kopiera e-post ---------- */
-function initCopy() {
-  $$("[data-copy]").forEach((btn) => btn.addEventListener("click", () => {
-    const src = document.getElementById(btn.dataset.copy);
-    const fallback = () => {
-      const r = document.createRange(); r.selectNodeContents(src);
-      const s = getSelection(); s.removeAllRanges(); s.addRange(r);
-      toast("Adressen är markerad. Kopiera med Ctrl+C eller ⌘C");
-    };
-    try { navigator.clipboard.writeText(src.textContent.trim()).then(() => toast("Adressen är kopierad"), fallback); }
-    catch { fallback(); }
-  }));
-}
-
 export function initSite() {
   applyPhase();
   onContent(applyPhase);
@@ -172,5 +158,4 @@ export function initSite() {
   initRail();
   initDistances();
   initPacklist();
-  initCopy();
 }
