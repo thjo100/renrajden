@@ -10,7 +10,7 @@ const NAMN = Object.fromEntries(KATEGORIER);
 const ORDNING = KATEGORIER.map((k) => k[0]);
 const FORST = 8; // så många bilder visas innan "Visa alla"
 
-let alla = [], vald = "alla", allaSynliga = false, lista = [], nu = 0;
+let alla = [], vald = "foton", allaSynliga = false, lista = [], nu = 0;
 
 function initFilm() {
   const film = $("#film"), spela = $("#film-spela"), ljud = $("#film-ljud");
