@@ -55,9 +55,10 @@ test("anmälan länkar till inloggningen i SSF TA tills en direktlänk finns", (
   const med = renderSlots(withEvent({ registrationUrl: "https://example.com/anmalan" })).registration;
   assert.match(med, /href="https:\/\/example\.com\/anmalan"/);
   assert.doesNotMatch(med, /logga-in/);
-  // Ordinarie avgift i avgiftsrutorna länkar också till anmälan.
-  assert.match(renderSlots(withEvent({ registrationUrl: "" })).fees, new RegExp(`<a class="reg-fee" href="${SSFTA_LOGIN}"`));
-  assert.match(renderSlots(withEvent({ registrationUrl: "https://example.com/anmalan" })).fees, /<a class="reg-fee" href="https:\/\/example\.com\/anmalan"/);
+});
+
+test("avgifterna länkar till Swish-rutan", () => {
+  assert.match(renderSlots(withEvent({})).fees, /<a class="pay-fee" href="#swish">500 kr/);
 });
 
 test("text från databasen escapas och farliga länkar tas bort", () => {
@@ -110,10 +111,11 @@ test("distanser, avgifter och status följer innehållet", () => {
   const s = renderSlots(c), h = renderHead(c);
   assert.match(s.dist, /<b>30<\/b><span>km · HD30<\/span>/);
   assert.equal((s.dist.match(/class="lap( on)?"/g) || []).length, 3, "ett spår per varv");
-  assert.match(s.fees, /1 200 kr<small>Efteranmälan 1 500 kr/);
+  assert.match(s.fees, /1 200 kr<small>Efteranmälan 1 500 kr/, "inställt lopp: avgiften är inte en länk");
+  assert.match(s["swish-fees"], /<span>30 km<\/span> <b>1 200 kr<\/b>/, "Swish-rutan visar ordinarie avgift");
+  assert.match(s["swish-fees"], /Efteranmälan <span class="no-touch">1 500 kr<\/span>/, "och efteranmälningsavgiften under");
+  assert.match(s["swish-fees"], /href="https:\/\/app\.swish\.nu\/1\/p\/sw\/\?sw=1230489575&amp;amt=1200&amp;cur=SEK&amp;msg=RR%20-%20&amp;edit=msg/, "på mobilen öppnar avgiften Swish med beloppet ifyllt");
   assert.match(s["inv-fees"], /<b>30 km<\/b> <span>3 varv<\/span>/);
-  assert.match(s["swish-fees"], /<span>30 km<\/span> <b>1\u00A0500 kr<\/b>/, "Swish-rutan visar efteranmälningsavgiften");
-  assert.match(s["swish-fees"], /href="https:\/\/app\.swish\.nu\/1\/p\/sw\/\?sw=1230489575&amp;amt=1500&amp;cur=SEK&amp;msg=RR%20-%20&amp;edit=msg/, "på mobilen öppnar avgiften Swish med beloppet ifyllt");
   assert.match(s.deadline, /inställt/);
   assert.match(s["hero-date"], /· Inställt$/);
   assert.match(s.years, /Inställt\. Loppet var planerat till lördag 30 januari\./);

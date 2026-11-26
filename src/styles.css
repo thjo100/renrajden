@@ -327,39 +327,39 @@ a:hover { text-decoration-thickness: 2px; }
 
 /* Swish: QR-kod på stor skärm, knapp som öppnar appen på telefon */
 .swish {
-  margin-top: 1.25rem; border: 1px dashed var(--line); border-radius: var(--radius); background: transparent;
+  margin-top: 1rem; display: grid; gap: 1.5rem; align-items: center;
+  background: var(--surface); border: 1px solid var(--line); border-left: 6px solid var(--red); border-radius: var(--radius);
+  padding: 1.5rem;
 }
-.swish > summary {
-  cursor: pointer; list-style: none; padding: .75rem 1rem; color: var(--muted); font-size: var(--s-sm, .95rem);
-  display: flex; align-items: center; gap: .5rem;
-}
-.swish > summary::-webkit-details-marker { display: none; }
-.swish > summary::before { content: "+"; font: 700 1rem/1 var(--f-mono); width: 1rem; text-align: center; }
-.swish[open] > summary::before { content: "−"; }
-.swish > summary:hover span { color: var(--text); text-decoration: underline; }
-.swish-inner { display: grid; gap: 1.25rem; align-items: center; padding: 0 1rem 1.25rem; }
-.swish-qr { display: block; width: 8rem; height: auto; border-radius: 4px; border: 1px solid var(--line); background: #FFFFFF; }
+.swish-qr { display: block; width: 11rem; height: auto; border-radius: 4px; border: 1px solid var(--line); background: #FFFFFF; }
 .swish-body { display: grid; gap: .75rem; justify-items: start; min-width: 0; }
+.swish-body .eyebrow { color: var(--red-text); }
+.swish h3 { font-size: var(--s-xl); }
 .swish-how { color: var(--muted); max-width: 52ch; }
 .swish-msg { color: var(--text); background: var(--ice); font: 600 .9em/1 var(--f-mono); padding: .2em .4em; border-radius: 3px; white-space: nowrap; }
 /* "RR -" skrivs ordagrant (mono), "ditt namn" är en platshållare */
 .swish-msg var { font: 400 1.1em/1 var(--f-body); font-style: normal; color: var(--muted); }
 .swish-fees { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: .5rem; }
+.swish-fees li { display: grid; gap: .3rem; justify-items: start; }
 .swish-fee { display: flex; align-items: baseline; gap: .5rem; padding: .35rem .75rem; border: 1px solid var(--line); border-radius: var(--radius); }
 a.swish-fee { color: var(--text); text-decoration: none; border-color: var(--red); padding: .6rem .9rem; }
 a.swish-fee i { font: 700 var(--s-sm)/1 var(--f-body); font-style: normal; color: var(--red-text); }
 a.swish-fee i::after { content: " →"; }
+.swish-late-fee { font-size: var(--s-xs); color: var(--muted); padding-left: .75rem; }
+.swish-late-fee a { color: inherit; }
+.swish-late { color: var(--muted); max-width: 52ch; }
 .swish-fee > span:not(.sr-only) { font: 600 var(--s-xs)/1.2 var(--f-mono); letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
-.swish-fee b { font: 700 1.1rem/1 var(--f-display); letter-spacing: .02em; font-variant-numeric: tabular-nums; }
-.swish-num { font: 900 1.6rem/1 var(--f-display); letter-spacing: .02em; font-variant-numeric: tabular-nums; }
-@media (min-width: 700px) { .swish-inner { grid-template-columns: auto minmax(0, 1fr); gap: 1.5rem; padding: 0 1.5rem 1.5rem; } }
+.swish-fee b { font: 700 1.25rem/1 var(--f-display); letter-spacing: .02em; font-variant-numeric: tabular-nums; }
+.swish-num { font: 900 2.25rem/1 var(--f-display); letter-spacing: .02em; font-variant-numeric: tabular-nums; }
+@media (min-width: 700px) { .swish { grid-template-columns: auto minmax(0, 1fr); gap: 2rem; padding: 1.5rem 2rem 1.5rem 1.5rem; } }
 /* Med mus: QR-koden skannas med telefonen. Med pekskärm: knappen öppnar Swish med numret och meddelandet ifyllt,
    och på en telefon döljs QR-koden (den går inte att skanna med samma telefon). */
-.swish-tap, .swish-fee-tap { display: none; }
+.swish-tap, .swish-fees .touch { display: none; }
 @media (hover: none), (pointer: coarse) {
   .swish-tap { display: inline; }
-  .swish-fee-tap { display: flex; }
-  .swish-scan, .swish-fee-scan { display: none; }
+  .swish-fees .touch { display: inline; }
+  .swish-fees a.swish-fee.touch { display: flex; }
+  .swish-scan, .swish-fees .no-touch { display: none; }
 }
 @media (max-width: 699px) and (hover: none), (max-width: 699px) and (pointer: coarse) { .swish-qr { display: none; } }
 
