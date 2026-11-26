@@ -337,6 +337,8 @@ a:hover { text-decoration-thickness: 2px; }
 .swish h3 { font-size: var(--s-xl); }
 .swish-how { color: var(--muted); max-width: 52ch; }
 .swish-msg { color: var(--text); background: var(--ice); font: 600 .9em/1 var(--f-mono); padding: .2em .4em; border-radius: 3px; white-space: nowrap; }
+/* "RR -" skrivs ordagrant (mono), "ditt namn" är en platshållare */
+.swish-msg var { font: 400 1.1em/1 var(--f-body); font-style: normal; color: var(--muted); }
 .swish-fees { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: .5rem; }
 .swish-fees li { display: flex; align-items: baseline; gap: .5rem; padding: .35rem .75rem; border: 1px solid var(--line); border-radius: var(--radius); }
 .swish-fees span { font: 600 var(--s-xs)/1.2 var(--f-mono); letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }

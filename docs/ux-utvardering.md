@@ -385,3 +385,45 @@ Alla P1- och P2-fynd är åtgärdade och omtestade med samma skript och samma ha
 | P2-13 Logotyp | `aria-label` borttagen. | Godkänt (axe) |
 | P3-1 till P3-11, P3-13 till P3-15 | Åtgärdade enligt förslagen. Km-mätarens varv följer nu sektionerna: 10,5 km = Anmälan, 21 km = Bana, 31,5 km = Resultat. | |
 | P3-12 Utan JavaScript | Delvis: `<noscript>` i nyhetsrutan. `lang` och statisk resultatlista hör till den skarpa sajten, eftersom prototypens skelett läggs på av plattformen. | |
+
+---
+
+## Granskning 3: inbjudan och efteranmälan (november 2026)
+
+Tre granskare gick igenom den skarpa sajten: grafisk form i inbjudan, efteranmälan ur deltagarens perspektiv och huvudsidan. Utgångspunkten var att efteranmälan i inbjudan inte såg färdig ut. Mätt med Chromium (Playwright), axe-core, avkodning av QR-koderna (jsQR och OpenCV) och utskrift till PDF.
+
+**Grunden håller:** axe visar 0 fel på båda sidorna. All text klarar AA, även i den mörkblå foten (9,4:1). Ingen bredd från 320 px ger sidledsscroll, och inbjudan blir exakt en A4-sida.
+
+### Åtgärdat
+
+| Fynd | Åtgärd |
+|---|---|
+| Foten i inbjudan var inte linjerad. Swish-blocket hade en rad mer än renrajden.se-blocket, så etiketterna stod 2,4 mm isär i höjd och "meddelandet" hamnade ensamt på en egen rad | Två likadana block (QR, etikett, stor rad, märkt rad) med en tunn avdelare. Logotypen ligger på samma 16 mm-linje som innehållet |
+| "Skriv **RR -** och ditt namn" var tvetydigt: skulle bindestrecket med? | Raden heter nu "Meddelande", följd av en ruta med `RR -` i mono och "ditt namn" som platshållare. Huvudsidan gör likadant |
+| Swish-QR:n var en nedskalad PNG med 0,51 mm moduler och såg plottrig ut | Ritad som vektor ur PNG:n i samma färg som sajtens QR. Den är 26 mm stor, med 0,63 mm moduler. Avkodas till exakt samma länk som förut |
+| Inbjudan och sajten sa olika saker om efteranmälan ("efter sista anmälningsdag, även på plats" mot "på plats tävlingsdagen") | Steg 2 heter "Efteranmälan på plats": tävlingsdagen, betala med Swish, ta med Vasa-ID. Etiketten i foten heter "Betala med Swish" som på sajten |
+| Rutan med sista anmälningsdag stod ovanför steg 2 och kunde läsas som sista dag för efteranmälan | Datumet står i steg 1, "Föranmälan i SSF TA: Senast söndag 24 januari 2027" |
+| Steg-siffran "1" och "Kl" lästes som "I" och "KI" i Big Shoulders | Siffran sätts i Familjen Grotesk. Starttiden visas utan "Kl" |
+| Kolumnerna hette "Anmälan" och "Efteranmälan" och var olika breda | "Föranmälan" och "Efteranmälan", 20 % var |
+| Skärmläsare läste "42 km4 varv" och "Frågorinfo@renrajden.se", och Swish-delen saknade rubrik | Mellanslag i renderingen. Fotens etiketter är `h2` |
+| Inbjudan på mobil hade inga länkar, och QR-koderna går inte att skanna med samma telefon | Adressen, mejlen, SSF TA och Swishnumret är länkar (understrukna på smal skärm). QR-koderna döljs på pekskärm |
+| Mörkt läge: den mörkblå foten flöt ihop med bakgrunden | Tunn ljus kant runt arket på skärm |
+| Swish-rutan på sajten sa inte vad man ska betala | Efteranmälningsavgiften per distans står i rutan (`swish-fees`) |
+| Tävlingsdagen på mobil ledde inte till efteranmälan | Nummerlappen får länken "Efteranmälan och Swish" |
+| Den aktiva menyposten markerades inte (CSS väntade sig `aria-current="true"`) | Väljaren gäller nu alla värden på `aria-current` |
+
+Inbjudan ryms på en A4-sida även med fyra distanser (2,2 mm marginal).
+
+### Öppna frågor till arrangören
+
+1. **Går det att efteranmäla sig i SSF TA efter sista anmälningsdag**, eller bara på plats? Inbjudan och sajten säger nu "på plats tävlingsdagen".
+2. **Tid och plats för efteranmälan** på tävlingsdagen, till exempel "sekretariatet kl 8.00–9.30". Den står ingenstans.
+3. **Distans i Swish-meddelandet?** Med bara "RR - namn" syns distansen bara på beloppet. Ett alternativ är "RR 42 Anna Svensson". Det kräver en ny QR-kod från Swish.
+4. **Kontanter:** PM och packlistan på sajten nämner jämna kontanter, men inbjudan nämner bara Swish.
+5. **PM 2025** blandar 2025 och 2027 (fredagens nummerlappar gäller en lördagstävling). Där står också "10 km" och "Snabba efteranmälda får startled 11–20". Uppdatera inför 2027.
+
+### Kvar (P3)
+
+- Länken till inbjudan är svår att hitta på startsidan. Den finns bara i Datum och i avgiftsraden, inte i menyn eller sidfoten.
+- I läget efter loppet visas Swish-rutan och texten om sista anmälningsdag fortfarande.
+- "Öppna Swish" på sajten har `src=qr` i länken, kopierat från QR-koden. Det bör provas på en riktig telefon.
