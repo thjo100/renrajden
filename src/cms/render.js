@@ -67,16 +67,14 @@ export const SWISH_NUMBER = "1230489575";
 export const swishUrl = (amount) =>
   `https://app.swish.nu/1/p/sw/?sw=${SWISH_NUMBER}&amt=${encodeURIComponent(amount)}&cur=SEK&msg=RR%20-%20&edit=msg&src=qr`;
 
-// Efteranmälningsavgiften länkar till Swish. Med mus: till Swish-rutan (QR-koden).
-// Med pekskärm: direkt till Swish-appen med beloppet ifyllt. CSS visar den ena av de två länkarna.
-const lateFee = (d) => {
-  const label = `Efteranmälan ${esc(fmtKr(d.lateFee))}`;
-  return `<a class="late-fee late-fee-scan" href="#swish">${label}<span class="sr-only">, så betalar du med Swish</span></a>`
-    + `<a class="late-fee late-fee-tap" href="${esc(swishUrl(d.lateFee))}">${label}<span class="sr-only">, öppna Swish</span></a>`;
-};
+// Ordinarie avgift i fokus: den länkar till anmälan i SSF TA. Efteranmälan står kvar som en diskret rad.
+const regFee = (e, d) => (cancelled(e)
+  ? esc(fmtKr(d.fee))
+  : `<a class="reg-fee" href="${esc(e.registrationUrl || SSFTA_LOGIN)}" target="_blank" rel="noopener">${esc(fmtKr(d.fee))}`
+    + `<span class="sr-only">, anmäl dig till ${esc(fmtNum(d.km))} km i SSF TA${NEW_TAB}</span></a>`);
 
 const fees = (e) => e.distances.map((d) =>
-  `<div><dt>${esc(fmtNum(d.km))} km</dt><dd>${esc(fmtKr(d.fee))}<small>${lateFee(d)}</small></dd></div>`).join("")
+  `<div><dt>${esc(fmtNum(d.km))} km</dt><dd>${regFee(e, d)}<small>Efteranmälan ${esc(fmtKr(d.lateFee))}</small></dd></div>`).join("")
   + `<div><dt>Inbjudan</dt><dd><a href="/inbjudan"><span class="sr-only">Inbjudan </span>${year(e)}</a><small>Går att skriva ut</small></dd></div>`;
 
 // Efteranmälningsavgifterna i Swish-rutan, så att man ser vad man ska swisha.

@@ -355,11 +355,11 @@ a.swish-fee i::after { content: " →"; }
 @media (min-width: 700px) { .swish-inner { grid-template-columns: auto minmax(0, 1fr); gap: 1.5rem; padding: 0 1.5rem 1.5rem; } }
 /* Med mus: QR-koden skannas med telefonen. Med pekskärm: knappen öppnar Swish med numret och meddelandet ifyllt,
    och på en telefon döljs QR-koden (den går inte att skanna med samma telefon). */
-.swish-tap, .swish-fee-tap, .late-fee-tap { display: none; }
+.swish-tap, .swish-fee-tap { display: none; }
 @media (hover: none), (pointer: coarse) {
-  .swish-tap, .late-fee-tap { display: inline; }
+  .swish-tap { display: inline; }
   .swish-fee-tap { display: flex; }
-  .swish-scan, .swish-fee-scan, .late-fee-scan { display: none; }
+  .swish-scan, .swish-fee-scan { display: none; }
 }
 @media (max-width: 699px) and (hover: none), (max-width: 699px) and (pointer: coarse) { .swish-qr { display: none; } }
 
@@ -393,9 +393,6 @@ a.swish-fee i::after { content: " →"; }
 .stat-row dd { margin: .25rem 0 0; font: 900 2rem/1 var(--f-display); font-variant-numeric: tabular-nums; }
 .fees-row { margin-top: 1.5rem; }
 .fees-row dd small { display: block; margin-top: .375rem; font: 400 var(--s-sm)/1.4 var(--f-body); color: var(--muted); }
-/* Efteranmälningsavgiften länkar diskret till Swish-rutan */
-.fees-row .late-fee { color: inherit; text-decoration: underline dotted; text-decoration-color: var(--muted); text-underline-offset: .25em; }
-.fees-row .late-fee:hover, .fees-row .late-fee:focus-visible { color: var(--text); text-decoration-color: currentColor; }
 .link-list { list-style: none; margin: 1.25rem 0 0; padding: 0; display: grid; gap: .5rem; }
 .link-list a { display: flex; justify-content: space-between; gap: 1rem; align-items: center; padding: .875rem 1rem; background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); text-decoration: none; font-weight: 600; }
 .link-list a:hover { border-color: var(--accent); }
