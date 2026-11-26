@@ -107,9 +107,10 @@ test("distanser, avgifter och status följer innehållet", () => {
   const s = renderSlots(c), h = renderHead(c);
   assert.match(s.dist, /<b>30<\/b><span>km · HD30<\/span>/);
   assert.equal((s.dist.match(/class="lap( on)?"/g) || []).length, 3, "ett spår per varv");
-  assert.match(s.fees, /1 200 kr<small><a class="late-fee" href="#swish">Efteranmälan 1 500 kr/);
+  assert.match(s.fees, /1 200 kr<small><a class="late-fee late-fee-scan" href="#swish">Efteranmälan 1 500 kr/);
   assert.match(s["inv-fees"], /<b>30 km<\/b> <span>3 varv<\/span>/);
   assert.match(s["swish-fees"], /<span>30 km<\/span> <b>1\u00A0500 kr<\/b>/, "Swish-rutan visar efteranmälningsavgiften");
+  assert.match(s["swish-fees"], /href="https:\/\/app\.swish\.nu\/1\/p\/sw\/\?sw=1230489575&amp;amt=1500&amp;cur=SEK&amp;msg=RR%20-%20&amp;edit=msg/, "på mobilen öppnar avgiften Swish med beloppet ifyllt");
   assert.match(s.deadline, /inställt/);
   assert.match(s["hero-date"], /· Inställt$/);
   assert.match(s.years, /Inställt\. Loppet var planerat till lördag 30 januari\./);

@@ -62,13 +62,30 @@ function deadline(e) {
   return `Sista anmälningsdag är ${esc(fmtDate(e.deadline, { weekday: true }))}. Därefter gäller efteranmälan.`;
 }
 
+// Swish-länk med OK Renens nummer, beloppet och "RR - " ifyllt. Meddelandet går att ändra, beloppet inte.
+export const SWISH_NUMBER = "1230489575";
+export const swishUrl = (amount) =>
+  `https://app.swish.nu/1/p/sw/?sw=${SWISH_NUMBER}&amt=${encodeURIComponent(amount)}&cur=SEK&msg=RR%20-%20&edit=msg&src=qr`;
+
+// Efteranmälningsavgiften länkar till Swish. Med mus: till Swish-rutan (QR-koden).
+// Med pekskärm: direkt till Swish-appen med beloppet ifyllt. CSS visar den ena av de två länkarna.
+const lateFee = (d) => {
+  const label = `Efteranmälan ${esc(fmtKr(d.lateFee))}`;
+  return `<a class="late-fee late-fee-scan" href="#swish">${label}<span class="sr-only">, så betalar du med Swish</span></a>`
+    + `<a class="late-fee late-fee-tap" href="${esc(swishUrl(d.lateFee))}">${label}<span class="sr-only">, öppna Swish</span></a>`;
+};
+
 const fees = (e) => e.distances.map((d) =>
-  `<div><dt>${esc(fmtNum(d.km))} km</dt><dd>${esc(fmtKr(d.fee))}<small><a class="late-fee" href="#swish">Efteranmälan ${esc(fmtKr(d.lateFee))}<span class="sr-only">, betala med Swish</span></a></small></dd></div>`).join("")
+  `<div><dt>${esc(fmtNum(d.km))} km</dt><dd>${esc(fmtKr(d.fee))}<small>${lateFee(d)}</small></dd></div>`).join("")
   + `<div><dt>Inbjudan</dt><dd><a href="/inbjudan"><span class="sr-only">Inbjudan </span>${year(e)}</a><small>Går att skriva ut</small></dd></div>`;
 
 // Efteranmälningsavgifterna i Swish-rutan, så att man ser vad man ska swisha.
-const swishFees = (e) => e.distances.map((d) =>
-  `<li><span>${esc(fmtNum(d.km))} km</span> <b>${esc(fmtKr(d.lateFee))}</b></li>`).join("");
+// Med pekskärm är varje avgift en knapp som öppnar Swish med beloppet ifyllt.
+const swishFees = (e) => e.distances.map((d) => {
+  const fee = `<span>${esc(fmtNum(d.km))} km</span> <b>${esc(fmtKr(d.lateFee))}</b>`;
+  return `<li><span class="swish-fee swish-fee-scan">${fee}</span>`
+    + `<a class="swish-fee swish-fee-tap" href="${esc(swishUrl(d.lateFee))}">${fee}<i aria-hidden="true">Swisha</i><span class="sr-only">, öppna Swish</span></a></li>`;
+}).join("");
 
 // Utan direktlänk till tävlingen länkar vi till inloggningen i SSF TA, där man söker fram tävlingen.
 export const SSFTA_LOGIN = "https://ssfta.skidor.com/logga-in";
