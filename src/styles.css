@@ -323,8 +323,7 @@ a:hover { text-decoration-thickness: 2px; }
 .route p { color: var(--muted); }
 .pending { display: flex; gap: .5rem; align-items: center; font-size: var(--s-sm); color: var(--text); background: var(--ice); padding: .75rem .875rem; border-radius: var(--radius); }
 .pending::before { content: ""; flex: none; width: 10px; height: 10px; border-radius: 50%; background: var(--red); }
-.copy-row { display: flex; flex-wrap: wrap; align-items: center; gap: .5rem .75rem; }
-.copy-row .mail { font: 600 var(--s-md)/1.3 var(--f-mono); word-break: break-all; }
+.route .mail { font: 600 var(--s-md)/1.3 var(--f-mono); word-break: break-all; }
 
 /* Swish: QR-kod på stor skärm, knapp som öppnar appen på telefon */
 .swish {

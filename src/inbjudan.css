@@ -65,12 +65,11 @@ h1, h2, p, dl, dd, ol, ul { margin: 0; }
   font-size: 10.5pt;
 }
 
-/* Blå väst med röd-vit rand, renhuvudet, OK Renens logotyp och välvd titel som på hemsidan */
+/* Blå väst med röd-vit rand, renhuvudet och välvd titel som på hemsidan */
 .top { position: relative; isolation: isolate; overflow: hidden; background: var(--hero); color: #FFFFFF; padding: 9mm 16mm 15mm 25mm; }
 .stripe { position: absolute; left: 0; top: 0; bottom: 0; width: 9mm; z-index: -1;
   background: linear-gradient(90deg, #FFFFFF 0 1.8mm, var(--red) 1.8mm 7.2mm, #FFFFFF 7.2mm 9mm); }
-.ren { position: absolute; z-index: -1; right: 30mm; bottom: 0; width: 64mm; height: auto; color: var(--reindeer); }
-.logo { position: absolute; top: 9mm; right: 12mm; width: auto; height: 36mm; --logo-bg: transparent; }
+.ren { position: absolute; z-index: -1; right: 8mm; bottom: 0; width: 70mm; height: auto; color: var(--reindeer); }
 .wave { position: absolute; left: 0; right: 0; bottom: -1px; width: 100%; height: 13mm; }
 .top-inner { position: relative; display: grid; gap: 2mm; max-width: 118mm; }
 .kicker { display: flex; align-items: center; gap: 3mm; font: 600 8pt/1.2 var(--f-mono); letter-spacing: .1em; text-transform: uppercase; color: var(--hero-soft); }
@@ -129,16 +128,18 @@ h1, h2, p, dl, dd, ol, ul { margin: 0; }
 .two ul { padding-left: 4.5mm; display: grid; gap: .8mm; }
 .two li::marker { color: var(--red); }
 
-/* Fot: hänvisning till hemsidan och Swish för efteranmälan */
+/* Fot: hänvisning till hemsidan, Swish för efteranmälan och OK Renens logotyp i hörnet */
 .bottom {
   margin-top: auto; background: var(--navy); color: #FFFFFF;
-  display: grid; grid-template-columns: auto minmax(0, 1fr) auto auto; gap: 5mm; align-items: center;
-  padding: 6mm 16mm;
+  display: grid; grid-template-columns: auto minmax(0, 1fr) auto auto auto; gap: 4mm; align-items: center;
+  padding: 6mm 12mm 6mm 16mm;
 }
+.logo { display: block; width: auto; height: 23mm; margin-left: 2mm; --logo-bg: transparent; }
 .qr { display: block; width: 23mm; height: 23mm; border-radius: 1mm; }
 .swish-qr { margin-left: 3mm; }
+.pay { max-width: 50mm; }
 .more-label { color: var(--navy-ink); }
-.url, .swish-num { font: 900 26pt/1 var(--f-display); letter-spacing: .02em; margin-top: 1.2mm; white-space: nowrap; }
+.url, .swish-num { font: 900 24pt/1 var(--f-display); letter-spacing: .02em; margin-top: 1.2mm; white-space: nowrap; }
 .contact { font-size: 9.5pt; margin-top: 1.8mm; color: var(--navy-ink); }
 .bottom .contact span { font: 600 7pt/1.2 var(--f-mono); letter-spacing: .1em; text-transform: uppercase; margin-right: 2mm; color: var(--navy-ink); }
 .contact b { color: #FFFFFF; white-space: nowrap; }
@@ -157,7 +158,7 @@ h1, h2, p, dl, dd, ol, ul { margin: 0; }
   .top { padding: 28px 16px 56px 40px; }
   .stripe { width: 24px; background: linear-gradient(90deg, #FFFFFF 0 5px, var(--red) 5px 19px, #FFFFFF 19px 24px); }
   .ren { width: 46vw; right: 4vw; bottom: 0; }
-  .logo { position: static; display: block; height: 84px; margin-bottom: 16px; }
+  .logo { grid-column: 1 / -1; justify-self: end; height: 72px; margin: 0; }
   .wave { height: 36px; }
   .top-inner { gap: 8px; max-width: none; }
   .title svg { width: min(100%, 420px); }
