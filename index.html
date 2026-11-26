@@ -52,6 +52,7 @@
         <li><a href="#pm">PM &amp; tider</a></li>
         <li><a href="#bana">Bana &amp; före</a></li>
         <li><a href="#nyheter">Nyheter</a></li>
+        <li><a href="#bilder">Bilder</a></li>
         <li><a href="#resultat">Resultat</a></li>
         <li><a href="#kontakt">Kontakt</a></li>
       </ul>
@@ -320,6 +321,30 @@
     </div>
   </section>
 
+  <!-- BILDER -->
+  <section class="section" id="bilder" aria-labelledby="bilder-h">
+    <div class="wrap">
+      <div class="section-head">
+        <p class="eyebrow">Från spåret</p>
+        <h2 id="bilder-h">Bilder</h2>
+        <p class="section-intro">Film, foton, affischer och banor från Renrajden genom åren.</p>
+      </div>
+      <figure class="film">
+        <video id="film" src="/video/renrajden-2024.mp4" poster="/video/renrajden-2024.jpg" muted loop playsinline preload="metadata" aria-label="Film från Renrajden 2024"></video>
+        <figcaption class="film-text">
+          <span><b>Renrajden 2024</b><small>Ormberget, Luleå</small></span>
+          <span class="film-knappar">
+            <button type="button" id="film-spela">Spela</button>
+            <button type="button" id="film-ljud">Ljud på</button>
+          </span>
+        </figcaption>
+      </figure>
+      <div class="galleri-val" id="galleri-val" role="group" aria-label="Visa bilder"></div>
+      <ul class="galleri" id="galleri" aria-labelledby="bilder-h"></ul>
+      <div class="galleri-mer"><button class="btn btn-quiet" type="button" id="galleri-mer" hidden>Visa alla bilder</button></div>
+    </div>
+  </section>
+
   <!-- RESULTAT -->
   <section class="section tint" id="resultat" aria-labelledby="res-h">
     <div class="wrap">
@@ -418,6 +443,24 @@
 </footer>
 
 <!-- Inloggning -->
+<dialog id="bildvisning" class="bildvisning" aria-labelledby="bild-titel">
+  <div class="bv">
+    <div class="bv-topp">
+      <span class="bv-antal" id="bild-antal"></span>
+      <span class="bv-knappar">
+        <a class="bv-knapp" id="bild-orig" href="#" target="_blank" rel="noopener">Original</a>
+        <button type="button" class="bv-knapp" data-close aria-label="Stäng">✕</button>
+      </span>
+    </div>
+    <div class="bv-bild">
+      <button type="button" class="bv-knapp bv-pil bv-fore" id="bild-fore" aria-label="Föregående bild">‹</button>
+      <img id="bild-stor" alt="">
+      <button type="button" class="bv-knapp bv-pil bv-nasta" id="bild-nasta" aria-label="Nästa bild">›</button>
+    </div>
+    <p class="bv-text"><b id="bild-titel"></b><small id="bild-info"></small></p>
+  </div>
+</dialog>
+
 <dialog id="login-dialog" aria-labelledby="login-h" aria-describedby="login-desc">
   <div class="login-stripe" aria-hidden="true"></div>
   <div class="dlg-head"><h2 id="login-h">Administratör</h2><button class="dlg-close" type="button" data-close aria-label="Stäng">×</button></div>
