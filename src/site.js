@@ -76,7 +76,7 @@ function initMenu() {
 function initRail() {
   const rail = $(".rail"), railKm = $("#rail-km"), railLap = $("#rail-lap"), mbar = $("#progress-mobile");
   const marks = $$(".rail-mark"), navLinks = $$(".site-nav a");
-  const sectionIds = ["loppet", "seedning", "anmalan", "pm", "bana", "nyheter", "resultat", "partners", "kontakt"];
+  const sectionIds = ["loppet", "seedning", "anmalan", "pm", "bana", "nyheter", "bilder", "resultat", "partners", "kontakt"];
   const lapAnchors = ["anmalan", "bana", "resultat"]; // 10,5 / 21 / 31,5 km
   const kmAt = (y, max) => {
     if (max <= 0) return 0;

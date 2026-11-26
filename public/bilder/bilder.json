@@ -1,0 +1,308 @@
+[
+ {
+  "fil": "/bilder/foton/2015-tre-akare-i-dimman.jpg",
+  "mini": "/bilder/mini/foton/2015-tre-akare-i-dimman.jpg",
+  "kategori": "foton",
+  "ar": 2015,
+  "titel": "Tre åkare i dimman",
+  "b": 2048,
+  "h": 1536
+ },
+ {
+  "fil": "/bilder/foton/2015-akare-i-sparet.jpg",
+  "mini": "/bilder/mini/foton/2015-akare-i-sparet.jpg",
+  "kategori": "foton",
+  "ar": 2015,
+  "titel": "Åkare i spåret",
+  "b": 1317,
+  "h": 1023
+ },
+ {
+  "fil": "/bilder/foton/2017-akare-med-atomic-skidor.jpg",
+  "mini": "/bilder/mini/foton/2017-akare-med-atomic-skidor.jpg",
+  "kategori": "foton",
+  "ar": 2017,
+  "titel": "Åkare med Atomic-skidor",
+  "b": 1365,
+  "h": 2048
+ },
+ {
+  "fil": "/bilder/foton/2017-intervju-vid-malet.jpg",
+  "mini": "/bilder/mini/foton/2017-intervju-vid-malet.jpg",
+  "kategori": "foton",
+  "ar": 2017,
+  "titel": "Intervju vid målet",
+  "b": 480,
+  "h": 320
+ },
+ {
+  "fil": "/bilder/foton/2024-starten-2024.png",
+  "mini": "/bilder/mini/foton/2024-starten-2024.jpg",
+  "kategori": "foton",
+  "ar": 2024,
+  "titel": "Starten 2024",
+  "b": 1180,
+  "h": 246
+ },
+ {
+  "fil": "/bilder/affischer/2015-affisch-2015.png",
+  "mini": "/bilder/mini/affischer/2015-affisch-2015.jpg",
+  "kategori": "affischer",
+  "ar": 2015,
+  "titel": "Affisch 2015",
+  "b": 1196,
+  "h": 898
+ },
+ {
+  "fil": "/bilder/affischer/2016-annons-2016.png",
+  "mini": "/bilder/mini/affischer/2016-annons-2016.jpg",
+  "kategori": "affischer",
+  "ar": 2016,
+  "titel": "Annons 2016",
+  "b": 620,
+  "h": 503
+ },
+ {
+  "fil": "/bilder/affischer/2017-affisch-2017.png",
+  "mini": "/bilder/mini/affischer/2017-affisch-2017.jpg",
+  "kategori": "affischer",
+  "ar": 2017,
+  "titel": "Affisch 2017",
+  "b": 960,
+  "h": 720
+ },
+ {
+  "fil": "/bilder/affischer/2018-affisch-2018-med-kalvrajden.jpg",
+  "mini": "/bilder/mini/affischer/2018-affisch-2018-med-kalvrajden.jpg",
+  "kategori": "affischer",
+  "ar": 2018,
+  "titel": "Affisch 2018 med Kalvrajden",
+  "b": 946,
+  "h": 705
+ },
+ {
+  "fil": "/bilder/affischer/2020-affisch-2020.png",
+  "mini": "/bilder/mini/affischer/2020-affisch-2020.jpg",
+  "kategori": "affischer",
+  "ar": 2020,
+  "titel": "Affisch 2020",
+  "b": 1097,
+  "h": 597
+ },
+ {
+  "fil": "/bilder/affischer/2027-banner-2027.png",
+  "mini": "/bilder/mini/affischer/2027-banner-2027.jpg",
+  "kategori": "affischer",
+  "ar": 2027,
+  "titel": "Banner 2027",
+  "b": 1275,
+  "h": 400
+ },
+ {
+  "fil": "/bilder/banor/2015-banan-2015.png",
+  "mini": "/bilder/mini/banor/2015-banan-2015.jpg",
+  "kategori": "banor",
+  "ar": 2015,
+  "titel": "Banan 2015",
+  "b": 997,
+  "h": 757
+ },
+ {
+  "fil": "/bilder/banor/2016-banan-2016.png",
+  "mini": "/bilder/mini/banor/2016-banan-2016.jpg",
+  "kategori": "banor",
+  "ar": 2016,
+  "titel": "Banan 2016",
+  "b": 1015,
+  "h": 720
+ },
+ {
+  "fil": "/bilder/banor/2017-banan-2017.png",
+  "mini": "/bilder/mini/banor/2017-banan-2017.jpg",
+  "kategori": "banor",
+  "ar": 2017,
+  "titel": "Banan 2017",
+  "b": 960,
+  "h": 720
+ },
+ {
+  "fil": "/bilder/banor/2020-banan-2020.png",
+  "mini": "/bilder/mini/banor/2020-banan-2020.jpg",
+  "kategori": "banor",
+  "ar": 2020,
+  "titel": "Banan 2020",
+  "b": 900,
+  "h": 740
+ },
+ {
+  "fil": "/bilder/banor/2020-kalvrajden-5-km.png",
+  "mini": "/bilder/mini/banor/2020-kalvrajden-5-km.jpg",
+  "kategori": "banor",
+  "ar": 2020,
+  "titel": "Kalvrajden, 5 km",
+  "b": 960,
+  "h": 708
+ },
+ {
+  "fil": "/bilder/banor/2020-kalvrajden.png",
+  "mini": "/bilder/mini/banor/2020-kalvrajden.jpg",
+  "kategori": "banor",
+  "ar": 2020,
+  "titel": "Kalvrajden",
+  "b": 775,
+  "h": 680
+ },
+ {
+  "fil": "/bilder/banor/2020-renrajden-slingan.png",
+  "mini": "/bilder/mini/banor/2020-renrajden-slingan.jpg",
+  "kategori": "banor",
+  "ar": 2020,
+  "titel": "Renrajden, slingan",
+  "b": 886,
+  "h": 720
+ },
+ {
+  "fil": "/bilder/banor/2020-stadion-och-start.png",
+  "mini": "/bilder/mini/banor/2020-stadion-och-start.jpg",
+  "kategori": "banor",
+  "ar": 2020,
+  "titel": "Stadion och start",
+  "b": 1153,
+  "h": 1197
+ },
+ {
+  "fil": "/bilder/banor/2020-stadsomradet-2020.png",
+  "mini": "/bilder/mini/banor/2020-stadsomradet-2020.jpg",
+  "kategori": "banor",
+  "ar": 2020,
+  "titel": "Stadsområdet 2020",
+  "b": 893,
+  "h": 596
+ },
+ {
+  "fil": "/bilder/banor/2015-karta-till-duscharna.png",
+  "mini": "/bilder/mini/banor/2015-karta-till-duscharna.jpg",
+  "kategori": "banor",
+  "ar": 2015,
+  "titel": "Karta till duscharna",
+  "b": 960,
+  "h": 720
+ },
+ {
+  "fil": "/bilder/sponsorer/2018-sponsorer-2018.png",
+  "mini": "/bilder/mini/sponsorer/2018-sponsorer-2018.jpg",
+  "kategori": "sponsorer",
+  "ar": 2018,
+  "titel": "Sponsorer 2018",
+  "b": 1448,
+  "h": 2048
+ },
+ {
+  "fil": "/bilder/sponsorer/2015-norrbottens-kuriren.png",
+  "mini": "/bilder/mini/sponsorer/2015-norrbottens-kuriren.jpg",
+  "kategori": "sponsorer",
+  "ar": 2015,
+  "titel": "Norrbottens-Kuriren",
+  "b": 250,
+  "h": 85
+ },
+ {
+  "fil": "/bilder/sponsorer/2015-team-sportia.jpg",
+  "mini": "/bilder/mini/sponsorer/2015-team-sportia.jpg",
+  "kategori": "sponsorer",
+  "ar": 2015,
+  "titel": "Team Sportia",
+  "b": 160,
+  "h": 160
+ },
+ {
+  "fil": "/bilder/sponsorer/2015-vauhti.jpg",
+  "mini": "/bilder/mini/sponsorer/2015-vauhti.jpg",
+  "kategori": "sponsorer",
+  "ar": 2015,
+  "titel": "Vauhti",
+  "b": 413,
+  "h": 122
+ },
+ {
+  "fil": "/bilder/sponsorer/2015-vauhti-ldr.jpg",
+  "mini": "/bilder/mini/sponsorer/2015-vauhti-ldr.jpg",
+  "kategori": "sponsorer",
+  "ar": 2015,
+  "titel": "Vauhti LDR",
+  "b": 435,
+  "h": 650
+ },
+ {
+  "fil": "/bilder/sponsorer/2015-vitargo-electrolyte.jpg",
+  "mini": "/bilder/mini/sponsorer/2015-vitargo-electrolyte.jpg",
+  "kategori": "sponsorer",
+  "ar": 2015,
+  "titel": "Vitargo Electrolyte",
+  "b": 800,
+  "h": 800
+ },
+ {
+  "fil": "/bilder/sponsorer/2025-umara.png",
+  "mini": "/bilder/mini/sponsorer/2025-umara.jpg",
+  "kategori": "sponsorer",
+  "ar": 2025,
+  "titel": "Umara",
+  "b": 416,
+  "h": 445
+ },
+ {
+  "fil": "/bilder/sponsorer/2025-vasaloppet-officiellt-seedningslopp.png",
+  "mini": "/bilder/mini/sponsorer/2025-vasaloppet-officiellt-seedningslopp.jpg",
+  "kategori": "sponsorer",
+  "ar": 2025,
+  "titel": "Vasaloppet, officiellt seedningslopp",
+  "b": 354,
+  "h": 354
+ },
+ {
+  "fil": "/bilder/seedning/2017-seedning-2017.png",
+  "mini": "/bilder/mini/seedning/2017-seedning-2017.jpg",
+  "kategori": "seedning",
+  "ar": 2017,
+  "titel": "Seedning 2017",
+  "b": 1231,
+  "h": 211
+ },
+ {
+  "fil": "/bilder/seedning/2018-seedning-2018.jpg",
+  "mini": "/bilder/mini/seedning/2018-seedning-2018.jpg",
+  "kategori": "seedning",
+  "ar": 2018,
+  "titel": "Seedning 2018",
+  "b": 1097,
+  "h": 166
+ },
+ {
+  "fil": "/bilder/seedning/2020-seedning-2020.png",
+  "mini": "/bilder/mini/seedning/2020-seedning-2020.jpg",
+  "kategori": "seedning",
+  "ar": 2020,
+  "titel": "Seedning 2020",
+  "b": 948,
+  "h": 100
+ },
+ {
+  "fil": "/bilder/seedning/2023-seedning-2023.png",
+  "mini": "/bilder/mini/seedning/2023-seedning-2023.jpg",
+  "kategori": "seedning",
+  "ar": 2023,
+  "titel": "Seedning 2023",
+  "b": 1849,
+  "h": 210
+ },
+ {
+  "fil": "/bilder/seedning/2017-hojdprofil.jpg",
+  "mini": "/bilder/mini/seedning/2017-hojdprofil.jpg",
+  "kategori": "seedning",
+  "ar": 2017,
+  "titel": "Höjdprofil",
+  "b": 2225,
+  "h": 541
+ }
+]

@@ -84,6 +84,7 @@ För att se lägena kring tävlingsdagen, lägg till `?lage=tavlingsvecka`, `?la
 | `src/main.js` | Ingång. Laddar CSS, typsnitt, nyheter, årets lopp och (vid behov) admin |
 | `src/site.js` | Nedräkning, lägen, meny, km-mätare, distansväljare, packlista |
 | `src/news.js` | Hämtar och visar nyheter |
+| `src/bilder.js` | Bildsektionen: filmen, val av kategori, rutnät och helskärmsvisning |
 | `src/admin.js` | Google-inloggning och hantering av nyheter |
 | `src/cms-admin.js` | Adminläget för årets lopp och resultatarkivet |
 | `src/admin-kit.js` | Gemensamt för adminformulären: fel, osparat, rader, bekräfta borttagning |
@@ -97,6 +98,8 @@ För att se lägena kring tävlingsdagen, lägg till `?lage=tavlingsvecka`, `?la
 | `src/styles.css` | All design |
 | `src/inbjudan.js`, `src/inbjudan.css` | Typsnitt, utskriftsknapp och A4-layout för inbjudan |
 | `public/grafik/` | OK Renens logotyp (`okrenen-logo`, `-vit` och `-vit-rod`, som SVG och PNG), renhuvudet (`okrenen-ren`), originalet `okrenen-logoark.pdf` och Swish-QR-koden (`swish-qr.png` som den levererades, `swish-qr-kod.png` beskuren för sajten och inbjudan). Allt nås också på renrajden.se/grafik/ |
+| `public/bilder/` | Bilderna från gamla bloggen, en mapp per kategori (`foton`, `affischer`, `banor`, `sponsorer`, `seedning`), miniatyrer i `mini/` och listan `bilder.json` (fil, miniatyr, kategori, år, titel, mått). En ny bild behöver en post i listan och en miniatyr |
+| `public/video/` | Filmen från Renrajden 2024 (720p) och dess stillbild |
 | `public/favicon.svg`, `favicon.ico`, `apple-touch-icon.png` | Flikikonen: renhuvudet på Renenblå |
 | `firestore.rules` | Säkerhetsregler |
 | `scripts/admin.mjs` | Lägg till, ta bort och lista administratörer |

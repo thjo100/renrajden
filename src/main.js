@@ -20,6 +20,7 @@ initDialogs();
 initSite();
 
 import("./news.js").then((m) => m.startNews());
+import("./bilder.js").then((m) => m.startBilder());
 // Årets lopp och resultatarkivet finns redan i sidan från bygget. Hämta det senaste från Firestore.
 refreshContent();
 
