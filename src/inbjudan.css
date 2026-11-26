@@ -101,7 +101,9 @@ h1, h2, p, dl, dd, ol, ul { margin: 0; }
 .fees tbody th b { font: 900 17pt/1 var(--f-display); margin-right: 1.5mm; }
 .fees tbody th span { color: var(--muted); font-size: 9.5pt; }
 .fees td { font-size: 10.5pt; }
-.fees .num { text-align: right; }
+.fees .num { text-align: right; padding-left: 3mm; }
+/* Kolumnrubrikerna delas på två rader på smal skärm ("För-/anmälan"), annars flyter de ihop */
+.fees .hy { display: none; }
 .fees .price { font: 700 15pt/1 var(--f-display); letter-spacing: .02em; }
 .fees .late { color: var(--muted); }
 .fees thead th:nth-child(1) { width: 34%; }
@@ -181,7 +183,9 @@ h1, h2, p, dl, dd, ol, ul { margin: 0; }
   .facts dd small { font-size: 13px; }
   .block { margin: 28px 16px 0; }
   .block h2 { font-size: 22px; margin-bottom: 10px; }
-  .fees thead th { font-size: 10px; }
+  .fees thead th { font-size: 10px; vertical-align: bottom; }
+  .fees thead .hy { display: inline; }
+  .fees thead .hy-part { display: block; }
   .fees thead th:nth-child(1), .fees thead th:nth-child(2) { width: auto; }
   .fees tbody th b { display: block; font-size: 22px; margin: 0 0 2px; }
   .fees tbody th span, .fees td { font-size: 14px; }
