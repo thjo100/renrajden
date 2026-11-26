@@ -107,7 +107,7 @@ test("distanser, avgifter och status följer innehållet", () => {
   const s = renderSlots(c), h = renderHead(c);
   assert.match(s.dist, /<b>30<\/b><span>km · HD30<\/span>/);
   assert.equal((s.dist.match(/class="lap( on)?"/g) || []).length, 3, "ett spår per varv");
-  assert.match(s.fees, /1 200 kr<small>Efteranmälan 1 500 kr/);
+  assert.match(s.fees, /1 200 kr<small><a class="late-fee" href="#swish">Efteranmälan 1 500 kr/);
   assert.match(s["inv-fees"], /<b>30 km<\/b> <span>3 varv<\/span>/);
   assert.match(s["swish-fees"], /<span>30 km<\/span> <b>1\u00A0500 kr<\/b>/, "Swish-rutan visar efteranmälningsavgiften");
   assert.match(s.deadline, /inställt/);

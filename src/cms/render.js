@@ -63,7 +63,7 @@ function deadline(e) {
 }
 
 const fees = (e) => e.distances.map((d) =>
-  `<div><dt>${esc(fmtNum(d.km))} km</dt><dd>${esc(fmtKr(d.fee))}<small>Efteranmälan ${esc(fmtKr(d.lateFee))}</small></dd></div>`).join("")
+  `<div><dt>${esc(fmtNum(d.km))} km</dt><dd>${esc(fmtKr(d.fee))}<small><a class="late-fee" href="#swish">Efteranmälan ${esc(fmtKr(d.lateFee))}<span class="sr-only">, betala med Swish</span></a></small></dd></div>`).join("")
   + `<div><dt>Inbjudan</dt><dd><a href="/inbjudan"><span class="sr-only">Inbjudan </span>${year(e)}</a><small>Går att skriva ut</small></dd></div>`;
 
 // Efteranmälningsavgifterna i Swish-rutan, så att man ser vad man ska swisha.
