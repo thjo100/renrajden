@@ -158,9 +158,12 @@ h1, h2, p, dl, dd, ol, ul { margin: 0; }
   html, body { background: #FFFFFF; }
   .toolbar { display: none; }
   /* Ingen fast A4-höjd på papper: telefoner och många skrivare lägger till egna marginaler
-     (eller väljer Letter), och då hamnade foten på en andra sida. Arket blir så högt som innehållet. */
-  .sheet { margin: 0; box-shadow: none; height: auto; }
-  .bottom { margin-top: 4mm; break-inside: avoid; }
+     och då hamnade foten på en andra sida (iPhone: ca 14 mm upptill och nedtill, 6 mm på sidorna,
+     dvs ca 286 mm kvar av arkets höjd). Arket är minst 280 mm, så att det nästan fyller sidan även där,
+     och fyller hela sidan där webbläsaren räknar 100vh som sidans höjd vid utskrift (Chrome, Firefox). */
+  .sheet { margin: 0; box-shadow: none; height: auto; min-height: max(280mm, min(100vh, 297mm)); }
+  .sheet > .block:last-of-type { margin-bottom: 4mm; }
+  .bottom { break-inside: avoid; }
 }
 /* Mörkt skrivbord: en tunn kant så att arkets mörkblå fot inte flyter ihop med bakgrunden */
 @media screen and (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .sheet { outline: 1px solid rgba(255, 255, 255, .14); } }
