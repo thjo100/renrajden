@@ -66,6 +66,10 @@ const fees = (e) => e.distances.map((d) =>
   `<div><dt>${esc(fmtNum(d.km))} km</dt><dd>${esc(fmtKr(d.fee))}<small>Efteranmälan ${esc(fmtKr(d.lateFee))}</small></dd></div>`).join("")
   + `<div><dt>Inbjudan</dt><dd><a href="/inbjudan"><span class="sr-only">Inbjudan </span>${year(e)}</a><small>Går att skriva ut</small></dd></div>`;
 
+// Efteranmälningsavgifterna i Swish-rutan, så att man ser vad man ska swisha.
+const swishFees = (e) => e.distances.map((d) =>
+  `<li><span>${esc(fmtNum(d.km))} km</span> <b>${esc(fmtKr(d.lateFee))}</b></li>`).join("");
+
 // Utan direktlänk till tävlingen länkar vi till inloggningen i SSF TA, där man söker fram tävlingen.
 export const SSFTA_LOGIN = "https://ssfta.skidor.com/logga-in";
 const registration = (e) => (e.registrationUrl
@@ -127,13 +131,13 @@ function historySide(c) {
 }
 
 /* ---------- Platser i inbjudan ---------- */
-const invFacts = (e) => `<div><dt>Start</dt><dd>Kl ${esc(e.startTime)}<small>Alla distanser</small></dd></div>`
+const invFacts = (e) => `<div><dt>Start</dt><dd>${esc(e.startTime)}<small>Alla distanser</small></dd></div>`
   + `<div><dt>Plats</dt><dd>${esc(e.venue)}<small>${esc(e.venueArea)}</small></dd></div>`
   + `<div><dt>Stil</dt><dd>Klassisk<small>Dubbelspår, stilkontroll</small></dd></div>`
   + `<div><dt>Bana</dt><dd>${esc(fmtNum(e.lapKm))} km<small>Slinga, ca ${e.climbPerLap} höjdmeter</small></dd></div>`;
 
 const invFees = (e) => e.distances.map((d) =>
-  `<tr><th scope="row"><b>${esc(fmtNum(d.km))} km</b><span>${d.laps} varv</span></th><td>${esc(d.classes)}</td>`
+  `<tr><th scope="row"><b>${esc(fmtNum(d.km))} km</b> <span>${d.laps} varv</span></th><td>${esc(d.classes)}</td>`
   + `<td class="num price">${esc(fmtKr(d.fee))}</td><td class="num price late">${esc(fmtKr(d.lateFee))}</td></tr>`).join("");
 
 const invKnow = (e) => `<li>Stavar max 83 % av kroppslängden.</li><li>${esc(cap(waterText(e.waterPerLap)))} per varv.</li>`
@@ -159,6 +163,7 @@ export function renderSlots(c) {
     deadline: deadline(e),
     fees: fees(e),
     registration: registration(e),
+    "swish-fees": swishFees(e),
     mail: `<a class="mail" href="mailto:${mail}">${mail}</a>`,
     "footer-mail": `<a class="mono" href="mailto:${mail}">${mail}</a>`,
     "bana-intro": `En flack slinga med cirka ${e.climbPerLap} höjdmeter per varv. Start och mål på ${esc(e.venue)}.`,
@@ -171,9 +176,9 @@ export function renderSlots(c) {
     "inv-date": dateTime(e),
     "inv-facts": invFacts(e),
     "inv-fees": invFees(e),
-    "inv-deadline": e.deadline ? `Sista anmälningsdag <b>${esc(fmtDate(e.deadline, { weekday: true }))}</b>` : "Sista anmälningsdag <b>publiceras på renrajden.se</b>",
+    "inv-deadline": e.deadline ? `Senast <b>${esc(fmtDate(e.deadline, { weekday: true }))}</b>.` : "Sista anmälningsdagen publiceras på renrajden.se.",
     "inv-know": invKnow(e),
-    "inv-mail": `<span>Frågor</span>${mail}`,
+    "inv-mail": `<span>Frågor</span> <a href="mailto:${mail}">${mail}</a>`,
   };
 }
 

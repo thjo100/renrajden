@@ -122,7 +122,7 @@ a:hover { text-decoration-thickness: 2px; }
   color: var(--text); text-decoration: none; font-weight: 500; font-size: var(--s-sm);
 }
 .site-nav a:hover { background: var(--ice); }
-.site-nav a[aria-current="true"] { color: var(--red-text); box-shadow: inset 0 -3px 0 var(--red); border-radius: 0; }
+.site-nav a[aria-current] { color: var(--red-text); box-shadow: inset 0 -3px 0 var(--red); border-radius: 0; }
 .progress-mobile { height: 3px; background: var(--ice); }
 .progress-mobile span { display: block; height: 100%; background: var(--red); transform-origin: left; transform: scaleX(0); }
 @media (max-width: 1179px) {
@@ -337,6 +337,12 @@ a:hover { text-decoration-thickness: 2px; }
 .swish h3 { font-size: var(--s-xl); }
 .swish-how { color: var(--muted); max-width: 52ch; }
 .swish-msg { color: var(--text); background: var(--ice); font: 600 .9em/1 var(--f-mono); padding: .2em .4em; border-radius: 3px; white-space: nowrap; }
+/* "RR -" skrivs ordagrant (mono), "ditt namn" är en platshållare */
+.swish-msg var { font: 400 1.1em/1 var(--f-body); font-style: normal; color: var(--muted); }
+.swish-fees { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: .5rem; }
+.swish-fees li { display: flex; align-items: baseline; gap: .5rem; padding: .35rem .75rem; border: 1px solid var(--line); border-radius: var(--radius); }
+.swish-fees span { font: 600 var(--s-xs)/1.2 var(--f-mono); letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+.swish-fees b { font: 700 1.25rem/1 var(--f-display); letter-spacing: .02em; font-variant-numeric: tabular-nums; }
 .swish-num { font: 900 2.25rem/1 var(--f-display); letter-spacing: .02em; font-variant-numeric: tabular-nums; }
 @media (min-width: 700px) { .swish { grid-template-columns: auto minmax(0, 1fr); gap: 2rem; padding: 1.5rem 2rem 1.5rem 1.5rem; } }
 /* Med mus: QR-koden skannas med telefonen. Med pekskärm: knappen öppnar Swish med numret och meddelandet ifyllt,
