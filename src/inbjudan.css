@@ -112,7 +112,7 @@ h1, h2, p, dl, dd, ol, ul { margin: 0; }
 /* Anmälan */
 .deadline { background: var(--ice); border-radius: 1mm; padding: 1.4mm 2.6mm; font-size: 10pt; }
 .deadline b { color: var(--red-text); }
-.steps { list-style: none; padding: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 4mm; counter-reset: step; }
+.steps { list-style: none; padding: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8mm; counter-reset: step; }
 .steps li { counter-increment: step; position: relative; padding-left: 9mm; }
 .steps li::before {
   content: counter(step); position: absolute; left: 0; top: -.3mm;
