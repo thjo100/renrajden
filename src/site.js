@@ -158,4 +158,15 @@ export function initSite() {
   initRail();
   initDistances();
   initPacklist();
+  initSwish();
+}
+
+// Swish-rutan är hopfälld (efteranmälan är undantaget). Länkar till #swish fäller ut den.
+function initSwish() {
+  const box = document.getElementById("swish");
+  if (!box) return;
+  const open = () => { if (location.hash === "#swish") box.open = true; };
+  open();
+  addEventListener("hashchange", open);
+  document.addEventListener("click", (ev) => { if (ev.target.closest?.('a[href="#swish"]')) box.open = true; });
 }
