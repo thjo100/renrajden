@@ -297,9 +297,13 @@ await step("inbjudan nås från startsidan och ryms på en utskriven A4-sida", a
   await p.waitForFunction(() => document.documentElement.dataset.cms === "db", null, { timeout: 10000 });
   await p.evaluate(() => document.fonts.ready);
   // Utskriften räknas fram med webbläsarens utskriftsmotor.
-  const printed = await p.pdf({ preferCSSPageSize: true, printBackground: true });
-  const pages = (printed.toString("latin1").match(/\/Type\s*\/Page[^s]/g) || []).length;
+  const pageCount = (pdf) => (pdf.toString("latin1").match(/\/Type\s*\/Page[^s]/g) || []).length;
+  const pages = pageCount(await p.pdf({ preferCSSPageSize: true, printBackground: true }));
   assert(pages === 1, `inbjudan blir ${pages} sidor vid utskrift`);
+  // En iPhone lägger till egna marginaler (ca 14 mm upptill och nedtill, 6 mm på sidorna). Även då ska den rymmas.
+  await p.addStyleTag({ content: "@page { margin: 14mm 6.35mm !important; }" });
+  const iphone = pageCount(await p.pdf({ preferCSSPageSize: true, printBackground: true }));
+  assert(iphone === 1, `inbjudan blir ${iphone} sidor med iPhonens marginaler`);
   assert(await p.evaluate(() => { const s = document.querySelector(".sheet"), f = document.querySelector(".bottom"), last = f.previousElementSibling; return last.getBoundingClientRect().bottom <= f.getBoundingClientRect().top && f.getBoundingClientRect().bottom <= s.getBoundingClientRect().bottom + 1; }), "innehållet ryms inte på arket");
   await p.screenshot({ path: `${OUT}/inbjudan.png`, fullPage: true });
   await p.setViewportSize({ width: 360, height: 780 });
