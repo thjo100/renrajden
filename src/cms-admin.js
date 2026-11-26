@@ -98,7 +98,7 @@ function buildEventDialog() {
         field({ id: "ev-area", label: "Område", maxlength: String(LIMITS.short) })),
       url("ev-map", "Kartlänk till arenan", "Visas som Hitta hit.")),
     group("Länkar för årets lopp",
-      url("ev-reg", "Anmälan i SSF TA", "Visas under Anmälan. Lämna tomt tills anmälan öppnar."),
+      url("ev-reg", "Anmälan i SSF TA", "Direktlänk till tävlingen, visas under Anmälan. Lämnas det tomt länkar sidan till inloggningen i SSF TA."),
       url("ev-start", "Startlista", "Visas på startsidan veckan före loppet och i resultatarkivet."),
       url("ev-live", "Liveresultat", "Visas på startsidan på tävlingsdagen och i resultatarkivet.")),
     group("Distanser och avgifter", distList, addDist),

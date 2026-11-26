@@ -4,7 +4,7 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { cleanContent, cleanEvent, cleanYear, fmtDate, fmtKr, fmtNum, fmtTemp, joinList, numWord, isDate } from "../src/cms/model.js";
-import { fillHtml, renderSlots, renderHead } from "../src/cms/render.js";
+import { fillHtml, renderSlots, renderHead, SSFTA_LOGIN } from "../src/cms/render.js";
 import { fromRest } from "../scripts/vite-cms.mjs";
 import { DEFAULT_EVENT, DEFAULT_YEARS } from "../src/cms/defaults.js";
 
@@ -45,6 +45,16 @@ test("fillHtml stoppar okända och icke-tomma platser", () => {
   assert.throws(() => fillHtml('<p data-cms="finns-inte"></p>', defaults()), /Okänd plats/);
   assert.throws(() => fillHtml("<title>{{cms:finns-inte}}</title>", defaults()), /Okänd plats/);
   assert.throws(() => fillHtml('<p data-cms="facts">gammal text</p>', defaults()), /inte tomma/);
+});
+
+test("anmälan länkar till inloggningen i SSF TA tills en direktlänk finns", () => {
+  const utan = renderSlots(withEvent({ registrationUrl: "" })).registration;
+  assert.match(utan, new RegExp(`href="${SSFTA_LOGIN}"`));
+  assert.match(utan, /Logga in i SSF TA/);
+  assert.match(utan, /Sök fram Renrajden 2027/);
+  const med = renderSlots(withEvent({ registrationUrl: "https://example.com/anmalan" })).registration;
+  assert.match(med, /href="https:\/\/example\.com\/anmalan"/);
+  assert.doesNotMatch(med, /logga-in/);
 });
 
 test("text från databasen escapas och farliga länkar tas bort", () => {
