@@ -414,13 +414,13 @@ Tre granskare gick igenom den skarpa sajten: grafisk form i inbjudan, efteranmä
 
 Inbjudan ryms på en A4-sida även med fyra distanser (2,2 mm marginal).
 
-### Öppna frågor till arrangören
+### Beslut från arrangören
 
-1. **Går det att efteranmäla sig i SSF TA efter sista anmälningsdag**, eller bara på plats? Inbjudan och sajten säger nu "på plats tävlingsdagen".
-2. **Tid och plats för efteranmälan** på tävlingsdagen, till exempel "sekretariatet kl 8.00–9.30". Den står ingenstans.
-3. **Distans i Swish-meddelandet?** Med bara "RR - namn" syns distansen bara på beloppet. Ett alternativ är "RR 42 Anna Svensson". Det kräver en ny QR-kod från Swish.
-4. **Kontanter:** PM och packlistan på sajten nämner jämna kontanter, men inbjudan nämner bara Swish.
-5. **PM 2025** blandar 2025 och 2027 (fredagens nummerlappar gäller en lördagstävling). Där står också "10 km" och "Snabba efteranmälda får startled 11–20". Uppdatera inför 2027.
+1. **Efteranmälan görs bara på plats**, inte i SSF TA efter sista anmälningsdag.
+2. **Efteranmälan går fram till kl 09:30** på tävlingsdagen. Det står i inbjudans steg 2, i Efteranmälan och Swish-rutan på sajten och som en egen rad i PM:s tidslinje.
+3. **Ingen distans i Swish-meddelandet.** "RR - ditt namn" gäller, och QR-koden är oförändrad.
+4. **Kontant bara med jämna belopp i sedlar.** Det står i inbjudan, i Swish-rutan, i PM och i packlistan.
+5. **PM:** kortaste distansen är 10,5 km. Startled finns bara på 42 km. OK Renen seedar startleden och publicerar seedningen på sajten på fredagen före loppet. Regeln "1–9 för föranmälda, 11–20 för efteranmälda" och självseedningen är borttagna.
 
 ### Kvar (P3)
 
