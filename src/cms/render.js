@@ -63,9 +63,11 @@ function deadline(e) {
 }
 
 // Swish-länk med OK Renens nummer, beloppet och "RR - " ifyllt. Meddelandet går att ändra, beloppet inte.
+// Med editable går också beloppet att ändra (numret, som även används vid efteranmälan).
 export const SWISH_NUMBER = "1230489575";
-export const swishUrl = (amount) =>
-  `https://app.swish.nu/1/p/sw/?sw=${SWISH_NUMBER}&amt=${encodeURIComponent(amount)}&cur=SEK&msg=RR%20-%20&edit=msg&src=qr`;
+const SWISH_DISPLAY = "123 048 95 75";
+export const swishUrl = (amount, editable = false) =>
+  `https://app.swish.nu/1/p/sw/?sw=${SWISH_NUMBER}&amt=${encodeURIComponent(amount)}&cur=SEK&msg=RR%20-%20&edit=${editable ? "amt,msg" : "msg"}&src=qr`;
 
 // Avgiften länkar till Swish-rutan, där man ser hur man betalar. Efteranmälan står som en diskret rad.
 const payFee = (e, d) => (cancelled(e)
@@ -76,16 +78,19 @@ const fees = (e) => e.distances.map((d) =>
   `<div><dt>${esc(fmtNum(d.km))} km</dt><dd>${payFee(e, d)}<small>Efteranmälan ${esc(fmtKr(d.lateFee))}</small></dd></div>`).join("")
   + `<div><dt>Inbjudan</dt><dd><a href="/inbjudan"><span class="sr-only">Inbjudan </span>${year(e)}</a><small>Går att skriva ut</small></dd></div>`;
 
-// Avgifterna i Swish-rutan: ordinarie avgift i fokus, efteranmälan diskret under.
-// Med pekskärm öppnar beloppen Swish med avgiften ifylld; CSS visar antingen text (.no-touch) eller länk (.touch).
-const swishLink = (amount, inner, cls) =>
-  `<a class="${cls ? `${cls} ` : ""}touch" href="${esc(swishUrl(amount))}">${inner}<span class="sr-only">, öppna Swish</span></a>`;
+// Avgifterna i Swish-rutan: en kompakt rad per distans, ordinarie avgift i fokus och efteranmälan diskret under.
+// Med pekskärm är raden en länk som öppnar Swish med avgiften ifylld; CSS visar antingen text (.no-touch) eller länk (.touch).
 const swishFees = (e) => e.distances.map((d) => {
-  const fee = `<span>${esc(fmtNum(d.km))} km</span> <b>${esc(fmtKr(d.fee))}</b>`;
-  const late = esc(fmtKr(d.lateFee));
-  return `<li><span class="swish-fee no-touch">${fee}</span>${swishLink(d.fee, `${fee}<i aria-hidden="true">Swisha</i>`, "swish-fee")}`
-    + `<small class="swish-late-fee">Efteranmälan <span class="no-touch">${late}</span>${swishLink(d.lateFee, late, "")}</small></li>`;
+  const row = `<span class="km">${esc(fmtNum(d.km))} km</span><b>${esc(fmtKr(d.fee))}</b>`
+    + `<small>Efteranmälan ${esc(fmtKr(d.lateFee))}</small>`;
+  return `<li><span class="swish-fee no-touch">${row}</span>`
+    + `<a class="swish-fee touch" href="${esc(swishUrl(d.fee))}">${row}<i aria-hidden="true">Swisha</i>`
+    + `<span class="sr-only">, öppna Swish med ${esc(fmtKr(d.fee))}</span></a></li>`;
 }).join("");
+
+// Swishnumret. Med pekskärm öppnar det Swish med längsta distansens avgift, som går att ändra.
+const swishNum = (e) => `<span class="no-touch">${SWISH_DISPLAY}</span>`
+  + `<a class="touch" href="${esc(swishUrl(longest(e).fee, true))}">${SWISH_DISPLAY}<span class="sr-only">, öppna Swish</span></a>`;
 
 // Utan direktlänk till tävlingen länkar vi till inloggningen i SSF TA, där man söker fram tävlingen.
 export const SSFTA_LOGIN = "https://ssfta.skidor.com/logga-in";
@@ -181,6 +186,7 @@ export function renderSlots(c) {
     fees: fees(e),
     registration: registration(e),
     "swish-fees": swishFees(e),
+    "swish-num": swishNum(e),
     mail: `<a class="mail" href="mailto:${mail}">${mail}</a>`,
     "footer-mail": `<a class="mono" href="mailto:${mail}">${mail}</a>`,
     "bana-intro": `En flack slinga med cirka ${e.climbPerLap} höjdmeter per varv. Start och mål på ${esc(e.venue)}.`,

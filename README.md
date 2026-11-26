@@ -123,7 +123,7 @@ För att se lägena kring tävlingsdagen, lägg till `?lage=tavlingsvecka`, `?la
 | Lägga till, ändra eller ta bort ett äldre år | Resultat → **+ Lägg till år**, eller **Redigera** och **Ta bort** vid året |
 | Ändra övrig text, PM eller inbjudans fasta text | `index.html` och `inbjudan.html` |
 | Ändra färger eller layout | `src/styles.css` (färgerna är variabler överst) och färgerna överst i `src/inbjudan.css`. De utgår från OK Renens Renenblå `#005DB9` och Renenröd `#E12627` |
-| Byta Swishnummer | Rutan `#swish` och PM-punkten i `index.html`, foten i `inbjudan.html` och bilden `public/grafik/swish-qr-kod.png`. Numret finns också i länkarna till Swish-appen och i `SWISH_NUMBER` i `src/cms/render.js` (knapparna som swishar efteranmälningsavgiften). I inbjudan är QR-koden ritad som vektor ur bilden, så den ritningen måste också göras om |
+| Byta Swishnummer | `SWISH_NUMBER` och `SWISH_DISPLAY` i `src/cms/render.js` (avgiftsraderna och numret i Swish-rutan), QR-kodens alt-text och PM-punkten i `index.html`, foten i `inbjudan.html` (numret och länken till Swish-appen) och bilden `public/grafik/swish-qr-kod.png`. I inbjudan är QR-koden ritad som vektor ur bilden, så den ritningen måste också göras om |
 | Lägga till en nyhetsetikett | Samma lista på tre ställen, se nedan |
 | Lägga till eller ta bort en admin | `npm run admin -- add/remove <e-post> --project renrajden-ae53c`, eller samlingen `admins` i Firebase-konsolen |
 
