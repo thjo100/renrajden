@@ -76,7 +76,7 @@ const payFee = (e, d) => (cancelled(e)
 
 const fees = (e) => e.distances.map((d) =>
   `<div><dt>${esc(fmtNum(d.km))} km</dt><dd>${payFee(e, d)}<small>Efteranmälan ${esc(fmtKr(d.lateFee))}</small></dd></div>`).join("")
-  + `<div><dt>Inbjudan</dt><dd><a href="/inbjudan"><span class="sr-only">Inbjudan </span>${year(e)}</a><small>Går att skriva ut</small></dd></div>`;
+  + `<div><dt>Inbjudan</dt><dd><a href="/inbjudan"><span class="sr-only">Inbjudan </span>${year(e)}</a></dd></div>`;
 
 // Avgifterna i Swish-rutan: en kompakt rad per distans, ordinarie avgift i fokus och efteranmälan diskret under.
 // Med pekskärm är raden en länk som öppnar Swish med avgiften ifylld; CSS visar antingen text (.no-touch) eller länk (.touch).
