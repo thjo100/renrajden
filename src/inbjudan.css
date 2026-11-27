@@ -170,15 +170,20 @@ h1, h2, p, dl, dd, ol, ul { margin: 0; }
   .sheet > .block:last-of-type { margin-bottom: 15mm; }
   /* Affischen: inga avgifter, och innehållet mitt i det vita mellan toppen och foten */
   /* Affischen visar distanserna stort, avgifterna finns på webben */
-  .screen-only, .fees th:nth-child(n + 3), .fees td:nth-child(n + 3) { display: none; }
+  .screen-only, .fees thead, .fees td { display: none; }
+  /* Bara distanserna: tre i rad, som affischens snabbfakta */
+  .fees tbody { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); border-top: 2px solid var(--text); }
+  .fees tbody tr { display: block; }
+  .fees tbody th { display: block; border-bottom: 1px solid var(--line); }
   /* Ingen Swish på affischen: foten blir webbadress + logotyp */
   .print-only { display: inline; }
   .foot-item.pay { display: none; }
   .bottom { grid-template-columns: auto auto; }
-  .fees tbody th b { font-size: 26pt; }
+  .fees tbody th b { font-size: 36pt; }
+  .block { margin-top: 7mm; }
   .fees tbody th span { font-size: 11pt; }
   .fees td { font-size: 13pt; font-weight: 600; }
-  .fees tbody th, .fees td { padding: 2.6mm 0; }
+  .fees tbody th, .fees td { padding: 4mm 0; }
   .facts { margin-top: auto; }
   .foot-wave { height: 11mm; }
   .bottom { break-inside: avoid; }
