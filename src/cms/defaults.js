@@ -116,6 +116,7 @@ export const DEFAULT_YEARS = [
     ],
   }),
   year(2015, {
+    date: "2015-01-17",
     winners: [
       { class: "H42", names: "1. Tarjei Solli, 2. Niklas Henriksson, 3. Andreas Berglund" },
       { class: "D42", names: "Emma Bergström" },
@@ -132,6 +133,7 @@ export const DEFAULT_YEARS = [
   }),
   year(2014, { status: "cancelled", text: "Inställt på grund av kyla." }),
   year(2013, {
+    date: "2013-01-19",
     winners: [{ class: "H42", names: "Daniel Nordebo" }, { class: "D42", names: "Malin Rensfeldt" }, { class: "H21", names: "Samuel Jonsson" }, { class: "D21", names: "Annika Berggren" }],
     links: [link("Resultat", "https://drive.google.com/file/d/0B1D0YYjNfooockxvbFIwU3hoTlk/view")],
   }),
