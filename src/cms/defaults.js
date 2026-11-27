@@ -70,6 +70,7 @@ export const DEFAULT_YEARS = [
   year(2021, { status: "cancelled", text: "Inställt. Tävlingen var planerad till 2 januari 2021." }),
   year(2020, {
     text: "10, 20 och 40 km på den nya fyravarvsbanan.",
+    winners: [{ class: "H40", names: "Magnus Näslund" }, { class: "D40", names: "Ellen Scheidegger" }],
     links: [
       link("Resultat (pdf)", "https://www.okrenen.se/globalassets/ok-renen---orientering/dokument/resultat-renrajden2020.pdf"),
       link("SSF TA", "http://ta.skidor.com/ResultList.aspx?eventid=11471&competitionid=19335&orgid=2920"),
@@ -103,6 +104,7 @@ export const DEFAULT_YEARS = [
   }),
   year(2016, {
     date: "2016-01-16",
+    winners: [{ class: "H42", names: "Niklas Henriksson" }, { class: "D42", names: "Nina Lintzén" }],
     links: [
       link("Resultat (pdf)", "http://www.okrenen.se/globalassets/ok-renen---orientering/tavling/renrajden2016_resultat.pdf"),
       link("Kalvrajden", "http://skidresultat.se/?cat=comp&id=3224&a1=res&a2=-1"),
