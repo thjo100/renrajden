@@ -197,14 +197,14 @@ h1, h2, p, dl, dd, ol, ul { margin: 0; }
   .facts { margin-top: 7mm; }
   .facts > div { padding: 4mm 4.5mm; }
   .facts dt { font-size: 8pt; }
-  .facts dd { font-size: 18pt; white-space: nowrap; }
+  .facts dd { font-size: 16.5pt; white-space: nowrap; }
   .facts dd small { font-size: 9.5pt; white-space: normal; }
-  .block { margin-top: 6mm; }
+  .block { margin-top: 7.5mm; }
   .block h2 { font-size: 18pt; margin-bottom: 3.5mm; }
   .fees tbody th b { font-size: 38pt; }
   .fees tbody th { white-space: nowrap; }
   .fees tbody th span { font-size: 12pt; }
-  .steps { gap: 10mm; }
+  .steps { gap: 10mm; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); }
   .steps li { padding-left: 11mm; }
   .steps li::before { width: 8mm; height: 8mm; font-size: 13pt; }
   .steps li > b { font-size: 12.5pt; margin-bottom: 1mm; }
