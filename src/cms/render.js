@@ -116,6 +116,16 @@ function resultsEyebrow({ years }) {
   return esc(parts.join(" · "));
 }
 
+/**
+ * Distansgruppen för en segrarklass, för filtret i arkivet: "42" för långloppet (40–42 km) och "21" för halva
+ * distansen (20–22 km). Den största siffran i klassen avgör, så "H21" blir "21", och "H42", "42 km" och
+ * "H 21- 42" blir "42". En klass utan siffra räknas till långloppet.
+ */
+export const winDist = (cls) => {
+  const n = Math.max(0, ...(String(cls).match(/\d+/g) || []).map(Number));
+  return n && n < 30 ? "21" : "42";
+};
+
 const yearLinks = (links, y) => (links.length
   ? `<ul class="year-links">${links.map((l) => `<li>${ext(l.url, l.label, ` ${y}${NEW_TAB}`)}</li>`).join("")}</ul>`
   : "");
@@ -125,7 +135,7 @@ function yearItem(y) {
   const body = [
     y.date ? `<p>${esc(fmtDate(y.date))}</p>` : "",
     y.text ? `<p>${esc(y.text)}</p>` : "",
-    ...y.winners.map((w) => `<p class="winners">Segrare${w.class ? " " + esc(w.class) : ""}: ${esc(w.names)}</p>`),
+    ...y.winners.map((w) => `<p class="winners" data-dist="${winDist(w.class)}">Segrare${w.class ? " " + esc(w.class) : ""}: ${esc(w.names)}</p>`),
     yearLinks(y.links.filter((l) => WEB.test(l.url)), y.year),
   ].join("");
   return `<li class="year${no ? " cancelled" : ""}" data-year="${y.year}"><span class="year-num">${y.year}${no ? '<span class="sr-only"> (ingen tävling)</span>' : ""}</span><div class="year-body">${body}</div></li>`;
@@ -145,7 +155,7 @@ function years(c) {
 }
 
 function historySide(c) {
-  const winners = c.years.flatMap((y) => y.winners.map((w) => `<li><b>${y.year}${w.class ? ", " + esc(w.class) : ""}:</b> ${esc(w.names)}</li>`));
+  const winners = c.years.flatMap((y) => y.winners.map((w) => `<li data-dist="${winDist(w.class)}"><b>${y.year}${w.class ? ", " + esc(w.class) : ""}:</b> ${esc(w.names)}</li>`));
   const inv = c.years.filter((y) => y.invitation && WEB.test(y.invitation.url))
     .map((y) => `<li>${ext(y.invitation.url, y.invitation.label, NEW_TAB, "")}</li>`);
   return (winners.length ? `<section class="side-box"><h3>Segrare i arkivet</h3><ul>${winners.join("")}</ul></section>` : "")

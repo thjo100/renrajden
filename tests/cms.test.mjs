@@ -4,7 +4,7 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { cleanContent, cleanEvent, cleanYear, fmtDate, fmtKr, fmtNum, fmtTemp, joinList, numWord, isDate } from "../src/cms/model.js";
-import { fillHtml, renderSlots, renderHead, SSFTA_LOGIN } from "../src/cms/render.js";
+import { fillHtml, renderSlots, renderHead, SSFTA_LOGIN, winDist } from "../src/cms/render.js";
 import { fromRest } from "../scripts/vite-cms.mjs";
 import { DEFAULT_EVENT, DEFAULT_YEARS } from "../src/cms/defaults.js";
 
@@ -100,6 +100,21 @@ test("årets lopp visas överst i arkivet tills resultatet lagts in", () => {
   assert.doesNotMatch(after.years, /next-year/);
   assert.match(after.years, /^<li class="year" data-year="2027">/);
   assert.equal(renderSlots(defaults())["results-eyebrow"], "Resultat sedan 2013 · tre år utan tävling");
+});
+
+test("segrarna märks med distans, så att 21 km kan filtreras bort", () => {
+  for (const c of ["H42", "D42", "42 km", "H40", "D40", "H 21- 42", "", "Motion"]) assert.equal(winDist(c), "42", c);
+  for (const c of ["H21", "D21", "H20", "D22"]) assert.equal(winDist(c), "21", c);
+  const html = renderSlots(defaults());
+  assert.match(html["history-side"], /<li data-dist="42"><b>2025, H42:<\/b> Viktor Mäenpää<\/li>/);
+  assert.match(html["history-side"], /<li data-dist="21"><b>2025, H21:<\/b> Samuel Matkala Nordlund<\/li>/);
+  assert.match(html.years, /<p class="winners" data-dist="21">Segrare D20: Annaclara Forss<\/p>/);
+  const sideWinners = html["history-side"].split("</ul>")[0];
+  assert.doesNotMatch(sideWinners, /<li>/, "en segrare i sidorutan saknar data-dist");
+  assert.doesNotMatch(html.years, /class="winners">/, "en segrare i årslistan saknar data-dist");
+  const index = readFileSync("index.html", "utf8");
+  assert.match(index, /<input type="checkbox" id="vis-42" checked>/, "42 km ska vara valt från början");
+  assert.match(index, /<input type="checkbox" id="vis-21">/, "21 km ska vara bortvalt från början");
 });
 
 test("distanser, avgifter och status följer innehållet", () => {

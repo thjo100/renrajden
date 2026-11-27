@@ -41,7 +41,7 @@ Webbplats för **Renrajden**, OK Renens klassiska långlopp på Ormberget i Lule
 | `npm run test:rules` | Testar bara säkerhetsreglerna |
 | `npm run test:e2e` | Bygger och testar sajten i Chromium |
 | `npm run seed -- --emulator` | Fyller emulatorn med de 22 gamla nyheterna |
-| `npm run segrare -- --emulator` | Fyller i segrare och datum från `src/cms/defaults.js` i arkivet, där de saknas. Mot riktiga projektet via Actions → **Importera segrare till arkivet** |
+| `npm run segrare -- --emulator` | Fyller i segrare och datum från `src/cms/defaults.js` i arkivet, där de saknas. Saknade segrarklasser läggs till. Mot riktiga projektet via Actions → **Importera segrare till arkivet** |
 | `npm run admin -- add <e-post> --emulator` | Gör en adress till admin i emulatorn |
 
 Mot riktiga projektet byter du `--emulator` mot `--project renrajden-ae53c`, efter `gcloud auth application-default login`.
@@ -187,6 +187,7 @@ För att se lägena kring tävlingsdagen, lägg till `?lage=tavlingsvecka`, `?la
 - **Firestore Lite** används, inte full Firestore. Nyheterna hämtas på nytt varje minut och efter varje ändring. Det finns ingen live-prenumeration.
 - **Årets lopp och resultatarkivet** står inte i `index.html` och `inbjudan.html`. Där finns tomma platser, `<dl data-cms="facts"></dl>` och `{{cms:title}}`. När sajten byggs hämtar `scripts/vite-cms.mjs` innehållet från Firestore och fyller platserna, så att sidan fungerar utan JavaScript och sökmotorer ser rätt datum. I webbläsaren hämtar `src/cms/runtime.js` det senaste och ritar om det som ändrats. Platserna måste vara tomma i källfilen, annars stoppas bygget.
 - **Första sparningen** i adminläget kopierar standardinnehållet (`src/cms/defaults.js`) till Firestore i samma batch, så att inget år försvinner. Därefter är det Firestore som gäller, och `defaults.js` används bara om Firestore saknar innehållet.
+- **Segrarna på 21 km** är dolda i arkivet tills besökaren kryssar i *21 km* ovanför listan. Filtret är ren CSS (`#vis-42`, `#vis-21` i `index.html`). Vilken grupp en segrare hör till avgörs av den största siffran i klassen (`winDist` i `src/cms/render.js`): under 30 blir 21 km (H21, D20, H22), annars 42 km (H42, D40, "42 km").
 - **Gränserna** för årets lopp och resultatarkivet finns på två ställen som måste stämma överens: `LIMITS` i `src/cms/model.js` och `validEvent`/`validYear` i `firestore.rules`.
 - **Logotypen och renhuvudet** ligger som symbolerna `#okrenen` och `#ren` längst ner i både `index.html` och `inbjudan.html`, och ska vara likadana i båda. De är tagna direkt ur vektorerna i `public/grafik/okrenen-logoark.pdf`. Renen får färg från `currentColor`. Logotypens bakgrund styrs med `--logo-bg` (transparent på blå botten) och färgen på RENEN med `--logo-renen`.
 - **Webbkonfigurationen** (`VITE_FIREBASE_*`) läses från miljövariabler. Lokalt i `.env.local` eller `.env.emulator`, i GitHub som repository variables.

@@ -477,6 +477,20 @@ details.archive h4 { margin: 0 0 .25rem; font: 700 var(--s-sm)/1.3 var(--f-mono)
 .side-box h3 { font-size: var(--s-lg); margin-bottom: .75rem; }
 .side-box ul { margin: 0; padding-left: 1.1rem; display: grid; gap: .375rem; font-size: var(--s-sm); }
 
+/* Filter för segrarna i arkivet. 21 km är dolt tills besökaren kryssar i det. Bara CSS, så det fungerar utan JavaScript
+   och överlever att arkivet ritas om. Segrarraderna får data-dist i src/cms/render.js (winDist). */
+.win-filter { display: flex; flex-wrap: wrap; align-items: center; gap: .5rem; }
+.win-filter-label { font: 600 var(--s-xs)/1.3 var(--f-mono); letter-spacing: .1em; text-transform: uppercase; color: var(--muted); margin-right: .25rem; }
+.win-chip { display: inline-flex; align-items: center; gap: .5rem; min-height: 44px; padding: .375rem 1rem .375rem .75rem; border: 2px solid var(--line); border-radius: 999px; background: var(--surface); color: var(--text); font: 700 var(--s-sm)/1 var(--f-body); cursor: pointer; }
+.win-chip input { width: 1.125rem; height: 1.125rem; margin: 0; accent-color: var(--accent); cursor: pointer; }
+@supports selector(:has(*)) {
+  .win-chip input:focus-visible { outline: none; }
+  .win-chip:has(input:checked) { border-color: var(--accent); }
+  .win-chip:has(input:focus-visible) { outline: 3px solid var(--focus); outline-offset: 3px; }
+}
+#resultat:has(#vis-42:not(:checked)) [data-dist="42"],
+#resultat:has(#vis-21:not(:checked)) [data-dist="21"] { display: none; }
+
 /* Partners & kontakt */
 .partners { display: flex; flex-wrap: wrap; gap: .75rem; list-style: none; margin: 0; padding: 0; }
 .partners li { font: 800 1.375rem/1 var(--f-display); text-transform: uppercase; letter-spacing: .04em; padding: .875rem 1.125rem; border: 2px solid var(--line); border-radius: var(--radius); background: var(--surface); }
