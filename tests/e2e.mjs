@@ -200,15 +200,29 @@ await step("admin lägger in resultatet för 2027", async () => {
   await page.click("#year-dialog >> text=+ Lägg till segrare");
   await page.fill("#yr-winners input >> nth=0", "H42");
   await page.fill("#yr-winners input >> nth=1", "Testa Testsson");
+  await page.click("#year-dialog >> text=+ Lägg till segrare");
+  await page.fill("#yr-winners input >> nth=2", "D21");
+  await page.fill("#yr-winners input >> nth=3", "Korta Kortsson");
   await page.screenshot({ path: `${OUT}/resultat-2027.png` });
   await page.click("#year-dialog [type=submit]");
   await page.waitForSelector('#years > li[data-year="2027"]', { timeout: 10000 });
   assert((await page.locator("#years .next-year").count()) === 0, "2027 visas fortfarande som kommande lopp");
   await page.waitForFunction(() => document.activeElement?.dataset.yearEdit === "2027", null, { timeout: 5000 })
     .catch(() => { throw new Error("fokus hamnade inte på Redigera för 2027"); });
-  assert((await page.textContent('[data-cms="history-side"]')).includes("2027, H42: Testa Testsson"), "segraren syns inte i sidorutan");
+  const side = page.locator('[data-cms="history-side"] li', { hasText: "2027, H42: Testa Testsson" });
+  const short = page.locator('[data-cms="history-side"] li', { hasText: "2027, D21: Korta Kortsson" });
+  const shortYear = page.locator('#years > li[data-year="2027"] .winners', { hasText: "Korta Kortsson" });
+  assert(await side.isVisible(), "segraren på 42 km syns inte i sidorutan");
+  assert(!(await short.isVisible()) && !(await shortYear.isVisible()), "21 km ska vara dolt från början");
+  await page.check("#vis-21");
+  assert(await short.isVisible() && await shortYear.isVisible(), "21 km syns inte när det är ikryssat");
+  await page.uncheck("#vis-42");
+  assert(!(await side.isVisible()), "42 km syns fast det är urkryssat");
+  await page.locator("#resultat").screenshot({ path: `${OUT}/resultatarkiv-21km.png` });
+  await page.check("#vis-42");
+  await page.uncheck("#vis-21");
   const y = (await db.doc("years/2027").get()).data();
-  assert(y && y.links[0].url === "https://example.com/resultat-2027.pdf" && y.winners[0].names === "Testa Testsson", "2027 sparades fel");
+  assert(y && y.links[0].url === "https://example.com/resultat-2027.pdf" && y.winners[0].names === "Testa Testsson" && y.winners[1].class === "D21", "2027 sparades fel");
   await page.locator("#resultat").screenshot({ path: `${OUT}/resultatarkiv-admin.png` });
 });
 

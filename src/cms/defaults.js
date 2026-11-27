@@ -34,7 +34,7 @@ const year = (y, fields) => ({ year: y, status: "held", date: "", text: "", winn
 export const DEFAULT_YEARS = [
   year(2025, {
     date: "2025-02-09",
-    winners: [{ class: "H42", names: "Viktor Mäenpää" }, { class: "D42", names: "Helena Lundkvist" }],
+    winners: [{ class: "H42", names: "Viktor Mäenpää" }, { class: "D42", names: "Helena Lundkvist" }, { class: "H21", names: "Samuel Matkala Nordlund" }, { class: "D21", names: "Elvira Niva" }],
     links: [
       link("Resultat (pdf)", "https://drive.google.com/file/d/18MDWvPwT7fYfBq7Ffobwkv2o5Ng6c-tY/view?usp=sharing"),
       link("Liveresultat", "http://live.skidor.com/5583#result@46786@1@-1"),
@@ -44,7 +44,7 @@ export const DEFAULT_YEARS = [
   }),
   year(2024, {
     date: "2024-02-10",
-    winners: [{ class: "H42", names: "Viktor Mäenpää" }, { class: "D42", names: "Siri Jeppson" }],
+    winners: [{ class: "H42", names: "Viktor Mäenpää" }, { class: "D42", names: "Siri Jeppson" }, { class: "D21", names: "Ebba Rönnbäck" }],
     links: [
       link("Resultat (pdf)", "https://drive.google.com/file/d/1Auuj2y_SYhVtES366o7NH1-czVkCQ14x/view?usp=sharing"),
       link("SSF TA", "https://ta.skidor.com/ResultList.aspx?eventid=14793&competitionid=25311&orgid=2920"),
@@ -53,13 +53,13 @@ export const DEFAULT_YEARS = [
   }),
   year(2023, {
     date: "2023-02-11",
-    winners: [{ class: "H42", names: "Simon Öberg" }, { class: "D42", names: "Åse Borgeryd" }],
+    winners: [{ class: "H42", names: "Simon Öberg" }, { class: "D42", names: "Åse Borgeryd" }, { class: "H21", names: "Martin Lundholm" }, { class: "D21", names: "Mathea Eriksson" }],
     links: [link("Resultat", "https://drive.google.com/file/d/1MLrjuAHvQ4BOJSSZ6t7kAgGW8lONGRv2/view?usp=share_link")],
     invitation: link("Inbjudan 2023", "https://drive.google.com/file/d/1UDaIENyTIf-ig6vSlUeimXJ261k_S6MK/view?usp=share_link"),
   }),
   year(2022, {
     date: "2022-02-19",
-    winners: [{ class: "H42", names: "Henrik Strand" }, { class: "D42", names: "Nina Lintzén" }],
+    winners: [{ class: "H42", names: "Henrik Strand" }, { class: "D42", names: "Nina Lintzén" }, { class: "H21", names: "Viktor Sundén" }, { class: "D21", names: "Anna Rimpi" }],
     links: [
       link("Resultat", "https://drive.google.com/file/d/1IGspsGsRtOmkcbsIR68j7WqscqUged3u/view?usp=sharing"),
       link("Varvtider (chip)", "http://obasen.orientering.se/winsplits/online/sv/default.asp?page=table&databaseId=80132&categoryId=0"),
@@ -69,8 +69,9 @@ export const DEFAULT_YEARS = [
   }),
   year(2021, { status: "cancelled", text: "Inställt. Tävlingen var planerad till 2 januari 2021." }),
   year(2020, {
+    date: "2020-01-25",
     text: "10, 20 och 40 km på den nya fyravarvsbanan.",
-    winners: [{ class: "H40", names: "Magnus Näslund" }, { class: "D40", names: "Ellen Scheidegger" }],
+    winners: [{ class: "H40", names: "Magnus Näslund" }, { class: "D40", names: "Ellen Scheidegger" }, { class: "H21", names: "Andreas Karlsson" }, { class: "D21", names: "Annaclara Forss" }],
     links: [
       link("Resultat (pdf)", "https://www.okrenen.se/globalassets/ok-renen---orientering/dokument/resultat-renrajden2020.pdf"),
       link("SSF TA", "http://ta.skidor.com/ResultList.aspx?eventid=11471&competitionid=19335&orgid=2920"),
@@ -80,7 +81,8 @@ export const DEFAULT_YEARS = [
   }),
   year(2019, { status: "cancelled", text: "Paus. Klubben arrangerade flera stora event." }),
   year(2018, {
-    winners: [{ class: "H42", names: "Hannes Boström" }, { class: "D42", names: "Nina Lintzén" }],
+    date: "2018-01-28",
+    winners: [{ class: "H42", names: "Hannes Boström" }, { class: "D42", names: "Nina Lintzén" }, { class: "H21", names: "Niklas Henriksson" }, { class: "D21", names: "Vilma Kilpala" }],
     text: "Även Kalvrajden för HD10–16.",
     links: [
       link("SSF TA", "http://ta.skidor.com/ResultList.aspx?eventid=8698&competitionid=14578&orgid=2920"),
@@ -92,7 +94,7 @@ export const DEFAULT_YEARS = [
   }),
   year(2017, {
     date: "2017-01-14",
-    winners: [{ class: "42 km", names: "Klas Nilsson och Anna Rimpi" }],
+    winners: [{ class: "42 km", names: "Klas Nilsson och Anna Rimpi" }, { class: "H21", names: "Oskar Sundqvist" }, { class: "D21", names: "Boel Sandström" }],
     links: [
       link("SSF TA", "http://ta.skidor.com/ResultList.aspx?eventid=7506&competitionid=12701&orgid=2920"),
       link("Resultat (pdf)", "https://drive.google.com/open?id=0B1D0YYjNfoooRUxHeHkxN19YYm8"),
@@ -104,7 +106,7 @@ export const DEFAULT_YEARS = [
   }),
   year(2016, {
     date: "2016-01-16",
-    winners: [{ class: "H42", names: "Niklas Henriksson" }, { class: "D42", names: "Nina Lintzén" }],
+    winners: [{ class: "H42", names: "Niklas Henriksson" }, { class: "D42", names: "Nina Lintzén" }, { class: "H21", names: "Lars Mattsson" }, { class: "D21", names: "Karin Rönnbäck" }],
     links: [
       link("Resultat (pdf)", "http://www.okrenen.se/globalassets/ok-renen---orientering/tavling/renrajden2016_resultat.pdf"),
       link("Kalvrajden", "http://skidresultat.se/?cat=comp&id=3224&a1=res&a2=-1"),
@@ -117,6 +119,8 @@ export const DEFAULT_YEARS = [
     winners: [
       { class: "H42", names: "1. Tarjei Solli, 2. Niklas Henriksson, 3. Andreas Berglund" },
       { class: "D42", names: "Emma Bergström" },
+      { class: "H21", names: "Karl Edenroth" },
+      { class: "D21", names: "Catrin Ingvarsson" },
     ],
     links: [
       link("Resultat", "https://docs.google.com/spreadsheets/d/1f9HGkHk8o17EsdgJ_ZBJSgh3F4vJIVprvc4jA9HVslM/pubhtml"),
@@ -128,7 +132,7 @@ export const DEFAULT_YEARS = [
   }),
   year(2014, { status: "cancelled", text: "Inställt på grund av kyla." }),
   year(2013, {
-    winners: [{ class: "H42", names: "Daniel Nordebo" }, { class: "D42", names: "Malin Rensfeldt" }],
+    winners: [{ class: "H42", names: "Daniel Nordebo" }, { class: "D42", names: "Malin Rensfeldt" }, { class: "H21", names: "Samuel Jonsson" }, { class: "D21", names: "Annika Berggren" }],
     links: [link("Resultat", "https://drive.google.com/file/d/0B1D0YYjNfooockxvbFIwU3hoTlk/view")],
   }),
 ];
