@@ -14,7 +14,7 @@
   --red: #E12627;
   --red-text: #C81E1F;
   --navy: #0A2A52;
-  --navy-ink: #C3D3E8;
+  --navy-ink: #DDE9F7;
 
   --desk: #DCE5F0;
   --desk-ink: #0E1B2E;
@@ -66,18 +66,19 @@ h1, h2, p, dl, dd, ol, ul { margin: 0; }
 }
 
 /* Blå väst med röd-vit rand, renhuvudet och välvd titel som på hemsidan */
-.top { position: relative; isolation: isolate; overflow: hidden; background: var(--hero); color: #FFFFFF; padding: 7mm 16mm 10.5mm 25mm; }
+.top { position: relative; isolation: isolate; overflow: hidden; background: var(--hero); color: #FFFFFF; padding: 5mm 16mm 11mm 25mm; }
 .stripe { position: absolute; left: 0; top: 0; bottom: 0; width: 9mm; z-index: -1;
   background: linear-gradient(90deg, #FFFFFF 0 1.8mm, var(--red) 1.8mm 7.2mm, #FFFFFF 7.2mm 9mm); }
-.ren { position: absolute; z-index: -1; right: 8mm; bottom: 0; width: 70mm; height: auto; color: var(--reindeer); }
 .wave { position: absolute; left: 0; right: 0; bottom: -1px; width: 100%; height: 13mm; }
-.top-inner { position: relative; display: grid; gap: 2mm; max-width: 118mm; }
-.kicker { display: flex; align-items: center; gap: 3mm; font: 600 8pt/1.2 var(--f-mono); letter-spacing: .1em; text-transform: uppercase; color: var(--hero-soft); }
+.top-inner { position: relative; display: grid; gap: 1.5mm; justify-items: center; text-align: center; }
+.kicker { justify-self: start; display: flex; align-items: center; gap: 3mm; font: 600 8pt/1.2 var(--f-mono); letter-spacing: .1em; text-transform: uppercase; color: var(--hero-soft); }
 .tag { background: var(--red); color: #FFFFFF; padding: 1.4mm 2.4mm; border-radius: 1mm; font: 900 11pt/1 var(--f-display); letter-spacing: .14em; }
-.title svg { display: block; width: 84mm; height: auto; overflow: visible; color: #FFFFFF; margin-top: 1mm; }
+.title { width: 100%; margin-top: 3mm; }
+.title svg { display: block; width: 100%; height: auto; overflow: visible; color: #FFFFFF; margin-top: 1mm; }
+.ren { position: absolute; z-index: -1; right: -12mm; bottom: 0; width: 70mm; height: auto; color: #3A86D2; }
 .title text { font-family: var(--f-display); font-weight: 900; }
 .date { font: 700 21pt/1.1 var(--f-display); letter-spacing: .03em; text-transform: uppercase; }
-.lede { font-size: 12pt; line-height: 1.4; max-width: 34ch; }
+.lede { font-size: 12pt; line-height: 1.4; max-width: 60ch; }
 
 /* Snabbfakta */
 .facts { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 0; margin: 2mm 16mm 0; border: 1px solid var(--line); border-radius: 1.5mm; overflow: hidden; }
@@ -104,6 +105,7 @@ h1, h2, p, dl, dd, ol, ul { margin: 0; }
 .fees .num { text-align: right; padding-left: 3mm; }
 /* Kolumnrubrikerna delas på två rader på smal skärm ("För-/anmälan"), annars flyter de ihop */
 .fees .hy { display: none; }
+.print-only { display: none; }
 .fees .price { font: 700 15pt/1 var(--f-display); letter-spacing: .02em; }
 .fees .late { color: var(--muted); }
 .fees thead th:nth-child(1) { width: 34%; }
@@ -125,17 +127,20 @@ h1, h2, p, dl, dd, ol, ul { margin: 0; }
 .steps p { font-size: 9.5pt; color: var(--muted); line-height: 1.4; text-wrap: pretty; }
 
 /* Seedning och bra att veta */
-.two { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 8mm; }
-.two p, .two li { font-size: 9.5pt; line-height: 1.45; }
-.two ul { padding-left: 4.5mm; display: grid; gap: .8mm; }
-.two li::marker { color: var(--red); }
+.know { margin-top: 8mm; }
+.know li { font-size: 9.5pt; line-height: 1.45; }
+/* Två kolumner som Anmälan ovanför */
+.know ul { padding-left: 4.5mm; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: .8mm 8mm; }
+.know li::marker { color: var(--red); }
 
 /* Fot: två likadana par (QR + text) med avdelare, och OK Renens logotyp i hörnet */
 .bottom {
-  margin-top: auto; background: var(--navy); color: #FFFFFF;
+  position: relative;
+  margin-top: auto; background: var(--hero); color: #FFFFFF;
   display: grid; grid-template-columns: auto auto auto; justify-content: space-between; align-items: center; column-gap: 5mm;
   padding: 5mm 16mm;
 }
+.foot-wave { position: absolute; left: 0; right: 0; bottom: calc(100% - 1px); width: 100%; height: 13mm; color: var(--hero); pointer-events: none; }
 .foot-item { display: grid; grid-template-columns: auto auto; align-items: center; gap: 4mm; }
 .foot-item + .foot-item { border-left: 1px solid rgba(195, 211, 232, .3); padding-left: 5mm; }
 .logo { display: block; width: 14.85mm; height: 22mm; --logo-bg: transparent; }
@@ -162,8 +167,52 @@ h1, h2, p, dl, dd, ol, ul { margin: 0; }
      dvs ca 286 mm kvar av arkets höjd). Arket är minst 280 mm, så att det nästan fyller sidan även där,
      och fyller hela sidan där webbläsaren räknar 100vh som sidans höjd vid utskrift (Chrome, Firefox). */
   .sheet { margin: 0; box-shadow: none; height: auto; min-height: max(280mm, min(100vh, 297mm)); }
-  .sheet > .block:last-of-type { margin-bottom: 4mm; }
+  .sheet > .block:last-of-type { margin-bottom: 15mm; }
+  /* Affischen: inga avgifter, och innehållet mitt i det vita mellan toppen och foten */
+  /* Affischen visar distanserna stort, avgifterna finns på webben */
+  .screen-only, .fees thead, .fees td { display: none; }
+  /* Bara distanserna: tre i rad, som affischens snabbfakta */
+  .fees tbody { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); border-top: 2px solid var(--text); }
+  .fees tbody tr { display: block; }
+  .fees tbody th { display: block; border-bottom: 1px solid var(--line); }
+  /* Ingen Swish på affischen: foten blir webbadress + logotyp */
+  .print-only { display: inline; }
+  .foot-item.pay { display: none; }
+  .bottom { grid-template-columns: auto auto; }
+  .fees tbody th b { font-size: 36pt; }
+  .block { margin-top: 6mm; }
+  .fees tbody th span { font-size: 11pt; }
+  .fees td { font-size: 13pt; font-weight: 600; }
+  .fees tbody th, .fees td { padding: 4mm 0; }
+  .facts { margin-top: auto; }
+  .foot-wave { height: 11mm; }
   .bottom { break-inside: avoid; }
+  .bottom { padding-block: 4mm; }
+  .wave { height: 11mm; }
+  .title svg { width: 95%; margin-inline: auto; }
+  /* Blå ram runt hela arket, och den röd-vita randen går hela vägen ner genom foten */
+  .sheet { position: relative; border: 2.5mm solid var(--hero); }
+  .top .stripe { display: none; }
+  /* Affischskala: större text och jämn rytm, så att det vita fördelas lika ovanför och under innehållet */
+  .facts { margin-top: 7mm; }
+  .facts > div { padding: 4mm 4.5mm; }
+  .facts dt { font-size: 8pt; }
+  .facts dd { font-size: 16.5pt; white-space: nowrap; }
+  .facts dd small { font-size: 9.5pt; white-space: normal; }
+  .block { margin-top: 7.5mm; }
+  .block h2 { font-size: 18pt; margin-bottom: 3.5mm; }
+  .fees tbody th b { font-size: 38pt; }
+  .fees tbody th { white-space: nowrap; }
+  .fees tbody th span { font-size: 12pt; }
+  .steps { gap: 10mm; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); }
+  .steps li { padding-left: 11mm; }
+  .steps li::before { width: 8mm; height: 8mm; font-size: 13pt; }
+  .steps li > b { font-size: 12.5pt; margin-bottom: 1mm; }
+  .steps p, .know li { font-size: 11pt; line-height: 1.4; }
+  .know ul { gap: 1.5mm 10mm; }
+  .sheet > .block:last-of-type { margin-bottom: 8mm; }
+  .sheet::before { content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 9mm; z-index: 2; pointer-events: none;
+    background: linear-gradient(90deg, #FFFFFF 0 1.8mm, var(--red) 1.8mm 7.2mm, #FFFFFF 7.2mm 9mm); }
 }
 /* Mörkt skrivbord: en tunn kant så att arkets mörkblå fot inte flyter ihop med bakgrunden */
 @media screen and (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .sheet { outline: 1px solid rgba(255, 255, 255, .14); } }
@@ -174,11 +223,10 @@ h1, h2, p, dl, dd, ol, ul { margin: 0; }
   .toolbar { padding: 12px 16px; }
   .sheet { width: auto; height: auto; margin: 0; box-shadow: none; font-size: 16px; }
   .top { padding: 28px 16px 56px 40px; }
+  .ren { width: 62vw; right: -10vw; bottom: 0; }
   .stripe { width: 24px; background: linear-gradient(90deg, #FFFFFF 0 5px, var(--red) 5px 19px, #FFFFFF 19px 24px); }
-  .ren { width: 46vw; right: 4vw; bottom: 0; }
   .wave { height: 36px; }
   .top-inner { gap: 8px; max-width: none; }
-  .title svg { width: min(100%, 420px); }
   .date { font-size: 26px; }
   .lede { font-size: 17px; }
   .facts { grid-template-columns: repeat(2, minmax(0, 1fr)); margin: 8px 16px 0; }
@@ -200,10 +248,10 @@ h1, h2, p, dl, dd, ol, ul { margin: 0; }
   .steps li { padding-left: 36px; }
   .steps li::before { width: 26px; height: 26px; font-size: 15px; }
   .steps li > b { font-size: 16px; }
-  .steps p, .two p, .two li { font-size: 15px; }
-  .two { grid-template-columns: minmax(0, 1fr); gap: 28px; }
-  .two ul { padding-left: 20px; gap: 4px; }
-  .bottom { margin-top: 32px; grid-template-columns: minmax(0, 1fr) auto; justify-content: stretch; align-items: start; gap: 20px 16px; padding: 24px 16px; }
+  .steps p, .know li { font-size: 15px; }
+  .know ul { grid-template-columns: minmax(0, 1fr); padding-left: 20px; gap: 4px; }
+  .foot-wave { height: 36px; }
+  .bottom { margin-top: 68px; grid-template-columns: minmax(0, 1fr) auto; justify-content: stretch; align-items: start; gap: 20px 16px; padding: 24px 16px; }
   .foot-item { grid-template-columns: auto minmax(0, 1fr); gap: 16px; }
   .foot-item.pay { grid-column: 1 / -1; }
   .foot-item + .foot-item { border-left: 0; padding-left: 0; border-top: 1px solid rgba(195, 211, 232, .3); padding-top: 20px; }
