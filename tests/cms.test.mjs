@@ -111,7 +111,7 @@ test("segrarna märks med distans, så att 21 km kan filtreras bort", () => {
   assert.match(side, /<thead><tr><th scope="col">År<\/th><th scope="col">Herrar<\/th><th scope="col">Damer<\/th><\/tr><\/thead>/);
   assert.match(side, /<tr data-dist="42"><th scope="row"><span class="win-yr">2025<\/span><\/th><td>Viktor Mäenpää<\/td><td>Helena Lundkvist<\/td><\/tr>/);
   assert.match(side, /<tr data-dist="21"><th scope="row"><span class="win-yr">2025<\/span> <small>21 km<\/small><\/th><td>Samuel Matkala Nordlund<\/td><td>Elvira Niva<\/td><\/tr>/);
-  assert.match(side, /<th scope="row"><span class="win-yr">2020<\/span> <small>40 km<\/small><\/th><td>Magnus Näslund<\/td>/, "2020 var 40 km");
+  assert.match(side, /<tr data-dist="42"><th scope="row"><span class="win-yr">2020<\/span><\/th><td>Magnus Näslund<\/td>/, "2020 står som alla andra år");
   assert.match(side, /<tr data-dist="21"><th scope="row"><span class="win-yr">2024<\/span> <small>21 km<\/small><\/th><td><span aria-hidden="true">–<\/span><span class="sr-only">ingen klass<\/span><\/td><td>Ebba Rönnbäck<\/td><\/tr>/);
   assert.equal((side.match(/<tr data-dist=/g) || []).length, 20, "en rad per år och distans");
   assert.doesNotMatch(side, /<tr>(?!<th scope="col">)/, "en segrarrad saknar data-dist");
