@@ -180,7 +180,7 @@ h1, h2, p, dl, dd, ol, ul { margin: 0; }
   .foot-item.pay { display: none; }
   .bottom { grid-template-columns: auto auto; }
   .fees tbody th b { font-size: 36pt; }
-  .block { margin-top: 7mm; }
+  .block { margin-top: 6mm; }
   .fees tbody th span { font-size: 11pt; }
   .fees td { font-size: 13pt; font-weight: 600; }
   .fees tbody th, .fees td { padding: 4mm 0; }
@@ -193,6 +193,24 @@ h1, h2, p, dl, dd, ol, ul { margin: 0; }
   /* Blå ram runt hela arket, och den röd-vita randen går hela vägen ner genom foten */
   .sheet { position: relative; border: 2.5mm solid var(--hero); }
   .top .stripe { display: none; }
+  /* Affischskala: större text och jämn rytm, så att det vita fördelas lika ovanför och under innehållet */
+  .facts { margin-top: 7mm; }
+  .facts > div { padding: 4mm 4.5mm; }
+  .facts dt { font-size: 8pt; }
+  .facts dd { font-size: 18pt; white-space: nowrap; }
+  .facts dd small { font-size: 9.5pt; white-space: normal; }
+  .block { margin-top: 6mm; }
+  .block h2 { font-size: 18pt; margin-bottom: 3.5mm; }
+  .fees tbody th b { font-size: 38pt; }
+  .fees tbody th { white-space: nowrap; }
+  .fees tbody th span { font-size: 12pt; }
+  .steps { gap: 10mm; }
+  .steps li { padding-left: 11mm; }
+  .steps li::before { width: 8mm; height: 8mm; font-size: 13pt; }
+  .steps li > b { font-size: 12.5pt; margin-bottom: 1mm; }
+  .steps p, .know li { font-size: 11pt; line-height: 1.4; }
+  .know ul { gap: 1.5mm 10mm; }
+  .sheet > .block:last-of-type { margin-bottom: 8mm; }
   .sheet::before { content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 9mm; z-index: 2; pointer-events: none;
     background: linear-gradient(90deg, #FFFFFF 0 1.8mm, var(--red) 1.8mm 7.2mm, #FFFFFF 7.2mm 9mm); }
 }
