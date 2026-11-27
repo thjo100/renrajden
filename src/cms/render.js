@@ -105,7 +105,7 @@ const banaStats = (e) => {
     + `<div><dt>Varv, ${esc(fmtNum(l.km))} km</dt><dd>${l.laps}</dd></div>`;
 };
 
-const cold = (e) => `<b>${fmtTemp(e.coldLimit)} °C</b><p class="note">Köldgräns: under ${fmtTemp(e.coldLimit)} °C på banans kallaste punkt får tävlingen inte genomföras. 2014 ställdes Renrajden in på grund av kyla.</p>`;
+const cold = (e) => `<b>${fmtTemp(e.coldLimit)} °C</b><p class="note">Köldgräns: under ${fmtTemp(e.coldLimit)} °C får tävlingen inte genomföras. 2014 ställdes Renrajden in på grund av kyla.</p>`;
 
 /* ---------- Resultatarkivet ---------- */
 function resultsEyebrow({ years }) {
@@ -163,7 +163,7 @@ const invFees = (e) => e.distances.map((d) =>
   + `<td class="num price">${esc(fmtKr(d.fee))}</td><td class="num price late">${esc(fmtKr(d.lateFee))}</td></tr>`).join("");
 
 const invKnow = (e) => `<li>Stavar max 83 % av kroppslängden.</li><li>${esc(cap(waterText(e.waterPerLap)))} per varv.</li>`
-  + `<li>Prisutdelning direkt efter målgång och lottade priser på startnummer.</li><li>Köldgräns ${fmtTemp(e.coldLimit)} °C på banans kallaste punkt.</li>`;
+  + `<li>Prisutdelning direkt efter målgång och lottade priser på startnummer.</li><li>Köldgräns ${fmtTemp(e.coldLimit)} °C.</li>`;
 
 const dateTime = (e) => `<time datetime="${e.date}">${esc(longDate(e))}</time>${cancelled(e) ? " · Inställt" : ""}`;
 
