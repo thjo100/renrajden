@@ -10,3 +10,4 @@ dev/wrapped.html
 dev/shots/
 tests/out/
 .DS_Store
+firebase.deploy.json
