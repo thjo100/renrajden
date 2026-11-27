@@ -105,6 +105,7 @@ h1, h2, p, dl, dd, ol, ul { margin: 0; }
 .fees .num { text-align: right; padding-left: 3mm; }
 /* Kolumnrubrikerna delas på två rader på smal skärm ("För-/anmälan"), annars flyter de ihop */
 .fees .hy { display: none; }
+.print-only { display: none; }
 .fees .price { font: 700 15pt/1 var(--f-display); letter-spacing: .02em; }
 .fees .late { color: var(--muted); }
 .fees thead th:nth-child(1) { width: 34%; }
@@ -169,6 +170,10 @@ h1, h2, p, dl, dd, ol, ul { margin: 0; }
   /* Affischen: inga avgifter, och innehållet mitt i det vita mellan toppen och foten */
   /* Affischen visar distanserna stort, avgifterna finns på webben */
   .screen-only, .fees th:nth-child(n + 3), .fees td:nth-child(n + 3) { display: none; }
+  /* Ingen Swish på affischen: foten blir webbadress + logotyp */
+  .print-only { display: inline; }
+  .foot-item.pay { display: none; }
+  .bottom { grid-template-columns: auto auto; }
   .fees tbody th b { font-size: 26pt; }
   .fees tbody th span { font-size: 11pt; }
   .fees td { font-size: 13pt; font-weight: 600; }
