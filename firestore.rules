@@ -2,8 +2,8 @@ rules_version = '2';
 
 // Renrajden – säkerhetsregler
 //
-// * Nyheter (news), årets lopp (settings/event) och resultatarkivet (years) kan läsas av alla,
-//   även utan inloggning.
+// * Nyheter (news), årets lopp (settings/event), partnerna (settings/partners) och
+//   resultatarkivet (years) kan läsas av alla, även utan inloggning.
 // * Bara administratörer får skapa, ändra och ta bort dem.
 // * Administratör = inloggad med Google, verifierad e-post, och dokumentet
 //   admins/{e-post i gemener} finns. Adminlistan hanteras med `npm run admin`
@@ -195,10 +195,50 @@ service cloud.firestore {
         && d.updatedBy == request.auth.uid;
     }
 
-    // Bara dokumentet "event" finns. Det kan inte tas bort, bara ändras.
+    // ---------- Partners (settings/partners) ----------
+    // Gränserna ska stämma med LIMITS i src/cms/model.js (short = 60, partners = 12, former = 500).
+
+    // Varje uttryck räknas mot reglernas gräns på 1000 uttryck per skrivning, så kontrollen är
+    // så kort som möjligt: matches() fungerar bara på text och nekar därför allt annat.
+    // En partner kostar ungefär 60 uttryck. Med fler än 16 partners nås gränsen, därför max 12.
+    function validPartner(p) {
+      return p.keys().size() == 3 && p.keys().hasAll(['name', 'text', 'url'])
+        && p.name.matches('^.{1,60}$')
+        && p.text.matches('^.{0,60}$')
+        && p.url.matches('^(https://[^ <>"]+)?$') && p.url.size() <= 2000;
+    }
+
+    function validPartnerList(ls) {
+      return ls is list && ls.size() <= 12
+        && (ls.size() < 1 || validPartner(ls[0]))
+        && (ls.size() < 2 || validPartner(ls[1]))
+        && (ls.size() < 3 || validPartner(ls[2]))
+        && (ls.size() < 4 || validPartner(ls[3]))
+        && (ls.size() < 5 || validPartner(ls[4]))
+        && (ls.size() < 6 || validPartner(ls[5]))
+        && (ls.size() < 7 || validPartner(ls[6]))
+        && (ls.size() < 8 || validPartner(ls[7]))
+        && (ls.size() < 9 || validPartner(ls[8]))
+        && (ls.size() < 10 || validPartner(ls[9]))
+        && (ls.size() < 11 || validPartner(ls[10]))
+        && (ls.size() < 12 || validPartner(ls[11]));
+    }
+
+    function validPartners(d) {
+      return d.keys().hasOnly(['partners', 'former', 'updatedAt', 'updatedBy'])
+        && d.keys().hasAll(['partners', 'former', 'updatedAt', 'updatedBy'])
+        && validPartnerList(d.partners)
+        && d.former is string && d.former.size() <= 500
+        && d.updatedAt == request.time
+        && d.updatedBy == request.auth.uid;
+    }
+
+    // Bara dokumenten "event" och "partners" finns. De kan inte tas bort, bara ändras.
     match /settings/{docId} {
       allow read: if true;
-      allow create, update: if isAdmin() && docId == 'event' && validEvent(request.resource.data);
+      allow create, update: if isAdmin()
+        && ((docId == 'event' && validEvent(request.resource.data))
+          || (docId == 'partners' && validPartners(request.resource.data)));
       allow delete: if false;
     }
 

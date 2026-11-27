@@ -149,8 +149,59 @@ await step("admin-sessionen finns kvar efter omladdning", async () => {
   await page.waitForSelector("#admin-bar:not([hidden])", { timeout: 15000 });
 });
 
-/* ---------- Årets lopp och resultatarkivet ---------- */
+/* ---------- Partners ---------- */
 const isOpen = (sel) => page.evaluate((s) => document.querySelector(s)?.open === true, sel);
+const partnerNames = (p) => p.$$eval("#partners .partner", (els) => els.map((e) => e.firstChild.textContent));
+const row = (n) => page.locator(`#pa-list .sub-row >> nth=${n}`);
+
+await step("admin ändrar, lägger till, flyttar och tar bort partners", async () => {
+  await page.click('#admin-bar [data-action="edit-partners"]');
+  await page.waitForSelector("#partners-dialog[open]");
+  assert((await page.locator("#pa-list .sub-row").count()) === 7, "formuläret har fel antal partners");
+  assert(await page.evaluate(() => document.activeElement?.id.startsWith("pname-")), "fokus hamnade inte på första namnet");
+  await row(0).locator('input[id^="purl-"]').fill("http://example.com/umara");
+  await page.click("#partners-dialog [type=submit]");
+  await page.waitForFunction(() => document.activeElement?.classList.contains("error-summary"), null, { timeout: 5000 })
+    .catch(() => { throw new Error("felsammanfattningen fick inte fokus"); });
+  assert((await row(0).locator('input[id^="purl-"]').getAttribute("aria-invalid")) === "true", "adressen markerades inte som fel");
+  await row(0).locator('input[id^="purl-"]').fill("example.com/umara"); // https:// läggs till
+  await page.click("#partners-dialog >> text=+ Lägg till partner");
+  assert(await page.evaluate(() => document.activeElement?.id.startsWith("pname-")), "fokus hamnade inte i den nya raden");
+  await page.keyboard.type("E2E Bygg");
+  await row(7).locator('input[id^="ptext-"]').fill("Priser");
+  await row(7).locator('[data-move="up"]').click();
+  assert(await page.evaluate(() => document.activeElement?.dataset.move === "up"), "fokus stannade inte på Flytta upp");
+  assert((await page.textContent("#pa-live")) === "E2E Bygg är nu nummer 7 av 8.", "flytten lästes inte upp");
+  assert((await row(6).locator('input[id^="pname-"]').inputValue()) === "E2E Bygg", "raden flyttades inte");
+  await row(7).locator("[data-remove-row]").click(); // ICA Porsön
+  assert(await row(6).locator('[data-move="down"]').isHidden(), "sista raden har kvar Flytta ner");
+  await page.fill("#pa-former", (await page.inputValue("#pa-former")) + "\nICA Porsön");
+  await page.screenshot({ path: `${OUT}/partners-dialog.png` });
+  await page.click("#partners-dialog [type=submit]");
+  await page.waitForFunction(() => !document.querySelector("#partners-dialog").open, null, { timeout: 10000 })
+    .catch(() => { throw new Error("dialogen stängdes inte efter sparning"); });
+  const names = await partnerNames(page);
+  assert(JSON.stringify(names) === JSON.stringify(["Umara", "Port of Luleå", "Hermelinen", "Sweco", "Lappland Media", "ICA Kvantum", "E2E Bygg"]), "fel partners på sidan: " + names.join(", "));
+  assert((await page.getAttribute("#partners a.partner", "href")) === "https://example.com/umara", "Umara blev ingen länk");
+  assert((await page.textContent("#partners .partners-former")).endsWith("Kuriren, Vitargo och ICA Porsön."), "Tidigare år uppdaterades inte");
+  await page.waitForTimeout(200);
+  assert(await page.evaluate(() => document.activeElement?.dataset.action === "edit-partners"), "fokus kom inte tillbaka till knappen");
+  const saved = (await db.doc("settings/partners").get()).data();
+  assert(saved.partners.length === 7 && saved.partners[0].url === "https://example.com/umara" && saved.partners[6].name === "E2E Bygg" && saved.partners[6].text === "Priser", "partnerna sparades fel");
+  assert(saved.former.endsWith("Vitargo\nICA Porsön") && saved.updatedBy === uid, "Tidigare år eller updatedBy sparades fel");
+  assert(!(await db.doc("settings/event").get()).exists, "partnerna ska inte skapa årets lopp");
+  await page.locator("#partners").screenshot({ path: `${OUT}/partners.png` });
+});
+
+await step("besökare ser partnerna innan årets lopp har sparats", async () => {
+  const p = await browser.newPage();
+  await p.goto(BASE);
+  await p.waitForFunction(() => document.documentElement.dataset.cms === "defaults", null, { timeout: 10000 });
+  assert((await partnerNames(p)).includes("E2E Bygg"), "besökaren ser inte den nya partnern");
+  await p.close();
+});
+
+/* ---------- Årets lopp och resultatarkivet ---------- */
 
 await step("admin ändrar årets lopp, och första sparningen kopierar arkivet till Firestore", async () => {
   assert(!(await db.doc("settings/event").get()).exists, "settings/event fanns redan före testet");
@@ -187,6 +238,7 @@ await step("besökare ser det nya innehållet, även i inbjudan", async () => {
   await p.waitForFunction(() => document.documentElement.dataset.cms === "db", null, { timeout: 10000 });
   assert((await p.textContent('[data-cms="fees"]')).includes("Efteranmälan 650 kr"), "besökaren ser inte den nya avgiften");
   assert((await p.locator("#years > li").count()) === YEARS + 1, "resultatarkivet har fel antal år efter kopieringen");
+  assert((await partnerNames(p)).length === 7, "första sparningen av årets lopp ändrade partnerna");
   await p.goto(BASE + "inbjudan");
   await p.waitForFunction(() => document.documentElement.dataset.cms === "db", null, { timeout: 10000 });
   assert((await p.textContent('[data-cms="inv-fees"]')).includes("650 kr"), "inbjudan visar inte den nya avgiften");
@@ -243,6 +295,12 @@ await step("dialogen för årets lopp fungerar på mobil 360 px", async () => {
   await p.screenshot({ path: `${OUT}/arets-lopp-mobil.png` });
   await p.keyboard.press("Escape");
   assert(!(await p.evaluate(() => document.querySelector("#event-dialog").open)), "Esc stängde inte en orörd dialog");
+  await p.click('#partners [data-action="edit-partners"]');
+  await p.waitForSelector("#partners-dialog[open]");
+  assert(await p.evaluate(() => { const d = document.querySelector("#partners-dialog"); return d.scrollWidth <= d.clientWidth; }), "partnerdialogen scrollar i sidled");
+  await p.screenshot({ path: `${OUT}/partners-mobil.png` });
+  await p.keyboard.press("Escape");
+  assert(!(await p.evaluate(() => document.querySelector("#partners-dialog").open)), "Esc stängde inte partnerdialogen");
   await p.close();
 });
 
@@ -276,8 +334,10 @@ await step("bygget hämtar det sparade innehållet från Firestore", async () =>
   assert(content.source === "db", "bygget hittade inte innehållet i Firestore");
   assert(content.event.deadline === "2027-01-20" && content.event.distances[2].km === 10.5, "årets lopp lästes fel");
   assert(content.years.length === YEARS + 1 && content.years[0].year === 2027, "resultatarkivet lästes fel");
+  assert(content.partners.partners[6].name === "E2E Bygg", "partnerna lästes fel");
   const html = fillHtml(readFileSync("index.html", "utf8"), content);
   assert(html.includes("Efteranmälan 650 kr") && html.includes("Testa Testsson"), "den byggda sidan saknar det sparade innehållet");
+  assert(html.includes('<a class="partner" href="https://example.com/umara"') && html.includes("Vitargo och ICA Porsön."), "den byggda sidan saknar partnerna");
 });
 
 await step("admin tar bort testnyheten och loggar ut", async () => {

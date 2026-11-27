@@ -248,6 +248,61 @@ test("första sparningen kan kopiera årets lopp och hela arkivet i en batch", a
   await assertSucceeds(batch.commit());
 });
 
+/* ---------- Partners ---------- */
+const validPartners = (uid, over = {}) => ({
+  partners: [
+    { name: "Umara", text: "Sportdryck i spåret", url: "https://example.com/umara" },
+    { name: "Port of Luleå", text: "Klubbpartner", url: "" },
+  ],
+  former: "Vauhti\nPakkala Sport",
+  updatedAt: serverTimestamp(), updatedBy: uid,
+  ...over,
+});
+
+test("alla kan läsa partnerna, men bara admin kan spara dem", async () => {
+  await env.withSecurityRulesDisabled(async (ctx) => { await setDoc(doc(ctx.firestore(), "settings", "partners"), { partners: [], former: "" }); });
+  await assertSucceeds(getDoc(doc(anon(), "settings", "partners")));
+  await assertFails(setDoc(doc(anon(), "settings", "partners"), validPartners("nobody")));
+  await assertFails(setDoc(doc(as("u2", google("someone@example.com")), "settings", "partners"), validPartners("u2")));
+  const db = admin();
+  await assertSucceeds(setDoc(doc(db, "settings", "partners"), validPartners("admin-uid")));
+  await assertSucceeds(setDoc(doc(db, "settings", "partners"), validPartners("admin-uid", { partners: [], former: "" })));
+  const twelve = Array.from({ length: 12 }, (_, i) => ({ name: "Partner nummer " + i, text: "Priser och mer", url: "https://example.com/" + i }));
+  await assertSucceeds(setDoc(doc(db, "settings", "partners"), validPartners("admin-uid", { partners: twelve })), "tolv partners ryms i reglernas gräns");
+  await assertFails(deleteDoc(doc(db, "settings", "partners")));
+});
+
+test("ogiltiga partners nekas även för admin", async () => {
+  const db = admin();
+  const p = (over) => [{ name: "Umara", text: "", url: "", ...over }];
+  const bad = {
+    "tomt namn": { partners: p({ name: "" }) },
+    "för långt namn": { partners: p({ name: "x".repeat(61) }) },
+    "för lång text": { partners: p({ text: "x".repeat(61) }) },
+    "http-länk": { partners: p({ url: "http://example.com" }) },
+    "javascript-länk": { partners: p({ url: "javascript:alert(1)" }) },
+    "extra fält i partner": { partners: p({ logo: "https://example.com/a.png" }) },
+    "partner utan url": { partners: [{ name: "Umara", text: "" }] },
+    "partner som text": { partners: ["Umara"] },
+    "13 partners": { partners: Array.from({ length: 13 }, (_, i) => ({ name: "P" + i, text: "", url: "" })) },
+    "fel partner sist": { partners: [...Array.from({ length: 11 }, (_, i) => ({ name: "P" + i, text: "", url: "" })), { name: "", text: "", url: "" }] },
+    "namn som tal": { partners: p({ name: 42 }) },
+    "för lång adress": { partners: p({ url: "https://example.com/" + "x".repeat(2000) }) },
+    "för lång text om tidigare år": { former: "x".repeat(501) },
+    "tidigare år som lista": { former: ["Vauhti"] },
+    "falsk författare": { updatedBy: "someone-else" },
+    "eget updatedAt": { updatedAt: Timestamp.fromDate(new Date("2020-01-01")) },
+  };
+  for (const [name, over] of Object.entries(bad)) {
+    await assertFails(setDoc(doc(db, "settings", "partners"), validPartners("admin-uid", over)), name);
+  }
+  await assertFails(setDoc(doc(db, "settings", "partners"), { ...validPartners("admin-uid"), html: "<script>" }), "okänt fält");
+  const { former, ...missing } = validPartners("admin-uid");
+  await assertFails(setDoc(doc(db, "settings", "partners"), missing), "saknat fält");
+  await assertFails(setDoc(doc(db, "settings", "partners"), validEvent("admin-uid")), "årets lopp i partnerdokumentet");
+  await assertFails(setDoc(doc(db, "settings", "event"), validPartners("admin-uid")), "partnerna i dokumentet för årets lopp");
+});
+
 test("andra samlingar är stängda", async () => {
   await assertFails(getDoc(doc(anon(), "secrets", "x")));
   await assertFails(setDoc(doc(admin(), "secrets", "x"), { a: 1 }));

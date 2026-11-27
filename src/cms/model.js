@@ -1,7 +1,7 @@
-// Datamodellen för årets lopp (settings/event) och resultatarkivet (years/{år}):
-// gränser, rensning av data från Firestore och svensk formatering.
+// Datamodellen för årets lopp (settings/event), resultatarkivet (years/{år}) och partnerna
+// (settings/partners): gränser, rensning av data från Firestore och svensk formatering.
 // Gränserna måste stämma med firestore.rules. Filen körs både i webbläsaren och vid bygget.
-import { DEFAULT_EVENT, DEFAULT_YEARS } from "./defaults.js";
+import { DEFAULT_EVENT, DEFAULT_YEARS, DEFAULT_PARTNERS } from "./defaults.js";
 
 export const LIMITS = {
   distances: 4,   // distanser i årets lopp
@@ -16,6 +16,8 @@ export const LIMITS = {
   url: 2000,
   fee: 10000,
   email: 100,
+  partners: 12,   // partners som visas (fler ryms inte i säkerhetsreglernas gräns, se firestore.rules)
+  former: 500,    // namnen under Tidigare år, som en text
 };
 export const EVENT_STATUS = ["planned", "cancelled"];
 export const YEAR_STATUS = ["held", "cancelled"];
@@ -95,16 +97,38 @@ export function cleanYear(raw, id) {
   };
 }
 
+function cleanPartner(p) {
+  if (!p || typeof p !== "object") return null;
+  const name = str(p.name, LIMITS.short);
+  return name ? { name, text: str(p.text, LIMITS.short), url: urlOr(p.url, HTTPS) } : null;
+}
+
 /**
- * Hela innehållet. source = "db" när det kommer från Firestore, annars "defaults".
- * years är sorterade med senaste året först.
+ * Partnerna, i den ordning de visas, och tidigare partners som en text.
+ * Saknas dokumentet (raw är inte ett objekt) blir det standardinnehållet.
+ */
+export function cleanPartners(raw) {
+  const r = raw && typeof raw === "object" ? raw : DEFAULT_PARTNERS;
+  return {
+    partners: Array.isArray(r.partners) ? r.partners.slice(0, LIMITS.partners).map(cleanPartner).filter(Boolean) : [],
+    former: str(r.former, LIMITS.former),
+  };
+}
+
+/** Namnen i texten Tidigare år: ett per rad eller separerade med kommatecken. */
+export const formerNames = (s) => String(s).split(/[,;\n]+/).map((t) => t.trim().replace(/\.$/, "")).filter(Boolean);
+
+/**
+ * Hela innehållet. source = "db" när årets lopp och arkivet kommer från Firestore, annars "defaults".
+ * years är sorterade med senaste året först. partners är settings/partners, eller standardinnehållet om
+ * dokumentet saknas. Det gäller oberoende av source.
  */
 export function cleanContent(raw) {
   const r = raw && typeof raw === "object" ? raw : {};
   const fromDb = r.source === "db";
   const years = (fromDb && Array.isArray(r.years) ? r.years : DEFAULT_YEARS).map((y) => cleanYear(y)).filter(Boolean);
   const unique = [...new Map(years.map((y) => [y.year, y])).values()].sort((a, b) => b.year - a.year);
-  return { source: fromDb ? "db" : "defaults", event: cleanEvent(fromDb ? r.event : DEFAULT_EVENT), years: unique };
+  return { source: fromDb ? "db" : "defaults", event: cleanEvent(fromDb ? r.event : DEFAULT_EVENT), years: unique, partners: cleanPartners(r.partners) };
 }
 
 /* ---------- Svensk formatering ---------- */

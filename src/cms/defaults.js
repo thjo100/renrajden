@@ -1,4 +1,4 @@
-// Standardinnehåll för årets lopp och resultatarkivet.
+// Standardinnehåll för årets lopp, resultatarkivet och partnerna.
 //
 // Används när Firestore saknar innehållet (innan en administratör har sparat något första gången)
 // eller inte går att nå när sajten byggs. När en administratör sparar första gången kopieras
@@ -138,3 +138,17 @@ export const DEFAULT_YEARS = [
     links: [link("Resultat", "https://drive.google.com/file/d/0B1D0YYjNfooockxvbFIwU3hoTlk/view")],
   }),
 ];
+
+// Partnerna visas i den här ordningen. url är tom eller https://. former är namnen under Tidigare år, ett per rad.
+export const DEFAULT_PARTNERS = {
+  partners: [
+    { name: "Umara", text: "Sportdryck i spåret", url: "" },
+    { name: "Port of Luleå", text: "Klubbpartner", url: "" },
+    { name: "Hermelinen", text: "Priser", url: "" },
+    { name: "Sweco", text: "Priser", url: "" },
+    { name: "Lappland Media", text: "Priser", url: "" },
+    { name: "ICA Kvantum", text: "Priser", url: "" },
+    { name: "ICA Porsön", text: "Priser", url: "" },
+  ],
+  former: ["Vauhti", "Pakkala Sport", "Äventyrsbutiken Hägglunds", "Team Sportia", "Agio", "Lulebo", "SCA", "Nordchark", "Kuriren", "Vitargo"].join("\n"),
+};

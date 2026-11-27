@@ -1,12 +1,12 @@
-// Enhetstester för årets lopp och resultatarkivet: rensning, formatering och rendering.
+// Enhetstester för årets lopp, resultatarkivet och partnerna: rensning, formatering och rendering.
 // Körs med: npm run test:unit   (ingen emulator behövs)
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
-import { cleanContent, cleanEvent, cleanYear, fmtDate, fmtKr, fmtNum, fmtTemp, joinList, numWord, isDate } from "../src/cms/model.js";
+import { cleanContent, cleanEvent, cleanPartners, cleanYear, fmtDate, fmtKr, fmtNum, fmtTemp, formerNames, joinList, numWord, isDate, LIMITS } from "../src/cms/model.js";
 import { fillHtml, renderSlots, renderHead, SSFTA_LOGIN, winDist, winSex } from "../src/cms/render.js";
 import { fromRest } from "../scripts/vite-cms.mjs";
-import { DEFAULT_EVENT, DEFAULT_YEARS } from "../src/cms/defaults.js";
+import { DEFAULT_EVENT, DEFAULT_YEARS, DEFAULT_PARTNERS } from "../src/cms/defaults.js";
 
 const defaults = () => cleanContent(null);
 const withEvent = (over) => cleanContent({ source: "db", event: { ...DEFAULT_EVENT, ...over }, years: DEFAULT_YEARS });
@@ -154,3 +154,60 @@ test("Firestores REST-format avkodas", () => {
   } } });
   assert.deepEqual(v, { s: "a", i: 42, d: 10.5, n: null, l: [{ url: "https://x" }], e: [] });
 });
+
+/* ---------- Partners ---------- */
+const withPartners = (partners) => cleanContent({ source: "db", event: DEFAULT_EVENT, years: DEFAULT_YEARS, partners });
+
+test("partnerna visas i standardordningen tills de sparats", () => {
+  const html = renderSlots(defaults()).partners;
+  const names = [...html.matchAll(/<span class="partner">([^<]+)<small>/g)].map((m) => m[1]);
+  assert.deepEqual(names, DEFAULT_PARTNERS.partners.map((p) => p.name));
+  assert.match(html, /^<ul class="partners" aria-labelledby="partners-h"><li><span class="partner">Umara<small>Sportdryck i spåret<\/small><\/span><\/li>/);
+  assert.match(html, /<p class="note partners-former">Tidigare år: Vauhti, Pakkala Sport, Äventyrsbutiken Hägglunds, Team Sportia, Agio, Lulebo, SCA, Nordchark, Kuriren och Vitargo\.<\/p>$/);
+  assert.deepEqual(renderHead(defaults()).data.partners, cleanPartners(null), "partnerna bäddas in i sidan");
+});
+
+test("partner med webbadress blir en länk, och ordningen följer listan", () => {
+  const html = renderSlots(withPartners({
+    partners: [{ name: "Sweco", text: "", url: "https://www.sweco.se/" }, { name: "Umara", text: "Sportdryck", url: "" }],
+    former: "",
+  })).partners;
+  assert.match(html, /^<ul[^>]*><li><a class="partner" href="https:\/\/www\.sweco\.se\/" target="_blank" rel="noopener">Sweco<span class="sr-only"> \(öppnas i ny flik\)<\/span><\/a><\/li><li><span class="partner">Umara<small>Sportdryck<\/small><\/span><\/li><\/ul>$/);
+  assert.doesNotMatch(html, /Tidigare år/, "tom text döljer raden Tidigare år");
+});
+
+test("tom partnerlista ger en ersättningstext", () => {
+  const html = renderSlots(withPartners({ partners: [], former: "Vauhti" })).partners;
+  assert.equal(html, '<p>Partners för Renrajden 2027 presenteras här.</p><p class="note partners-former">Tidigare år: Vauhti.</p>');
+});
+
+test("partnerna från databasen rensas och escapas", () => {
+  const p = cleanPartners({
+    partners: [
+      { name: "<img src=x onerror=alert(1)>", text: "<b>", url: "javascript:alert(1)" },
+      { name: "  ", text: "Inget namn", url: "" },
+      { name: "Gammal", text: "", url: "http://example.com" },
+      "skräp",
+      ...Array.from({ length: 30 }, (_, i) => ({ name: "P" + i, text: "", url: "" })),
+    ],
+    former: "A, B;\nC.\n\n",
+  });
+  assert.equal(p.partners.length, LIMITS.partners - 2, "max antal, rader utan namn tas bort");
+  assert.deepEqual(p.partners[0], { name: "<img src=x onerror=alert(1)>", text: "<b>", url: "" });
+  assert.equal(p.partners[1].url, "", "http-länkar godtas inte");
+  const html = renderSlots(withPartners(p)).partners;
+  assert.doesNotMatch(html, /<img|<b>|javascript:|href="http:/);
+  assert.match(html, /&lt;img src=x onerror=alert\(1\)&gt;<small>&lt;b&gt;<\/small>/);
+  assert.match(html, /Tidigare år: A, B och C\.<\/p>$/);
+  assert.deepEqual(formerNames("Vauhti\nPakkala Sport, SCA."), ["Vauhti", "Pakkala Sport", "SCA"]);
+});
+
+test("partnerna gäller oberoende av om årets lopp har sparats", () => {
+  const saved = { partners: [{ name: "Ny partner", text: "", url: "" }], former: "" };
+  const c = cleanContent({ partners: saved });
+  assert.equal(c.source, "defaults");
+  assert.deepEqual(c.partners, saved);
+  assert.deepEqual(cleanContent(JSON.parse(JSON.stringify(renderHead(c).data))).partners, saved, "den inbäddade datan läses tillbaka likadant");
+  assert.deepEqual(cleanContent({ source: "db", event: DEFAULT_EVENT, years: [] }).partners, cleanPartners(null), "saknat dokument ger standardpartnerna");
+});
+

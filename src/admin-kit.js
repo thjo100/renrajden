@@ -110,20 +110,39 @@ export function formKit(dlg) {
 }
 
 /**
- * Rader som går att lägga till och ta bort (länkar, distanser, segrare).
+ * Rader som går att lägga till och ta bort (länkar, distanser, segrare, partners).
  * build(values, n) skapar en rad. Raden ska ha en knapp med attributet data-remove-row.
+ * Knappar med data-move="up" eller data-move="down" flyttar raden ett steg. Fokus stannar på
+ * knappen, eller på den andra flyttknappen om raden hamnat först eller sist. onMove(row, rows)
+ * anropas efter flytten, t.ex. för att läsa upp var raden hamnade.
  * onChange(rows) anropas efter varje ändring, t.ex. för att numrera raderna.
  */
-export function repeater(container, addBtn, { build, max, min = 0, onChange }) {
+export function repeater(container, addBtn, { build, max, min = 0, onChange, onMove }) {
   const rows = () => [...container.children];
   const update = () => {
-    const n = rows().length;
+    const all = rows(), n = all.length;
     addBtn.hidden = n >= max;
-    rows().forEach((r) => { const b = $("[data-remove-row]", r); if (b) b.hidden = n <= min; });
-    if (onChange) onChange(rows());
+    all.forEach((r, i) => {
+      const b = $("[data-remove-row]", r); if (b) b.hidden = n <= min;
+      const up = $('[data-move="up"]', r), down = $('[data-move="down"]', r);
+      if (up) up.hidden = i === 0;
+      if (down) down.hidden = i === n - 1;
+    });
+    if (onChange) onChange(all);
   };
   const add = (values = {}) => { const row = build(values, nextId()); container.append(row); update(); return row; };
   container.addEventListener("click", (e) => {
+    const m = e.target.closest("[data-move]");
+    if (m) {
+      const row = rows().find((r) => r.contains(m)), up = m.dataset.move === "up";
+      const other = up ? row.previousElementSibling : row.nextElementSibling;
+      if (!other) return;
+      if (up) other.before(row); else other.after(row);
+      update();
+      (m.hidden ? $(`[data-move="${up ? "down" : "up"}"]`, row) : m).focus();
+      if (onMove) onMove(row, rows());
+      return;
+    }
     const b = e.target.closest("[data-remove-row]");
     if (!b) return;
     const row = rows().find((r) => r.contains(b));

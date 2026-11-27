@@ -1,13 +1,13 @@
-// Adminläget för årets lopp (settings/event) och resultatarkivet (years/{år}).
+// Adminläget för årets lopp (settings/event), resultatarkivet (years/{år}) och partnerna (settings/partners).
 // Startas av admin.js efter inloggning. Dialogerna byggs här, så att de bara laddas för administratörer.
 //
 // Första gången något sparas finns inget i Firestore än, och sidan visar standardinnehållet
 // (src/cms/defaults.js). Då sparas hela det innehållet i samma batch som ändringen, så att inget
-// år i arkivet försvinner när sidan börjar läsa från Firestore.
+// år i arkivet försvinner när sidan börjar läsa från Firestore. Partnerna sparas för sig och berörs inte av det.
 import { $, $$, el, toast, openDialog, closeDialog, focusEl, initDialog } from "./ui.js";
 import { withTimeout, writeErr, field, selectField, dialogParts, formKit, repeater, linkRow, readLinks, confirmDelete } from "./admin-kit.js";
 import { getContent, applyContent, refreshContent, isInitialized, onContent } from "./cms/runtime.js";
-import { cleanContent, isDate, fmtNum, LIMITS, TIME, HTTPS, WEB, EMAIL, MIN_YEAR, MAX_YEAR } from "./cms/model.js";
+import { cleanContent, formerNames, isDate, fmtNum, LIMITS, TIME, HTTPS, WEB, EMAIL, MIN_YEAR, MAX_YEAR } from "./cms/model.js";
 
 let db, fs, user = null;
 
@@ -37,8 +37,20 @@ async function save({ event, year, removeYear }) {
   if (year) batch.set(yearRef(year.year), stamp(yearDoc(year)));
   if (removeYear && !init) batch.delete(yearRef(removeYear));
   await withTimeout(batch.commit());
-  applyContent(cleanContent({ source: "db", event: event || c.event, years: year ? [...keep, year] : keep }));
+  applyContent(cleanContent({ source: "db", event: event || c.event, years: year ? [...keep, year] : keep, partners: c.partners }));
   refreshContent(true); // bekräfta mot Firestore i bakgrunden
+}
+
+/** Sparar partnerna (hela listan i ett dokument). Visar ändringen direkt. */
+async function savePartners(p) {
+  const c = getContent();
+  await withTimeout(fs.setDoc(fs.doc(db, "settings", "partners"), {
+    partners: p.partners.map(({ name, text, url }) => ({ name, text, url })),
+    former: p.former,
+    updatedAt: fs.serverTimestamp(), updatedBy: user.uid,
+  }));
+  applyContent(cleanContent({ source: c.source, event: c.event, years: c.years, partners: p }));
+  refreshContent(true);
 }
 
 /* ---------- Hjälpare för formulären ---------- */
@@ -297,6 +309,96 @@ function askDeleteYear(y) {
   });
 }
 
+/* ---------- Partners ---------- */
+let P = null, plist = null, savingPartners = false;
+
+// Adress utan https:// (till exempel umara.se) får https:// framför.
+const withScheme = (u) => (u && !/^[a-z][a-z\d+.-]*:/i.test(u) && /^[^\s/]+\.[^\s/]+/.test(u) ? "https://" + u : u);
+
+function partnerRow(p = {}, n) {
+  const f = (key, label, value, attrs = {}) => field({ id: `p${key}-${n}`, label, value: value ?? "", ...attrs });
+  const btn = (text, attrs) => el("button", { class: "btn btn-quiet btn-sm", type: "button", ...attrs, text });
+  return el("fieldset", { class: "sub-row" }, el("legend", { text: "Partner" }),
+    grid("row2",
+      f("name", "Namn", p.name, { maxlength: String(LIMITS.short) }),
+      f("text", "Text under namnet", p.text, { maxlength: String(LIMITS.short), placeholder: "Priser" })),
+    f("url", "Webbplats", p.url, { type: "url", inputmode: "url", placeholder: "https://", hint: "Frivillig. Med adress blir kortet en länk till partnerns webbplats." }),
+    el("div", { class: "row-btns" },
+      btn("Flytta upp", { "data-move": "up" }),
+      btn("Flytta ner", { "data-move": "down" }),
+      btn("Ta bort partnern", { "data-remove-row": "" })));
+}
+
+function buildPartnersDialog() {
+  P = makeDialog("partners-dialog", "Partners");
+  const add = el("button", { class: "btn btn-quiet btn-sm add-row", type: "button", text: "+ Lägg till partner" });
+  const list = el("div", { class: "sub-rows", id: "pa-list" });
+  const live = el("p", { class: "sr-only", "aria-live": "polite", id: "pa-live" });
+  const label = (r, i) => $("input[id^='pname-']", r).value.trim() || "Partner " + (i + 1);
+  P.body.append(
+    el("p", { class: "note", text: `Partnerna visas under Partners på startsidan, i den ordning de står här. Ändringarna syns direkt. Högst ${LIMITS.partners} partners.` }),
+    group("Årets partners", list, add),
+    group("Tidigare år",
+      field({ id: "pa-former", label: "Tidigare partners", textarea: true, cls: "short", maxlength: String(LIMITS.former),
+        hint: "Ett namn per rad. Visas som en rad under partnerna: Tidigare år: A, B och C. Lämna tomt för att dölja raden." })),
+    live,
+  );
+  plist = repeater(list, add, {
+    build: partnerRow, max: LIMITS.partners,
+    onChange: (rows) => rows.forEach((r, i) => {
+      $("legend", r).textContent = "Partner " + (i + 1);
+      $("[data-move='up']", r).setAttribute("aria-label", `Flytta upp partner ${i + 1}`);
+      $("[data-move='down']", r).setAttribute("aria-label", `Flytta ner partner ${i + 1}`);
+      $("[data-remove-row]", r).setAttribute("aria-label", `Ta bort partner ${i + 1}`);
+    }),
+    onMove: (row, rows) => { live.textContent = `${label(row, rows.indexOf(row))} är nu nummer ${rows.indexOf(row) + 1} av ${rows.length}.`; },
+  });
+  P.form.addEventListener("submit", onPartnersSubmit);
+}
+
+function openPartners() {
+  const { partners, former } = getContent().partners;
+  P.kit.clear();
+  $("#pa-live").textContent = "";
+  plist.reset(partners.length ? partners : [{}]);
+  $("#pa-former").value = former;
+  P.kit.snapshot();
+  openDialog(P.dlg);
+  P.kit.firstField().focus();
+}
+
+async function onPartnersSubmit(ev) {
+  ev.preventDefault();
+  if (savingPartners) return;
+  const K = P.kit, errs = [];
+  K.clear();
+  const partners = [];
+  plist.rows().forEach((row, i) => {
+    const n = (key) => $(`input[id^="p${key}-"]`, row), pre = `Partner ${i + 1}: `;
+    const name = n("name").value.trim(), text = n("text").value.trim(), url = withScheme(n("url").value.trim());
+    if (!name && !text && !url) return; // tom rad
+    if (!name) K.error(n("name"), pre + "skriv namnet, eller ta bort raden.", errs);
+    if (url && (!HTTPS.test(url) || url.length > LIMITS.url)) K.error(n("url"), pre + "adressen måste börja med https://", errs);
+    n("url").value = url;
+    partners.push({ name: name.slice(0, LIMITS.short), text: text.slice(0, LIMITS.short), url });
+  });
+  // En namn per rad. Kommatecken går också, men sparas som nya rader.
+  const former = formerNames($("#pa-former").value).join("\n");
+  if (former.length > LIMITS.former) K.error($("#pa-former"), `Tidigare partners får vara högst ${LIMITS.former} tecken.`, errs);
+  if (errs.length) { K.show(errs); return; }
+
+  savingPartners = true; busy(P.save, true, "Sparar…");
+  try {
+    await savePartners({ partners, former });
+    closeDialog(P.dlg);
+    toast("Partnerna är sparade");
+  } catch (e) {
+    K.show([{ msg: writeErr(e, "Partnerna") }]);
+  } finally {
+    savingPartners = false; busy(P.save, false);
+  }
+}
+
 /* ---------- Knappar i resultatarkivet ---------- */
 // Knapparna läggs bara till där de saknas, så att fokus inte tappas när innehållet hämtas om.
 function decorateYears() {
@@ -317,14 +419,16 @@ export function initCms(api) {
   ({ db, fs } = api);
   buildEventDialog();
   buildYearDialog();
+  buildPartnersDialog();
   onContent(decorateYears);
   document.addEventListener("click", (e) => {
     if (!user) return;
-    const t = e.target.closest("[data-action='edit-event'], [data-action='new-year'], [data-year-new], [data-year-edit], [data-year-delete]");
+    const t = e.target.closest("[data-action='edit-event'], [data-action='new-year'], [data-action='edit-partners'], [data-year-new], [data-year-edit], [data-year-delete]");
     if (!t) return;
     const find = (y) => getContent().years.find((x) => x.year === Number(y));
     if (t.dataset.action === "edit-event") openEvent(t.dataset.focus);
     else if (t.dataset.action === "new-year") openYear(null);
+    else if (t.dataset.action === "edit-partners") openPartners();
     else if (t.dataset.yearNew) {
       const ev = getContent().event;
       const links = [["Startlista", ev.startListUrl], ["Liveresultat", ev.liveResultsUrl]].filter(([, u]) => u).map(([label, url]) => ({ label, url }));

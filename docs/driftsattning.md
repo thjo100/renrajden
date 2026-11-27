@@ -172,7 +172,7 @@ npm run admin -- add fornamn.efternamn@gmail.com --project <projekt-id>
 ## 7. Publicera
 
 1. Slå ihop pull requesten (thjo100/renrajden#1) till `main`. Säg till Claude, eller klicka på **Merge pull request** på GitHub.
-2. Fliken **Actions** i GitHub visar körningen "Test och publicering". Först körs testerna (cirka 5 minuter), sedan publiceras säkerhetsreglerna, och därefter byggs och publiceras sajten med årets lopp och resultatarkivet från Firestore. Samma publicering körs också automatiskt varje natt.
+2. Fliken **Actions** i GitHub visar körningen "Test och publicering". Först körs testerna (cirka 5 minuter), sedan publiceras säkerhetsreglerna, och därefter byggs och publiceras sajten med årets lopp, resultatarkivet och partnerna från Firestore. Samma publicering körs också automatiskt varje natt.
 3. När körningen är grön finns sajten på **https://renrajden.web.app** (webbplatsen `renrajden`, satt i `firebase.json`).
    Adressen `renrajden.web.app` måste finnas under **Authentication → Settings → Authorized domains**, annars fungerar inte inloggningen.
 4. Importera nu nyheterna enligt steg 6b.
@@ -246,7 +246,7 @@ Gratisplanen Spark har dagliga tak. Två är relevanta:
 | Tjänst | Tak per dag (Spark) | Ungefärlig åtgång |
 |---|---|---|
 | Hosting, trafik | 360 MB | Ett första besök är cirka 300 kB, alltså runt 1 200 nya besökare per dag |
-| Firestore, läsningar | 50 000 | En besökare läser alla nyheter (cirka 25 dokument) vid sidladdning och sedan varje minut medan sidan är öppen, plus årets lopp och resultatarkivet (cirka 15 dokument) en gång per sidladdning |
+| Firestore, läsningar | 50 000 | En besökare läser alla nyheter (cirka 25 dokument) vid sidladdning och sedan varje minut medan sidan är öppen, plus årets lopp, partnerna och resultatarkivet (cirka 15 dokument) en gång per sidladdning |
 
 En vanlig dag räcker gratisplanen med god marginal. På **tävlingsdagen**, när åkare, publik och anhöriga följer startlistor och resultat, kan taken nås. Då slutar sajten eller nyhetsflödet att fungera resten av dygnet.
 

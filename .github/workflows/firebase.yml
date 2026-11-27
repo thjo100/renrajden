@@ -6,7 +6,7 @@ on:
   pull_request:
   workflow_dispatch:
   # Varje natt: bygg om och publicera, så att sidans HTML (för sökmotorer, delningar och besökare
-  # utan JavaScript) får med det som administratörerna har ändrat i årets lopp och resultatarkivet.
+  # utan JavaScript) får med det som administratörerna har ändrat i årets lopp, resultatarkivet och partnerna.
   schedule:
     - cron: "17 3 * * *"
 
@@ -90,7 +90,7 @@ jobs:
           node-version: 22
           cache: npm
       - run: npm ci
-      # Reglerna först: bygget läser årets lopp och resultatarkivet från Firestore och behöver de nya reglerna.
+      # Reglerna först: bygget läser årets lopp, resultatarkivet och partnerna från Firestore och behöver de nya reglerna.
       - name: Publicera säkerhetsregler för Firestore
         env:
           SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
