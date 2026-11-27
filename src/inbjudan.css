@@ -75,7 +75,7 @@ h1, h2, p, dl, dd, ol, ul { margin: 0; }
 .tag { background: var(--red); color: #FFFFFF; padding: 1.4mm 2.4mm; border-radius: 1mm; font: 900 11pt/1 var(--f-display); letter-spacing: .14em; }
 .title { width: 100%; margin-top: 3mm; }
 .title svg { display: block; width: 100%; height: auto; overflow: visible; color: #FFFFFF; margin-top: 1mm; }
-.ren { position: absolute; z-index: -1; right: -30mm; bottom: 0; width: 86mm; height: auto; color: #3A86D2; }
+.ren { position: absolute; z-index: -1; right: -16mm; bottom: 0; width: 86mm; height: auto; color: #3A86D2; }
 .title text { font-family: var(--f-display); font-weight: 900; }
 .date { font: 700 21pt/1.1 var(--f-display); letter-spacing: .03em; text-transform: uppercase; }
 .lede { font-size: 12pt; line-height: 1.4; max-width: 60ch; }
@@ -165,7 +165,6 @@ h1, h2, p, dl, dd, ol, ul { margin: 0; }
   .sheet { margin: 0; box-shadow: none; height: auto; min-height: max(280mm, min(100vh, 297mm)); }
   .sheet > .block:last-of-type { margin-bottom: 4mm; }
   .bottom { break-inside: avoid; }
-  .block { margin-top: 3mm; }
   .bottom { padding-block: 4mm; }
   .wave { height: 11mm; }
   .title svg { width: 95%; margin-inline: auto; }
@@ -184,7 +183,7 @@ h1, h2, p, dl, dd, ol, ul { margin: 0; }
   .toolbar { padding: 12px 16px; }
   .sheet { width: auto; height: auto; margin: 0; box-shadow: none; font-size: 16px; }
   .top { padding: 28px 16px 56px 40px; }
-  .ren { width: 62vw; right: -20vw; bottom: 0; }
+  .ren { width: 62vw; right: -10vw; bottom: 0; }
   .stripe { width: 24px; background: linear-gradient(90deg, #FFFFFF 0 5px, var(--red) 5px 19px, #FFFFFF 19px 24px); }
   .wave { height: 36px; }
   .top-inner { gap: 8px; max-width: none; }
