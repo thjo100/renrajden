@@ -14,7 +14,7 @@
   --red: #E12627;
   --red-text: #C81E1F;
   --navy: #0A2A52;
-  --navy-ink: #C3D3E8;
+  --navy-ink: #DDE9F7;
 
   --desk: #DCE5F0;
   --desk-ink: #0E1B2E;
@@ -132,7 +132,7 @@ h1, h2, p, dl, dd, ol, ul { margin: 0; }
 
 /* Fot: två likadana par (QR + text) med avdelare, och OK Renens logotyp i hörnet */
 .bottom {
-  margin-top: auto; background: var(--navy); color: #FFFFFF;
+  margin-top: auto; background: var(--hero); color: #FFFFFF;
   display: grid; grid-template-columns: auto auto auto; justify-content: space-between; align-items: center; column-gap: 5mm;
   padding: 5mm 16mm;
 }
@@ -164,6 +164,11 @@ h1, h2, p, dl, dd, ol, ul { margin: 0; }
   .sheet { margin: 0; box-shadow: none; height: auto; min-height: max(280mm, min(100vh, 297mm)); }
   .sheet > .block:last-of-type { margin-bottom: 4mm; }
   .bottom { break-inside: avoid; }
+  /* Blå ram runt hela arket, och den röd-vita randen går hela vägen ner genom foten */
+  .sheet { position: relative; border: 2.5mm solid var(--hero); }
+  .top .stripe { display: none; }
+  .sheet::before { content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 9mm; z-index: 2; pointer-events: none;
+    background: linear-gradient(90deg, #FFFFFF 0 1.8mm, var(--red) 1.8mm 7.2mm, #FFFFFF 7.2mm 9mm); }
 }
 /* Mörkt skrivbord: en tunn kant så att arkets mörkblå fot inte flyter ihop med bakgrunden */
 @media screen and (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .sheet { outline: 1px solid rgba(255, 255, 255, .14); } }
