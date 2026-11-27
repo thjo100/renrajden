@@ -204,7 +204,7 @@ function buildYearDialog() {
       selectField({ id: "yr-status", label: "Status", options: [["held", "Loppet kördes"], ["cancelled", "Ingen tävling (inställt eller paus)"]] })),
     field({ id: "yr-date", label: "Datum", type: "date", hint: "Visas under årtalet. Lämna tomt om det är okänt." }),
     field({ id: "yr-text", label: "Text", textarea: true, cls: "short", maxlength: String(LIMITS.text), hint: "Kort text under årtalet. Till exempel Även Kalvrajden för HD10–16, eller varför loppet ställdes in." }),
-    group("Segrare", el("span", { class: "hint", text: "Visas under året och i rutan Segrare i arkivet." }), winList, addWin),
+    group("Segrare", el("span", { class: "hint", text: "Klass som H42, D42, H21 eller D21, och bara segraren. Visas under året och i rutan Segrare i arkivet." }), winList, addWin),
     group("Länkar", el("span", { class: "hint", text: "Resultat, liveresultat, startlista, bilder och pressklipp. Adressen ska börja med https:// (äldre länkar får börja med http://)." }), linkList, addLink),
     group("Inbjudan", el("span", { class: "hint", text: "Visas under Tidigare inbjudningar. Lämna tomt om den inte finns." }),
       grid("row2",

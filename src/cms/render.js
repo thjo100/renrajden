@@ -121,10 +121,36 @@ function resultsEyebrow({ years }) {
  * distansen (20–22 km). Den största siffran i klassen avgör, så "H21" blir "21", och "H42", "42 km" och
  * "H 21- 42" blir "42". En klass utan siffra räknas till långloppet.
  */
+const winKm = (cls) => Math.max(0, ...(String(cls).match(/\d+/g) || []).map(Number));
 export const winDist = (cls) => {
-  const n = Math.max(0, ...(String(cls).match(/\d+/g) || []).map(Number));
+  const n = winKm(cls);
   return n && n < 30 ? "21" : "42";
 };
+
+/** "H" eller "D" utifrån klassens första bokstav ("H42", "Herrar 21", "D42", "Damer"). Annars tom sträng. */
+export const winSex = (cls) => (/^\s*([HD])/i.exec(String(cls)) || ["", ""])[1].toUpperCase();
+
+const NO_CLASS = '<span aria-hidden="true">–</span><span class="sr-only">ingen klass</span>';
+
+/**
+ * Raderna för ett år i tabellen Segrare i arkivet: en rad per distans, med herr- och damsegraren i var sin kolumn.
+ * Långloppet står bara med årtal (eller "40 km" om distansen var en annan), halva distansen med "21 km".
+ * Segrare vars klass inte börjar med H eller D får en egen rad över båda kolumnerna.
+ */
+function winnerRows(y) {
+  return ["42", "21"].flatMap((dist) => {
+    const ws = y.winners.filter((w) => winDist(w.class) === dist);
+    if (!ws.length) return [];
+    const kms = [...new Set(ws.map((w) => winKm(w.class)).filter(Boolean))];
+    const head = `<th scope="row"><span class="win-yr">${y.year}</span>${kms.length === 1 && kms[0] !== 42 ? ` <small>${kms[0]} km</small>` : ""}</th>`;
+    const names = (sex) => ws.filter((w) => winSex(w.class) === sex).map((w) => esc(w.names)).join(", ");
+    const other = ws.filter((w) => !winSex(w.class)).map((w) => `${w.class ? esc(w.class) + ": " : ""}${esc(w.names)}`).join(", ");
+    const rows = [];
+    if (names("H") || names("D")) rows.push(`<tr data-dist="${dist}">${head}<td>${names("H") || NO_CLASS}</td><td>${names("D") || NO_CLASS}</td></tr>`);
+    if (other) rows.push(`<tr data-dist="${dist}">${head}<td colspan="2">${other}</td></tr>`);
+    return rows;
+  });
+}
 
 const yearLinks = (links, y) => (links.length
   ? `<ul class="year-links">${links.map((l) => `<li>${ext(l.url, l.label, ` ${y}${NEW_TAB}`)}</li>`).join("")}</ul>`
@@ -155,10 +181,12 @@ function years(c) {
 }
 
 function historySide(c) {
-  const winners = c.years.flatMap((y) => y.winners.map((w) => `<li data-dist="${winDist(w.class)}"><b>${y.year}${w.class ? ", " + esc(w.class) : ""}:</b> ${esc(w.names)}</li>`));
+  const winners = c.years.flatMap(winnerRows);
   const inv = c.years.filter((y) => y.invitation && WEB.test(y.invitation.url))
     .map((y) => `<li>${ext(y.invitation.url, y.invitation.label, NEW_TAB, "")}</li>`);
-  return (winners.length ? `<section class="side-box"><h3>Segrare i arkivet</h3><ul>${winners.join("")}</ul></section>` : "")
+  return (winners.length ? `<section class="side-box"><h3>Segrare i arkivet</h3><table class="win-table">`
+      + `<thead><tr><th scope="col">År</th><th scope="col">Herrar</th><th scope="col">Damer</th></tr></thead>`
+      + `<tbody>${winners.join("")}</tbody></table></section>` : "")
     + (inv.length ? `<section class="side-box"><h3>Tidigare inbjudningar</h3><ul class="inv-list">${inv.join("")}</ul></section>` : "");
 }
 

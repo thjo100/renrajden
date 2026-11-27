@@ -94,7 +94,7 @@ export const DEFAULT_YEARS = [
   }),
   year(2017, {
     date: "2017-01-14",
-    winners: [{ class: "42 km", names: "Klas Nilsson och Anna Rimpi" }, { class: "H21", names: "Oskar Sundqvist" }, { class: "D21", names: "Boel Sandström" }],
+    winners: [{ class: "H42", names: "Klas Nilsson" }, { class: "D42", names: "Anna Rimpi" }, { class: "H21", names: "Oskar Sundqvist" }, { class: "D21", names: "Boel Sandström" }],
     links: [
       link("SSF TA", "http://ta.skidor.com/ResultList.aspx?eventid=7506&competitionid=12701&orgid=2920"),
       link("Resultat (pdf)", "https://drive.google.com/open?id=0B1D0YYjNfoooRUxHeHkxN19YYm8"),
@@ -118,7 +118,7 @@ export const DEFAULT_YEARS = [
   year(2015, {
     date: "2015-01-17",
     winners: [
-      { class: "H42", names: "1. Tarjei Solli, 2. Niklas Henriksson, 3. Andreas Berglund" },
+      { class: "H42", names: "Tarjei Solli" },
       { class: "D42", names: "Emma Bergström" },
       { class: "H21", names: "Karl Edenroth" },
       { class: "D21", names: "Catrin Ingvarsson" },

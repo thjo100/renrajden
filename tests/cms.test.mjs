@@ -4,7 +4,7 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { cleanContent, cleanEvent, cleanYear, fmtDate, fmtKr, fmtNum, fmtTemp, joinList, numWord, isDate } from "../src/cms/model.js";
-import { fillHtml, renderSlots, renderHead, SSFTA_LOGIN, winDist } from "../src/cms/render.js";
+import { fillHtml, renderSlots, renderHead, SSFTA_LOGIN, winDist, winSex } from "../src/cms/render.js";
 import { fromRest } from "../scripts/vite-cms.mjs";
 import { DEFAULT_EVENT, DEFAULT_YEARS } from "../src/cms/defaults.js";
 
@@ -105,13 +105,21 @@ test("årets lopp visas överst i arkivet tills resultatet lagts in", () => {
 test("segrarna märks med distans, så att 21 km kan filtreras bort", () => {
   for (const c of ["H42", "D42", "42 km", "H40", "D40", "H 21- 42", "", "Motion"]) assert.equal(winDist(c), "42", c);
   for (const c of ["H21", "D21", "H20", "D22"]) assert.equal(winDist(c), "21", c);
+  for (const [c, sex] of [["H42", "H"], ["d21", "D"], ["Herrar 21", "H"], ["Damer", "D"], ["42 km", ""], ["Mix 10", ""]]) assert.equal(winSex(c), sex, c);
   const html = renderSlots(defaults());
-  assert.match(html["history-side"], /<li data-dist="42"><b>2025, H42:<\/b> Viktor Mäenpää<\/li>/);
-  assert.match(html["history-side"], /<li data-dist="21"><b>2025, H21:<\/b> Samuel Matkala Nordlund<\/li>/);
+  const side = html["history-side"].split("</table>")[0];
+  assert.match(side, /<thead><tr><th scope="col">År<\/th><th scope="col">Herrar<\/th><th scope="col">Damer<\/th><\/tr><\/thead>/);
+  assert.match(side, /<tr data-dist="42"><th scope="row"><span class="win-yr">2025<\/span><\/th><td>Viktor Mäenpää<\/td><td>Helena Lundkvist<\/td><\/tr>/);
+  assert.match(side, /<tr data-dist="21"><th scope="row"><span class="win-yr">2025<\/span> <small>21 km<\/small><\/th><td>Samuel Matkala Nordlund<\/td><td>Elvira Niva<\/td><\/tr>/);
+  assert.match(side, /<th scope="row"><span class="win-yr">2020<\/span> <small>40 km<\/small><\/th><td>Magnus Näslund<\/td>/, "2020 var 40 km");
+  assert.match(side, /<tr data-dist="21"><th scope="row"><span class="win-yr">2024<\/span> <small>21 km<\/small><\/th><td><span aria-hidden="true">–<\/span><span class="sr-only">ingen klass<\/span><\/td><td>Ebba Rönnbäck<\/td><\/tr>/);
+  assert.equal((side.match(/<tr data-dist=/g) || []).length, 20, "en rad per år och distans");
+  assert.doesNotMatch(side, /<tr>(?!<th scope="col">)/, "en segrarrad saknar data-dist");
   assert.match(html.years, /<p class="winners" data-dist="21">Segrare D21: Annaclara Forss<\/p>/);
-  const sideWinners = html["history-side"].split("</ul>")[0];
-  assert.doesNotMatch(sideWinners, /<li>/, "en segrare i sidorutan saknar data-dist");
   assert.doesNotMatch(html.years, /class="winners">/, "en segrare i årslistan saknar data-dist");
+  const other = renderSlots(cleanContent({ source: "db", event: DEFAULT_EVENT, years: [{ year: 2030, status: "held", winners: [{ class: "H42", names: "A" }, { class: "Lag", names: "B och C" }] }] }))["history-side"];
+  assert.match(other, /<td>A<\/td><td><span aria-hidden="true">–<\/span>/, "saknad damsegrare visas som streck");
+  assert.match(other, /<td colspan="2">Lag: B och C<\/td>/, "klass utan H eller D får en egen rad");
   const index = readFileSync("index.html", "utf8");
   assert.match(index, /<input type="checkbox" id="vis-42" checked>/, "42 km ska vara valt från början");
   assert.match(index, /<input type="checkbox" id="vis-21">/, "21 km ska vara bortvalt från början");

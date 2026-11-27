@@ -209,8 +209,9 @@ await step("admin lägger in resultatet för 2027", async () => {
   assert((await page.locator("#years .next-year").count()) === 0, "2027 visas fortfarande som kommande lopp");
   await page.waitForFunction(() => document.activeElement?.dataset.yearEdit === "2027", null, { timeout: 5000 })
     .catch(() => { throw new Error("fokus hamnade inte på Redigera för 2027"); });
-  const side = page.locator('[data-cms="history-side"] li', { hasText: "2027, H42: Testa Testsson" });
-  const short = page.locator('[data-cms="history-side"] li', { hasText: "2027, D21: Korta Kortsson" });
+  const side = page.locator('[data-cms="history-side"] tr[data-dist="42"]', { hasText: "Testa Testsson" });
+  const short = page.locator('[data-cms="history-side"] tr[data-dist="21"]', { hasText: "Korta Kortsson" });
+  assert((await side.locator("th").textContent()).includes("2027") && (await side.locator("td").first().textContent()) === "Testa Testsson", "herrsegraren 2027 står fel i tabellen");
   const shortYear = page.locator('#years > li[data-year="2027"] .winners', { hasText: "Korta Kortsson" });
   assert(await side.isVisible(), "segraren på 42 km syns inte i sidorutan");
   assert(!(await short.isVisible()) && !(await shortYear.isVisible()), "21 km ska vara dolt från början");
