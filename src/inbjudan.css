@@ -127,6 +127,7 @@ h1, h2, p, dl, dd, ol, ul { margin: 0; }
 .steps p { font-size: 9.5pt; color: var(--muted); line-height: 1.4; text-wrap: pretty; }
 
 /* Seedning och bra att veta */
+.know { margin-top: 8mm; }
 .know li { font-size: 9.5pt; line-height: 1.45; }
 /* Två kolumner som Anmälan ovanför */
 .know ul { padding-left: 4.5mm; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: .8mm 8mm; }
