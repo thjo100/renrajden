@@ -32,6 +32,7 @@ const link = (label, url) => ({ label, url });
 const year = (y, fields) => ({ year: y, status: "held", date: "", text: "", winners: [], links: [], invitation: null, ...fields });
 
 export const DEFAULT_YEARS = [
+  year(2026, { status: "cancelled", text: "Paus." }),
   year(2025, {
     date: "2025-02-09",
     winners: [{ class: "H42", names: "Viktor Mäenpää" }, { class: "D42", names: "Helena Lundkvist" }, { class: "H21", names: "Samuel Matkala Nordlund" }, { class: "D21", names: "Elvira Niva" }],

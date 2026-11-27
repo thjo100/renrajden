@@ -99,7 +99,7 @@ test("årets lopp visas överst i arkivet tills resultatet lagts in", () => {
   const after = renderSlots(cleanContent({ source: "db", event: DEFAULT_EVENT, years: [...DEFAULT_YEARS, { year: 2027, status: "held", date: "2027-01-30", links: [] }] }));
   assert.doesNotMatch(after.years, /next-year/);
   assert.match(after.years, /^<li class="year" data-year="2027">/);
-  assert.equal(renderSlots(defaults())["results-eyebrow"], "Resultat sedan 2013 · tre år utan tävling");
+  assert.equal(renderSlots(defaults())["results-eyebrow"], "Resultat sedan 2013 · fyra år utan tävling");
 });
 
 test("segrarna märks med distans, så att 21 km kan filtreras bort", () => {

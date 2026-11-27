@@ -8,6 +8,9 @@ import { getFirestore } from "firebase-admin/firestore";
 import { seedNews } from "../scripts/seed-news.mjs";
 import { fetchContent } from "../scripts/vite-cms.mjs";
 import { fillHtml } from "../src/cms/render.js";
+import { DEFAULT_YEARS } from "../src/cms/defaults.js";
+
+const YEARS = DEFAULT_YEARS.length; // år i standardarkivet; 2027 visas överst som kommande lopp tills resultatet lagts in
 
 if (!process.env.FIRESTORE_EMULATOR_HOST) {
   console.error("Kör via `npm run test:e2e` så att emulatorerna startas.");
@@ -60,7 +63,7 @@ await step("besökare ser nyheter, senaste-remsan och resultatarkivet", async ()
   await page.waitForSelector(".news-card", { timeout: 10000 });
   assert((await page.locator("#news-list .news-card").count()) === 4, "fel antal nyhetskort");
   assert((await page.textContent("#latest-link")) === "Renrajden 2027", "senaste-remsan visar fel nyhet");
-  assert((await page.locator("#years > li").count()) === 14, "resultatarkivet är inte statiskt renderat");
+  assert((await page.locator("#years > li").count()) === YEARS + 1, "resultatarkivet är inte statiskt renderat");
   assert(await page.evaluate(() => document.documentElement.lang === "sv"), "lang saknas");
   assert(await page.locator("#admin-bar").isHidden(), "adminraden syns för besökare");
   await page.screenshot({ path: `${OUT}/besokare.png` });
@@ -175,7 +178,7 @@ await step("admin ändrar årets lopp, och första sparningen kopierar arkivet t
   const ev = (await db.doc("settings/event").get()).data();
   assert(ev.deadline === "2027-01-20" && ev.distances[0].lateFee === 650 && ev.distances[2].km === 10.5, "årets lopp sparades fel");
   assert(ev.updatedBy === uid, "updatedBy saknas");
-  assert((await db.collection("years").get()).size === 13, "resultatarkivet kopierades inte till Firestore");
+  assert((await db.collection("years").get()).size === YEARS, "resultatarkivet kopierades inte till Firestore");
 });
 
 await step("besökare ser det nya innehållet, även i inbjudan", async () => {
@@ -183,7 +186,7 @@ await step("besökare ser det nya innehållet, även i inbjudan", async () => {
   await p.goto(BASE);
   await p.waitForFunction(() => document.documentElement.dataset.cms === "db", null, { timeout: 10000 });
   assert((await p.textContent('[data-cms="fees"]')).includes("Efteranmälan 650 kr"), "besökaren ser inte den nya avgiften");
-  assert((await p.locator("#years > li").count()) === 14, "resultatarkivet har fel antal år efter kopieringen");
+  assert((await p.locator("#years > li").count()) === YEARS + 1, "resultatarkivet har fel antal år efter kopieringen");
   await p.goto(BASE + "inbjudan");
   await p.waitForFunction(() => document.documentElement.dataset.cms === "db", null, { timeout: 10000 });
   assert((await p.textContent('[data-cms="inv-fees"]')).includes("650 kr"), "inbjudan visar inte den nya avgiften");
@@ -272,7 +275,7 @@ await step("bygget hämtar det sparade innehållet från Firestore", async () =>
   const { content } = await fetchContent({ projectId: "demo-renrajden", emulator: true });
   assert(content.source === "db", "bygget hittade inte innehållet i Firestore");
   assert(content.event.deadline === "2027-01-20" && content.event.distances[2].km === 10.5, "årets lopp lästes fel");
-  assert(content.years.length === 14 && content.years[0].year === 2027, "resultatarkivet lästes fel");
+  assert(content.years.length === YEARS + 1 && content.years[0].year === 2027, "resultatarkivet lästes fel");
   const html = fillHtml(readFileSync("index.html", "utf8"), content);
   assert(html.includes("Efteranmälan 650 kr") && html.includes("Testa Testsson"), "den byggda sidan saknar det sparade innehållet");
 });
