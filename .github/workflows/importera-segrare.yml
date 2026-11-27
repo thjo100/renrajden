@@ -1,15 +1,15 @@
 name: Importera segrare till arkivet
 
 # Körs manuellt: Actions → "Importera segrare till arkivet" → Run workflow.
-# Lägger in segrarna från src/cms/defaults.js i resultatarkivet i Firestore, för de år som saknar segrare.
-# År som redan har segrare hoppas över, så det är ofarligt att köra igen.
+# Fyller i segrare och datum från src/cms/defaults.js i resultatarkivet i Firestore, där de saknas.
+# Fält som redan är ifyllda hoppas över, så det är ofarligt att köra igen.
 # Servicekontot i FIREBASE_SERVICE_ACCOUNT behöver rollen "Cloud Datastore User" medan importen körs.
-# Kör sedan "Test och publicering" på main, så att sidans HTML får med segrarna direkt.
+# Kör sedan "Test och publicering" på main, så att sidans HTML får med ändringarna direkt.
 on:
   workflow_dispatch:
     inputs:
       force:
-        description: "Skriv över segrare som redan finns (normalt nej)"
+        description: "Skriv över segrare och datum som redan finns (normalt nej)"
         type: boolean
         default: false
 

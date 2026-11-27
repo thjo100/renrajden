@@ -69,6 +69,7 @@ export const DEFAULT_YEARS = [
   }),
   year(2021, { status: "cancelled", text: "Inställt. Tävlingen var planerad till 2 januari 2021." }),
   year(2020, {
+    date: "2020-01-25",
     text: "10, 20 och 40 km på den nya fyravarvsbanan.",
     winners: [{ class: "H40", names: "Magnus Näslund" }, { class: "D40", names: "Ellen Scheidegger" }],
     links: [
@@ -80,6 +81,7 @@ export const DEFAULT_YEARS = [
   }),
   year(2019, { status: "cancelled", text: "Paus. Klubben arrangerade flera stora event." }),
   year(2018, {
+    date: "2018-01-28",
     winners: [{ class: "H42", names: "Hannes Boström" }, { class: "D42", names: "Nina Lintzén" }],
     text: "Även Kalvrajden för HD10–16.",
     links: [
