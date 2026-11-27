@@ -75,7 +75,7 @@ h1, h2, p, dl, dd, ol, ul { margin: 0; }
 .tag { background: var(--red); color: #FFFFFF; padding: 1.4mm 2.4mm; border-radius: 1mm; font: 900 11pt/1 var(--f-display); letter-spacing: .14em; }
 .title { width: 100%; margin-top: 3mm; }
 .title svg { display: block; width: 100%; height: auto; overflow: visible; color: #FFFFFF; margin-top: 1mm; }
-.ren { position: absolute; z-index: -1; right: -16mm; bottom: 0; width: 86mm; height: auto; color: #3A86D2; }
+.ren { position: absolute; z-index: -1; right: -12mm; bottom: 0; width: 70mm; height: auto; color: #3A86D2; }
 .title text { font-family: var(--f-display); font-weight: 900; }
 .date { font: 700 21pt/1.1 var(--f-display); letter-spacing: .03em; text-transform: uppercase; }
 .lede { font-size: 12pt; line-height: 1.4; max-width: 60ch; }
