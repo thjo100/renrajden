@@ -440,7 +440,9 @@ await step("besökare ser de nya bilderna och kan spela filmen", async () => {
   assert((await p.textContent("#bild-info")) === "Filmer · 2026", "fel text under filmen");
   await p.screenshot({ path: `${OUT}/bilder-film.png` });
   await p.keyboard.press("Escape");
-  assert(await p.evaluate(() => !document.querySelector("#bild-film").getAttribute("src")), "filmen fortsatte efter stängning");
+  // Dialogen stängs (och filmen stoppas) en stund efter Esc.
+  await p.waitForFunction(() => !document.querySelector("#bildvisning").open && !document.querySelector("#bild-film").getAttribute("src"), null, { timeout: 5000 })
+    .catch(() => { throw new Error("filmen fortsatte efter stängning"); });
   await p.close();
 });
 
