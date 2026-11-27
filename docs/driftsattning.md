@@ -263,8 +263,7 @@ Administratörer laddar upp bilder och filmer till Cloud Storage. Fram till det 
    gcloud projects add-iam-policy-binding renrajden-ae53c --member=serviceAccount:service-<projektnummer>@gcp-sa-firebasestorage.iam.gserviceaccount.com --role=roles/firebaserules.firestoreServiceAgent
    ```
 
-6. **Ge servicekontot rätt att se hinken.** Google Cloud-konsolen → **IAM & Admin → IAM** → pennan vid `github-deploy@…` → **Add another role → Cloud Storage for Firebase Viewer → Save**. Publiceringen behöver den för att hitta hinken när reglerna för Storage publiceras.
-7. **Publicera om:** **Actions → Test och publicering → Run workflow** (gren `main`). Nu publiceras även reglerna för Storage, och sajten byggs med hinkens namn.
+6. **Publicera om:** **Actions → Test och publicering → Run workflow** (gren `main`). Nu publiceras även reglerna för Storage, och sajten byggs med hinkens namn.
 
 **Kontroll:**
 
@@ -304,6 +303,6 @@ En vanlig dag räcker gratisplanen med god marginal. På **tävlingsdagen**, nä
 | Inloggningsrutan stängs direkt på mobilen | Popup blockeras. Sajten byter då automatiskt till omdirigering. Kontrollera steg 8d. |
 | Gamla blogglänkar hamnar på den nya sajten och ger 404 | Den anpassade domänen ligger kvar i Blogger (steg 8c). |
 | Adminläget säger "Uppladdning är inte påslagen än" | Variabeln `VITE_FIREBASE_STORAGE_BUCKET` saknas, eller så har sajten inte publicerats om efter att den lades in (steg 10). |
-| "Uppladdningen nekades" fast kontot är admin | Storage får inte läsa adminlistan i Firestore (steg 10, punkt 5), eller så är reglerna för Storage inte publicerade (punkt 7). |
-| Publiceringen stoppar vid "Publicera säkerhetsregler för Firestore och Storage" | "Firebase Storage has not been set up": gör steg 10, punkt 2. *Permission denied*: servicekontot saknar rollen i steg 10, punkt 6. |
+| "Uppladdningen nekades" fast kontot är admin | Storage får inte läsa adminlistan i Firestore (steg 10, punkt 5), eller så är reglerna för Storage inte publicerade (punkt 6). |
+| Publiceringen stoppar vid "Publicera säkerhetsregler för Firestore och Storage" | Kontrollera att `VITE_FIREBASE_STORAGE_BUCKET` är hinkens namn exakt som det står under **Storage → Files**, utan `gs://` (steg 10, punkt 3 och 4). Servicekontot behöver ingen extra roll för Storage: rollen **Firebase Rules Admin** från steg 5 räcker. |
 | En film laddas inte upp: "Filmen kan inte spelas i webbläsaren" | Filmen är i ett format som webbläsaren inte kan spela, ofta HEVC från en iPhone. Spara den som MP4 (H.264), till exempel med **Exportera** i Bilder på Mac eller inställningen **Kamera → Format → Mest kompatibel** på iPhone. |

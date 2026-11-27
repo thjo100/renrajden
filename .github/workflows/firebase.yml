@@ -94,16 +94,25 @@ jobs:
       - run: npm ci
       # Reglerna först: bygget läser årets lopp, resultatarkivet och partnerna från Firestore och behöver de nya reglerna.
       # Reglerna för Storage (bilder och filmer) publiceras först när VITE_FIREBASE_STORAGE_BUCKET finns,
-      # alltså när Storage är påslaget i projektet (docs/driftsattning.md, steg 10).
+      # alltså när Storage är påslaget i projektet (docs/driftsattning.md, steg 10). Hinken anges då direkt
+      # i en kopia av firebase.json. Annars slår verktyget upp projektets standardhink, och det får
+      # servicekontot inte göra. firebase.json behåller den enkla formen, som emulatorn behöver.
       - name: Publicera säkerhetsregler för Firestore och Storage
         env:
           SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
         run: |
           printf '%s' "$SERVICE_ACCOUNT" > "$RUNNER_TEMP/sa.json"
           ONLY="firestore:rules"
-          if [ -n "$VITE_FIREBASE_STORAGE_BUCKET" ]; then ONLY="firestore:rules,storage"; fi
-          GOOGLE_APPLICATION_CREDENTIALS="$RUNNER_TEMP/sa.json" npx firebase deploy --only "$ONLY" --project "$VITE_FIREBASE_PROJECT_ID" --non-interactive
-          rm -f "$RUNNER_TEMP/sa.json"
+          CONFIG="firebase.json"
+          if [ -n "$VITE_FIREBASE_STORAGE_BUCKET" ]; then
+            node -e 'const fs = require("fs"); const c = JSON.parse(fs.readFileSync("firebase.json", "utf8"));
+              c.storage = [{ bucket: process.env.VITE_FIREBASE_STORAGE_BUCKET, rules: "storage.rules" }];
+              fs.writeFileSync("firebase.deploy.json", JSON.stringify(c, null, 2));'
+            ONLY="firestore:rules,storage"
+            CONFIG="firebase.deploy.json"
+          fi
+          GOOGLE_APPLICATION_CREDENTIALS="$RUNNER_TEMP/sa.json" npx firebase deploy --config "$CONFIG" --only "$ONLY" --project "$VITE_FIREBASE_PROJECT_ID" --non-interactive
+          rm -f "$RUNNER_TEMP/sa.json" firebase.deploy.json
       - name: Bygg (med innehållet från Firestore)
         env:
           CMS_REQUIRE_FIRESTORE: "true" # avbryt hellre än att publicera gammalt innehåll
