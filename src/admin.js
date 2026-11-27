@@ -1,5 +1,6 @@
 // Administratörer: Google-inloggning (Firebase Auth) och hantering av nyheter.
-// Årets lopp och resultatarkivet redigeras i cms-admin.js, som startas härifrån.
+// Årets lopp, resultatarkivet och partnerna redigeras i cms-admin.js och bilderna i media-admin.js,
+// som startas härifrån.
 // Laddas bara när någon klickar på "Logga in som administratör", eller när enheten
 // redan har en admin-session (se ADMIN_HINT i main.js).
 //
@@ -11,6 +12,7 @@ import { S, refreshNews, renderNews, setAdminMode } from "./news.js";
 import { getAuthApi, getDb } from "./firebase.js";
 import { withTimeout, writeErr, formKit, repeater, linkRow, readLinks, confirmDelete, initConfirm } from "./admin-kit.js";
 import { initCms, setCmsAdmin } from "./cms-admin.js";
+import { initMedia, setMediaAdmin } from "./media-admin.js";
 import { HTTPS } from "./cms/model.js";
 
 export const ADMIN_HINT = "rr-admin";
@@ -52,6 +54,7 @@ function applyAdmin(on, user) {
   }
   setAdminMode(on);
   setCmsAdmin(on ? user : null);
+  setMediaAdmin(on ? user : null);
 }
 
 /* ---------- Inloggning ---------- */
@@ -214,8 +217,10 @@ export function init() {
     links = repeater($("#link-rows"), $("#add-link"), { build: (v, n) => linkRow(v, n), max: 12 });
     $("#editor-form").addEventListener("submit", onSubmit);
     initConfirm();
-    // Årets lopp och resultatarkivet
+    // Årets lopp, resultatarkivet och partnerna
     initCms({ db, fs });
+    // Bilder och filmer
+    initMedia({ db, fs });
 
     document.addEventListener("click", (e) => {
       if (!currentUser) return;

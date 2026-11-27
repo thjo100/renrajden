@@ -303,6 +303,91 @@ test("ogiltiga partners nekas även för admin", async () => {
   await assertFails(setDoc(doc(db, "settings", "event"), validPartners("admin-uid")), "partnerna i dokumentet för årets lopp");
 });
 
+/* ---------- Bilder och filmer ---------- */
+const ID = "abcDEF0123456789wxyz"; // som ett id från Firestore
+const validMedia = (uid, over = {}) => ({
+  type: "image", category: "foton", year: 2027, text: "Starten 2027",
+  file: `galleri/${ID}/bild.jpg`, thumb: `galleri/${ID}/mini.jpg`, width: 2048, height: 1365, duration: null,
+  createdAt: serverTimestamp(), createdBy: uid, updatedAt: serverTimestamp(), updatedBy: uid,
+  ...over,
+});
+const validVideo = (uid, over = {}) => validMedia(uid, { type: "video", category: "filmer", file: `galleri/${ID}/film.mp4`, width: 1280, height: 720, duration: 42.5, ...over });
+// En bild från gamla bloggen, som kopieras till samlingen media vid första sparningen.
+const staticMedia = (uid) => validMedia(uid, { file: "/bilder/foton/2015-tre-akare-i-dimman.jpg", thumb: "/bilder/mini/foton/2015-tre-akare-i-dimman.jpg", createdBy: null, year: 2015, text: "Tre åkare i dimman" });
+
+test("alla kan läsa bilderna, men bara admin kan spara och ta bort dem", async () => {
+  await env.withSecurityRulesDisabled(async (ctx) => { await setDoc(doc(ctx.firestore(), "media", ID), { ...validMedia(null), createdAt: Timestamp.now(), updatedAt: Timestamp.now() }); });
+  await assertSucceeds(getDoc(doc(anon(), "media", ID)));
+  await assertSucceeds(getDocs(collection(anon(), "media")));
+  await assertSucceeds(getDoc(doc(anon(), "settings", "media")));
+  await assertFails(setDoc(doc(anon(), "media", "x" + ID), validMedia("nobody")));
+  await assertFails(deleteDoc(doc(as("u2", google("someone@example.com")), "media", ID)));
+  await assertFails(setDoc(doc(as("u2", google("someone@example.com")), "settings", "media"), { initialized: true, updatedAt: serverTimestamp(), updatedBy: "u2" }));
+  const db = admin();
+  await assertSucceeds(updateDoc(doc(db, "media", ID), { year: null, text: "", category: "affischer", updatedAt: serverTimestamp(), updatedBy: "admin-uid" }));
+  await assertSucceeds(deleteDoc(doc(db, "media", ID)));
+  await assertSucceeds(setDoc(doc(db, "media", ID), validVideo("admin-uid")));
+  await assertSucceeds(setDoc(doc(db, "media", "foton-2015-tre-akare-i-dimman"), staticMedia("admin-uid")));
+  await assertSucceeds(setDoc(doc(db, "settings", "media"), { initialized: true, updatedAt: serverTimestamp(), updatedBy: "admin-uid" }));
+  await assertFails(deleteDoc(doc(db, "settings", "media")));
+});
+
+test("ogiltiga bilder och filmer nekas även för admin", async () => {
+  const db = admin();
+  const bad = {
+    "okänd typ": { type: "audio" },
+    "okänd kategori": { category: "privat" },
+    "bild bland filmerna": { category: "filmer" },
+    "bild med längd": { duration: 12 },
+    "år som text": { year: "2027" },
+    "för tidigt år": { year: 1980 },
+    "för lång text": { text: "x".repeat(201) },
+    "fil i en annan mapp": { file: "galleri/annatid1234567890ab/bild.jpg" },
+    "fil utanför galleriet": { file: `privat/${ID}/bild.jpg` },
+    "film som bild": { file: `galleri/${ID}/film.mp4` },
+    "svg-fil": { file: `galleri/${ID}/bild.svg` },
+    "extern adress": { file: "https://example.com/bild.jpg" },
+    "javascript-adress": { thumb: "javascript:alert(1)" },
+    "fel miniatyr": { thumb: `galleri/${ID}/stor.jpg` },
+    "bredd noll": { width: 0 },
+    "höjd som text": { height: "720" },
+    "falsk författare": { updatedBy: "someone-else" },
+    "eget updatedAt": { updatedAt: Timestamp.fromDate(new Date("2020-01-01")) },
+  };
+  for (const [name, over] of Object.entries(bad)) {
+    await assertFails(setDoc(doc(db, "media", ID), validMedia("admin-uid", over)), name);
+  }
+  const badVideo = {
+    "film i fel kategori": { category: "foton" },
+    "film utan längd": { duration: null },
+    "för lång film": { duration: 36001 },
+    "bild som film": { file: `galleri/${ID}/bild.jpg` },
+  };
+  for (const [name, over] of Object.entries(badVideo)) {
+    await assertFails(setDoc(doc(db, "media", ID), validVideo("admin-uid", over)), name);
+  }
+  await assertFails(setDoc(doc(db, "media", ID), { ...validMedia("admin-uid"), html: "<script>" }), "okänt fält");
+  const { text, ...missing } = validMedia("admin-uid");
+  await assertFails(setDoc(doc(db, "media", ID), missing), "saknat fält");
+  await assertFails(setDoc(doc(db, "media", "ogiltigt id!"), validMedia("admin-uid")), "ogiltigt id");
+  await assertFails(setDoc(doc(db, "settings", "media"), { initialized: false, updatedAt: serverTimestamp(), updatedBy: "admin-uid" }), "initialized false");
+  await assertFails(setDoc(doc(db, "settings", "media"), { initialized: true, extra: 1, updatedAt: serverTimestamp(), updatedBy: "admin-uid" }), "okänt fält i settings/media");
+});
+
+test("admin kan inte ändra när en bild laddades upp", async () => {
+  const db = admin();
+  await assertSucceeds(setDoc(doc(db, "media", ID), validMedia("admin-uid")));
+  await assertFails(setDoc(doc(db, "media", ID), validMedia("admin-uid", { createdAt: Timestamp.fromDate(new Date("2020-01-01")) })));
+  await assertFails(updateDoc(doc(db, "media", ID), { createdAt: Timestamp.fromDate(new Date("2020-01-01")), updatedAt: serverTimestamp(), updatedBy: "admin-uid" }));
+});
+
+test("första sparningen kan kopiera bilderna från gamla bloggen i omgångar om tio", async () => {
+  const db = admin();
+  const batch = writeBatch(db);
+  for (let i = 0; i < 10; i++) batch.set(doc(db, "media", "foton-bild-" + i), staticMedia("admin-uid"));
+  await assertSucceeds(batch.commit());
+});
+
 test("andra samlingar är stängda", async () => {
   await assertFails(getDoc(doc(anon(), "secrets", "x")));
   await assertFails(setDoc(doc(admin(), "secrets", "x"), { a: 1 }));

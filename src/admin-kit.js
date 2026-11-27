@@ -1,7 +1,7 @@
-// Gemensamt för adminformulären (nyheter, årets lopp, resultatarkivet): felsammanfattning,
+// Gemensamt för adminformulären (nyheter, årets lopp, resultatarkivet, partnerna, bilderna): felsammanfattning,
 // fältfel, varning för osparade ändringar, rader som går att lägga till och ta bort,
 // bekräfta borttagning och felmeddelanden vid sparning. Laddas bara för administratörer.
-import { $, $$, el, openDialog } from "./ui.js";
+import { $, $$, el, openDialog, initDialog } from "./ui.js";
 
 // Skrivningar som inte fått svar efter 15 s räknas som osäkra (de kan ändå ha gått igenom).
 export const withTimeout = (p) => Promise.race([p, new Promise((_, reject) => setTimeout(() => reject({ code: "deadline" }), 15000))]);
@@ -107,6 +107,25 @@ export function formKit(dlg) {
       summary.hidden = false; summary.focus();
     },
   };
+}
+
+/**
+ * En bred dialog med formulär, felsammanfattning, "Stäng utan att spara?" och knapparna Avbryt och Spara.
+ * Används av årets lopp, resultatarkivet, partnerna och bilderna. Fälten läggs i body.
+ */
+export function makeDialog(id, title, saveText = "Spara") {
+  const parts = dialogParts(id);
+  const body = el("div", { class: "dlg-body" }, parts.summary);
+  const save = el("button", { class: "btn btn-red", type: "submit", text: saveText });
+  const cancel = el("button", { class: "btn btn-quiet", type: "button", "data-close": "", text: "Avbryt" });
+  const form = el("form", { novalidate: true },
+    el("div", { class: "dlg-head" }, el("h2", { id: id + "-h", text: title }), el("button", { class: "dlg-close", type: "button", "data-close": "", "aria-label": "Stäng utan att spara" }, "×")),
+    body, parts.discard,
+    el("div", { class: "dlg-foot" }, cancel, save));
+  const dlg = el("dialog", { id, class: "dlg-wide", "aria-labelledby": id + "-h" }, form);
+  document.body.append(dlg);
+  initDialog(dlg);
+  return { dlg, body, form, save, cancel, kit: formKit(dlg) };
 }
 
 /**

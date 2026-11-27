@@ -2,8 +2,8 @@ rules_version = '2';
 
 // Renrajden – säkerhetsregler
 //
-// * Nyheter (news), årets lopp (settings/event), partnerna (settings/partners) och
-//   resultatarkivet (years) kan läsas av alla, även utan inloggning.
+// * Nyheter (news), årets lopp (settings/event), partnerna (settings/partners),
+//   resultatarkivet (years) och bilderna (media, settings/media) kan läsas av alla, även utan inloggning.
 // * Bara administratörer får skapa, ändra och ta bort dem.
 // * Administratör = inloggad med Google, verifierad e-post, och dokumentet
 //   admins/{e-post i gemener} finns. Adminlistan hanteras med `npm run admin`
@@ -233,12 +233,67 @@ service cloud.firestore {
         && d.updatedBy == request.auth.uid;
     }
 
-    // Bara dokumenten "event" och "partners" finns. De kan inte tas bort, bara ändras.
+    // ---------- Bilder och filmer (media/{id} och settings/media) ----------
+    // Gränserna ska stämma med src/media.js. Filerna ligger antingen i sajten (/bilder/…, bilderna från
+    // gamla bloggen) eller i Cloud Storage under galleri/{id}/, där id är dokumentets id (se storage.rules).
+
+    function validMediaFile(p, id, video) {
+      return p is string && p.size() <= 300
+        && (p.matches('^/(bilder|video)/[A-Za-z0-9/._-]+$')
+          || (video && p.matches('^galleri/' + id + '/film[.](mp4|webm|mov)$'))
+          || (!video && p.matches('^galleri/' + id + '/bild[.](jpg|png|gif)$')));
+    }
+
+    function validMediaThumb(p, id) {
+      return p is string && p.size() <= 300
+        && (p.matches('^/(bilder|video)/[A-Za-z0-9/._-]+$') || p == 'galleri/' + id + '/mini.jpg');
+    }
+
+    function validMedia(d, id) {
+      return d.keys().hasOnly(['type', 'category', 'year', 'text', 'file', 'thumb', 'width', 'height', 'duration',
+                               'createdAt', 'createdBy', 'updatedAt', 'updatedBy'])
+        && d.keys().hasAll(['type', 'category', 'year', 'text', 'file', 'thumb', 'width', 'height', 'duration',
+                            'createdAt', 'createdBy', 'updatedAt', 'updatedBy'])
+        && id.matches('^[A-Za-z0-9-]{1,80}$')
+        && ((d.type == 'image' && d.category in ['foton', 'affischer', 'banor', 'sponsorer', 'seedning'] && d.duration == null)
+          || (d.type == 'video' && d.category == 'filmer' && d.duration is number && d.duration >= 0 && d.duration <= 36000))
+        && (d.year == null || (d.year is int && d.year >= 1990 && d.year <= 2100))
+        && d.text is string && d.text.size() <= 200
+        && validMediaFile(d.file, id, d.type == 'video')
+        && validMediaThumb(d.thumb, id)
+        && d.width is int && d.width >= 1 && d.width <= 20000
+        && d.height is int && d.height >= 1 && d.height <= 20000
+        && d.createdAt is timestamp
+        && (d.createdBy == null || d.createdBy is string)
+        && d.updatedAt == request.time
+        && d.updatedBy == request.auth.uid;
+    }
+
+    match /media/{mediaId} {
+      allow read: if true;
+      allow create: if isAdmin() && validMedia(request.resource.data, mediaId);
+      allow update: if isAdmin() && validMedia(request.resource.data, mediaId)
+        && request.resource.data.createdAt == resource.data.createdAt;
+      allow delete: if isAdmin();
+    }
+
+    // settings/media visar att bilderna har flyttats till samlingen media. Finns det inte visar
+    // sajten bilderna i public/bilder/bilder.json.
+    function validMediaSettings(d) {
+      return d.keys().hasOnly(['initialized', 'updatedAt', 'updatedBy'])
+        && d.keys().hasAll(['initialized', 'updatedAt', 'updatedBy'])
+        && d.initialized == true
+        && d.updatedAt == request.time
+        && d.updatedBy == request.auth.uid;
+    }
+
+    // Bara dokumenten "event", "partners" och "media" finns. De kan inte tas bort, bara ändras.
     match /settings/{docId} {
       allow read: if true;
       allow create, update: if isAdmin()
         && ((docId == 'event' && validEvent(request.resource.data))
-          || (docId == 'partners' && validPartners(request.resource.data)));
+          || (docId == 'partners' && validPartners(request.resource.data))
+          || (docId == 'media' && validMediaSettings(request.resource.data)));
       allow delete: if false;
     }
 

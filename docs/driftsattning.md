@@ -237,6 +237,43 @@ Inloggningen fungerar bäst om den sker via er egen domän, eftersom vissa webbl
   2. Under **Application restrictions → Websites**, lägg till `renrajden.se/*`, `www.renrajden.se/*`, `renrajden.web.app/*` och `<projekt-id>.firebaseapp.com/*`.
   3. Sajten fungerar även utan detta, eftersom säkerhetsreglerna skyddar datan.
 
+## 10. Slå på uppladdning av bilder och filmer (Cloud Storage)
+
+Administratörer laddar upp bilder och filmer till Cloud Storage. Fram till det här steget fungerar resten av sajten som vanligt: bilderna från gamla bloggen visas, och admins kan ändra och ta bort dem, men inte ladda upp nya. Adminläget visar då beskedet "Uppladdning är inte påslagen än".
+
+1. **Byt till Blaze.** Storage kräver betalplanen Blaze, se [Kostnader](#kostnader-och-gratisplanen). Kugghjulet → **Usage and billing → Details & settings → Modify plan**. Lägg en budgetvarning på till exempel 50 kr.
+2. **Skapa lagringen.** **Build → Storage → Get started**.
+   - **Plats:** en plats i USA, till exempel **us-central1**, ingår i gratiskvoten. En plats i Europa, till exempel **europe-north1**, går lite snabbare för svenska besökare men kostar några ören per GB och månad. Platsen går inte att ändra efteråt.
+   - Välj **Start in production mode**. Allt är stängt tills reglerna publiceras i punkt 6.
+3. **Anteckna hinkens namn.** Det står överst under **Storage → Files**, till exempel `gs://renrajden-ae53c.firebasestorage.app`. Namnet är det som står efter `gs://`. Samma värde finns som `storageBucket` under kugghjulet → **Project settings → General → Your apps**.
+4. **Lägg in namnet i GitHub.** **Settings → Secrets and variables → Actions → Variables → New repository variable**:
+
+   | Name | Value |
+   |---|---|
+   | `VITE_FIREBASE_STORAGE_BUCKET` | hinkens namn, utan `gs://`, till exempel `renrajden-ae53c.firebasestorage.app` |
+
+5. **Ge Storage rätt att läsa adminlistan.** Reglerna för Storage kontrollerar att den som laddar upp finns i samlingen `admins` i Firestore. Det enklaste är att publicera reglerna en gång i konsolen:
+   1. **Storage → Rules**.
+   2. Ersätt allt med innehållet i filen [`storage.rules`](../storage.rules) och klicka på **Publish**.
+   3. Konsolen frågar om Storage ska få läsa Firestore. Välj **Grant access** (eller motsvarande).
+
+   Alternativ med `gcloud`. Projektnumret står under kugghjulet → **Project settings → General**:
+
+   ```bash
+   gcloud projects add-iam-policy-binding renrajden-ae53c --member=serviceAccount:service-<projektnummer>@gcp-sa-firebasestorage.iam.gserviceaccount.com --role=roles/firebaserules.firestoreServiceAgent
+   ```
+
+6. **Ge servicekontot rätt att se hinken.** Google Cloud-konsolen → **IAM & Admin → IAM** → pennan vid `github-deploy@…` → **Add another role → Cloud Storage for Firebase Viewer → Save**. Publiceringen behöver den för att hitta hinken när reglerna för Storage publiceras.
+7. **Publicera om:** **Actions → Test och publicering → Run workflow** (gren `main`). Nu publiceras även reglerna för Storage, och sajten byggs med hinkens namn.
+
+**Kontroll:**
+
+- [ ] Logga in som administratör och välj **Bilder** i adminraden. Dialogen visar **Dra hit bilder och filmer**.
+- [ ] Ladda upp en bild och skriv ett år. Den syns under Bilder, även i ett privat fönster utan inloggning.
+- [ ] Välj **Ta bort** på bilden och sedan **Ta bort** igen. Låt beskedet med **Ångra** försvinna. Under **Storage → Files → galleri** ska bildens mapp vara borta efter en stund.
+
+Första gången något sparas under Bilder kopieras bilderna från gamla bloggen till samlingen `media` i Firestore. Det tar några sekunder.
+
 ---
 
 ## Kostnader och gratisplanen
@@ -246,11 +283,13 @@ Gratisplanen Spark har dagliga tak. Två är relevanta:
 | Tjänst | Tak per dag (Spark) | Ungefärlig åtgång |
 |---|---|---|
 | Hosting, trafik | 360 MB | Ett första besök är cirka 300 kB, alltså runt 1 200 nya besökare per dag |
-| Firestore, läsningar | 50 000 | En besökare läser alla nyheter (cirka 25 dokument) vid sidladdning och sedan varje minut medan sidan är öppen, plus årets lopp, partnerna och resultatarkivet (cirka 15 dokument) en gång per sidladdning |
+| Firestore, läsningar | 50 000 | En besökare läser alla nyheter (cirka 25 dokument) vid sidladdning och sedan varje minut medan sidan är öppen, plus årets lopp, partnerna och resultatarkivet (cirka 15 dokument) en gång per sidladdning. Den som scrollar till Bilder läser dessutom ett dokument per bild och film |
 
 En vanlig dag räcker gratisplanen med god marginal. På **tävlingsdagen**, när åkare, publik och anhöriga följer startlistor och resultat, kan taken nås. Då slutar sajten eller nyhetsflödet att fungera resten av dygnet.
 
 **Rekommendation:** uppgradera till **Blaze** (betala per användning) under kugghjulet → **Usage and billing → Details & settings → Modify plan**, och lägg en **budgetvarning** på till exempel 50 kr. Gratiskvoten gäller fortfarande. Det som går över kostar ören: Firestore-läsningar kostar några cent per 100 000, och Hosting-trafik ungefär 0,15 USD per GB.
+
+**Bilder och filmer** (steg 10) kräver Blaze. Med en hink i USA ingår ungefär 5 GB lagring och 100 GB nedladdning per månad. Bilderna förminskas innan de laddas upp och tar sällan mer än 1 MB styck, så det är **filmerna** som kostar: en film på 50 MB som spelas 1 000 gånger är 50 GB. Håll filmerna korta, och spara dem gärna med 720p eller 1080p i stället för 4K. En film laddas bara ned när någon spelar den.
 
 ## Felsökning
 
@@ -264,3 +303,7 @@ En vanlig dag räcker gratisplanen med god marginal. På **tävlingsdagen**, nä
 | "… är inte administratör" fast adressen ska vara admin | Dokument-ID:t i `admins` måste vara exakt Google-adressen med små bokstäver (steg 6a). |
 | Inloggningsrutan stängs direkt på mobilen | Popup blockeras. Sajten byter då automatiskt till omdirigering. Kontrollera steg 8d. |
 | Gamla blogglänkar hamnar på den nya sajten och ger 404 | Den anpassade domänen ligger kvar i Blogger (steg 8c). |
+| Adminläget säger "Uppladdning är inte påslagen än" | Variabeln `VITE_FIREBASE_STORAGE_BUCKET` saknas, eller så har sajten inte publicerats om efter att den lades in (steg 10). |
+| "Uppladdningen nekades" fast kontot är admin | Storage får inte läsa adminlistan i Firestore (steg 10, punkt 5), eller så är reglerna för Storage inte publicerade (punkt 7). |
+| Publiceringen stoppar vid "Publicera säkerhetsregler för Firestore och Storage" | "Firebase Storage has not been set up": gör steg 10, punkt 2. *Permission denied*: servicekontot saknar rollen i steg 10, punkt 6. |
+| En film laddas inte upp: "Filmen kan inte spelas i webbläsaren" | Filmen är i ett format som webbläsaren inte kan spela, ofta HEVC från en iPhone. Spara den som MP4 (H.264), till exempel med **Exportera** i Bilder på Mac eller inställningen **Kamera → Format → Mest kompatibel** på iPhone. |
