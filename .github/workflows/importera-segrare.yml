@@ -10,7 +10,7 @@ on:
   workflow_dispatch:
     inputs:
       force:
-        description: "Ersätt segrare och datum med innehållet i defaults.js (normalt nej)"
+        description: "Ersätt segrare, datum och text med innehållet i defaults.js (normalt nej)"
         type: boolean
         default: false
 

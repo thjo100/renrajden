@@ -1,8 +1,8 @@
 #!/usr/bin/env node
 // Kompletterar resultatarkivet i Firestore med segrare och datum från standardinnehållet (src/cms/defaults.js).
 // Bara år som redan finns i Firestore ändras. Segrarklasser som saknas läggs till efter de som redan finns,
-// och ett tomt datum fylls i. Det som redan står i Firestore rörs inte, om du inte anger --force: då ersätts
-// segrarna och datumet med standardinnehållets. Text, länkar och inbjudan rörs aldrig.
+// och ett tomt datum fylls i. Det som redan står i Firestore rörs inte, om du inte anger --force: då blir
+// segrarna, datumet och texten exakt som i standardinnehållet (även tomma). Länkar och inbjudan rörs aldrig.
 //
 //   npm run segrare -- [--project <id>] [--emulator] [--force]
 import { FieldValue } from "firebase-admin/firestore";
@@ -23,16 +23,17 @@ export async function fillArchive(db, { force = false, years = DEFAULT_YEARS } =
   const result = { written: {}, skipped: [], missing: [] };
   for (const y of years) {
     const wanted = plain(y.winners);
-    if (!wanted.length && !y.date) continue;
+    if (!force && !wanted.length && !y.date) continue;
     const ref = db.doc(`years/${y.year}`);
     const snap = await ref.get();
     if (!snap.exists) { result.missing.push(y.year); continue; }
     const update = {};
     const current = plain(snap.get("winners"));
     const winners = force ? wanted : mergeWinners(current, wanted);
-    if (wanted.length && JSON.stringify(winners) !== JSON.stringify(current)) update.winners = winners;
-    const date = snap.get("date");
-    if (y.date && (force ? date !== y.date : !date)) update.date = y.date;
+    if ((force || wanted.length) && JSON.stringify(winners) !== JSON.stringify(current)) update.winners = winners;
+    const date = snap.get("date") || "";
+    if (force ? date !== (y.date || "") : y.date && !date) update.date = y.date || "";
+    if (force && (snap.get("text") || "") !== (y.text || "")) update.text = y.text || "";
     if (!Object.keys(update).length) { result.skipped.push(y.year); continue; }
     await ref.update({ ...update, updatedAt: FieldValue.serverTimestamp() });
     result.written[y.year] = Object.keys(update);

@@ -477,6 +477,22 @@ details.archive h4 { margin: 0 0 .25rem; font: 700 var(--s-sm)/1.3 var(--f-mono)
 .side-box h3 { font-size: var(--s-lg); margin-bottom: .75rem; }
 .side-box ul { margin: 0; padding-left: 1.1rem; display: grid; gap: .375rem; font-size: var(--s-sm); }
 
+/* Segrare i arkivet: ett år per rad, herrar och damer i var sin kolumn. Raderna har data-dist (42/21) för filtret. */
+.win-table { width: 100%; table-layout: fixed; border-collapse: collapse; font-size: var(--s-sm); }
+.win-table thead th { font: 600 var(--s-xs)/1.3 var(--f-mono); letter-spacing: .1em; text-transform: uppercase; color: var(--muted); text-align: left; padding: 0 .75rem .5rem 0; border-bottom: 2px solid var(--text); }
+.win-table tbody th, .win-table td { text-align: left; vertical-align: baseline; padding: .625rem .75rem .625rem 0; border-bottom: 1px solid var(--line); }
+.win-table th:last-child, .win-table td:last-child { padding-right: 0; }
+.win-table thead th:first-child { width: 3.75rem; }
+.win-table tbody th { font-weight: 400; white-space: nowrap; }
+.win-yr { font: 900 1.25rem/1 var(--f-display); font-variant-numeric: tabular-nums; }
+.win-table tbody th small { display: block; font: 600 .6875rem/1.3 var(--f-mono); letter-spacing: .06em; text-transform: uppercase; color: var(--muted); margin-top: .25rem; }
+/* Visas båda distanserna står årtalet bara en gång: 21 km-raden hänger ihop med årets 42 km-rad. */
+#resultat:has(#vis-42:checked):has(#vis-21:checked) .win-table tr[data-dist="42"]:has(+ tr[data-dist="21"]) > * { border-bottom: 0; padding-bottom: .125rem; }
+#resultat:has(#vis-42:checked):has(#vis-21:checked) .win-table tr[data-dist="21"] > * { padding-top: .125rem; }
+#resultat:has(#vis-42:checked):has(#vis-21:checked) .win-table tr[data-dist="21"] td { color: var(--muted); }
+#resultat:has(#vis-42:checked):has(#vis-21:checked) .win-table tr[data-dist="21"] .win-yr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+#resultat:has(#vis-42:checked):has(#vis-21:checked) .win-table tr[data-dist="21"] small { margin-top: 0; }
+
 /* Filter för segrarna i arkivet. 21 km är dolt tills besökaren kryssar i det. Bara CSS, så det fungerar utan JavaScript
    och överlever att arkivet ritas om. Segrarraderna får data-dist i src/cms/render.js (winDist). */
 .win-filter { display: flex; flex-wrap: wrap; align-items: center; gap: .5rem; }

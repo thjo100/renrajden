@@ -70,8 +70,7 @@ export const DEFAULT_YEARS = [
   year(2021, { status: "cancelled", text: "Inställt. Tävlingen var planerad till 2 januari 2021." }),
   year(2020, {
     date: "2020-01-25",
-    text: "10, 20 och 40 km på den nya fyravarvsbanan.",
-    winners: [{ class: "H40", names: "Magnus Näslund" }, { class: "D40", names: "Ellen Scheidegger" }, { class: "H21", names: "Andreas Karlsson" }, { class: "D21", names: "Annaclara Forss" }],
+    winners: [{ class: "H42", names: "Magnus Näslund" }, { class: "D42", names: "Ellen Scheidegger" }, { class: "H21", names: "Andreas Karlsson" }, { class: "D21", names: "Annaclara Forss" }],
     links: [
       link("Resultat (pdf)", "https://www.okrenen.se/globalassets/ok-renen---orientering/dokument/resultat-renrajden2020.pdf"),
       link("SSF TA", "http://ta.skidor.com/ResultList.aspx?eventid=11471&competitionid=19335&orgid=2920"),
@@ -94,7 +93,7 @@ export const DEFAULT_YEARS = [
   }),
   year(2017, {
     date: "2017-01-14",
-    winners: [{ class: "42 km", names: "Klas Nilsson och Anna Rimpi" }, { class: "H21", names: "Oskar Sundqvist" }, { class: "D21", names: "Boel Sandström" }],
+    winners: [{ class: "H42", names: "Klas Nilsson" }, { class: "D42", names: "Anna Rimpi" }, { class: "H21", names: "Oskar Sundqvist" }, { class: "D21", names: "Boel Sandström" }],
     links: [
       link("SSF TA", "http://ta.skidor.com/ResultList.aspx?eventid=7506&competitionid=12701&orgid=2920"),
       link("Resultat (pdf)", "https://drive.google.com/open?id=0B1D0YYjNfoooRUxHeHkxN19YYm8"),
@@ -118,7 +117,7 @@ export const DEFAULT_YEARS = [
   year(2015, {
     date: "2015-01-17",
     winners: [
-      { class: "H42", names: "1. Tarjei Solli, 2. Niklas Henriksson, 3. Andreas Berglund" },
+      { class: "H42", names: "Tarjei Solli" },
       { class: "D42", names: "Emma Bergström" },
       { class: "H21", names: "Karl Edenroth" },
       { class: "D21", names: "Catrin Ingvarsson" },
