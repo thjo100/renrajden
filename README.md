@@ -41,6 +41,7 @@ Webbplats för **Renrajden**, OK Renens klassiska långlopp på Ormberget i Lule
 | `npm run test:rules` | Testar bara säkerhetsreglerna |
 | `npm run test:e2e` | Bygger och testar sajten i Chromium |
 | `npm run seed -- --emulator` | Fyller emulatorn med de 22 gamla nyheterna |
+| `npm run segrare -- --emulator` | Lägger in segrarna från `src/cms/defaults.js` i arkivet, för år som saknar segrare. Mot riktiga projektet via Actions → **Importera segrare till arkivet** |
 | `npm run admin -- add <e-post> --emulator` | Gör en adress till admin i emulatorn |
 
 Mot riktiga projektet byter du `--emulator` mot `--project renrajden-ae53c`, efter `gcloud auth application-default login`.
@@ -104,11 +105,13 @@ För att se lägena kring tävlingsdagen, lägg till `?lage=tavlingsvecka`, `?la
 | `firestore.rules` | Säkerhetsregler |
 | `scripts/admin.mjs` | Lägg till, ta bort och lista administratörer |
 | `scripts/seed-news.mjs` | Importerar gamla nyheter från `prototyp/seed-news.json` |
+| `scripts/segrare.mjs` | Lägger in segrarna från `src/cms/defaults.js` i resultatarkivet i Firestore |
 | `tests/cms.test.mjs` | Enhetstester av datamodellen och renderingen |
 | `tests/rules.test.mjs` | Tester av säkerhetsreglerna |
 | `tests/e2e.mjs` | Ände-till-ände-tester |
 | `.github/workflows/firebase.yml` | Tester, förhandsversion för PR och publicering |
 | `.github/workflows/importera-nyheter.yml` | Manuell import av gamla nyheter |
+| `.github/workflows/importera-segrare.yml` | Manuell import av segrare till resultatarkivet |
 | `docs/driftsattning.md` | Steg-för-steg för Firebase, GitHub och domän |
 | `docs/ux-utvardering.md` | UX- och tillgänglighetsutvärdering |
 | `prototyp/`, `dev/` | Den ursprungliga UX-prototypen och dess verktyg |

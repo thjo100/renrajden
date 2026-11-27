@@ -1,0 +1,44 @@
+name: Importera segrare till arkivet
+
+# Körs manuellt: Actions → "Importera segrare till arkivet" → Run workflow.
+# Lägger in segrarna från src/cms/defaults.js i resultatarkivet i Firestore, för de år som saknar segrare.
+# År som redan har segrare hoppas över, så det är ofarligt att köra igen.
+# Servicekontot i FIREBASE_SERVICE_ACCOUNT behöver rollen "Cloud Datastore User" medan importen körs.
+# Kör sedan "Test och publicering" på main, så att sidans HTML får med segrarna direkt.
+on:
+  workflow_dispatch:
+    inputs:
+      force:
+        description: "Skriv över segrare som redan finns (normalt nej)"
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+
+jobs:
+  import:
+    name: Importera segrare till Firestore
+    if: vars.VITE_FIREBASE_PROJECT_ID != ''
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - name: Importera
+        env:
+          SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+          PROJECT: ${{ vars.VITE_FIREBASE_PROJECT_ID }}
+          FORCE: ${{ inputs.force }}
+        run: |
+          printf '%s' "$SERVICE_ACCOUNT" > "$RUNNER_TEMP/sa.json"
+          export GOOGLE_APPLICATION_CREDENTIALS="$RUNNER_TEMP/sa.json"
+          if [ "$FORCE" = "true" ]; then
+            node scripts/segrare.mjs --project "$PROJECT" --force
+          else
+            node scripts/segrare.mjs --project "$PROJECT"
+          fi
+          rm -f "$RUNNER_TEMP/sa.json"

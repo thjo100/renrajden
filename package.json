@@ -17,6 +17,7 @@
     "test:e2e": "npm run build:emulator && firebase emulators:exec --only auth,firestore --project demo-renrajden \"node tests/e2e.mjs\"",
     "admin": "node scripts/admin.mjs",
     "seed": "node scripts/seed-news.mjs",
+    "segrare": "node scripts/segrare.mjs",
     "proto:preview": "node dev/build-preview.cjs",
     "proto:preview:admin": "node dev/build-preview.cjs --admin",
     "proto:shots": "node dev/shots.cjs",
