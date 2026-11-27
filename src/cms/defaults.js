@@ -70,7 +70,6 @@ export const DEFAULT_YEARS = [
   year(2021, { status: "cancelled", text: "Inställt. Tävlingen var planerad till 2 januari 2021." }),
   year(2020, {
     date: "2020-01-25",
-    text: "10, 20 och 40 km på den nya fyravarvsbanan.",
     winners: [{ class: "H42", names: "Magnus Näslund" }, { class: "D42", names: "Ellen Scheidegger" }, { class: "H21", names: "Andreas Karlsson" }, { class: "D21", names: "Annaclara Forss" }],
     links: [
       link("Resultat (pdf)", "https://www.okrenen.se/globalassets/ok-renen---orientering/dokument/resultat-renrajden2020.pdf"),

@@ -41,7 +41,7 @@ Webbplats för **Renrajden**, OK Renens klassiska långlopp på Ormberget i Lule
 | `npm run test:rules` | Testar bara säkerhetsreglerna |
 | `npm run test:e2e` | Bygger och testar sajten i Chromium |
 | `npm run seed -- --emulator` | Fyller emulatorn med de 22 gamla nyheterna |
-| `npm run segrare -- --emulator` | Fyller i segrare och datum från `src/cms/defaults.js` i arkivet, där de saknas. Saknade segrarklasser läggs till. Mot riktiga projektet via Actions → **Importera segrare till arkivet** |
+| `npm run segrare -- --emulator` | Fyller i segrare och datum från `src/cms/defaults.js` i arkivet, där de saknas. Saknade segrarklasser läggs till. Med `--force` ("Ersätt" i arbetsflödet) blir segrare, datum och text exakt som i `defaults.js`. Mot riktiga projektet via Actions → **Importera segrare till arkivet** |
 | `npm run admin -- add <e-post> --emulator` | Gör en adress till admin i emulatorn |
 
 Mot riktiga projektet byter du `--emulator` mot `--project renrajden-ae53c`, efter `gcloud auth application-default login`.
