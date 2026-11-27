@@ -3,7 +3,7 @@
 Webbplats för **Renrajden**, OK Renens klassiska långlopp på Ormberget i Luleå. Loppet är seedningsgrundande för Vasaloppet. Nästa upplaga: lördag 30 januari 2027.
 
 - Alla besökare ser all information och alla nyheter, utan inloggning.
-- Bara administratörer loggar in (med Google). De kan skapa, ändra och ta bort nyheter, ändra årets lopp (datum, plats, distanser, avgifter, länkar och banfakta) och sköta resultatarkivet.
+- Bara administratörer loggar in (med Google). De kan skapa, ändra och ta bort nyheter, ändra årets lopp (datum, plats, distanser, avgifter, länkar och banfakta), sköta resultatarkivet och ändra partnerna.
 
 ## Snabbfakta
 
@@ -37,7 +37,7 @@ Webbplats för **Renrajden**, OK Renens klassiska långlopp på Ormberget i Lule
 | `npm run dev` | Startar sajten mot riktiga Firebase (kräver `.env.local`) |
 | `npm run build` | Bygger sajten till `dist/` |
 | `npm test` | Kör alla tester (enhet, regler och ände-till-ände) |
-| `npm run test:unit` | Testar datamodellen och renderingen av årets lopp och resultatarkivet (ingen emulator) |
+| `npm run test:unit` | Testar datamodellen och renderingen av årets lopp, resultatarkivet och partnerna (ingen emulator) |
 | `npm run test:rules` | Testar bara säkerhetsreglerna |
 | `npm run test:e2e` | Bygger och testar sajten i Chromium |
 | `npm run seed -- --emulator` | Fyller emulatorn med de 22 gamla nyheterna |
@@ -80,16 +80,16 @@ För att se lägena kring tävlingsdagen, lägg till `?lage=tavlingsvecka`, `?la
 
 | Fil | Innehåll |
 |---|---|
-| `index.html` | Sidans struktur och den fasta texten (PM, seedning, partners, kontakt). Årets lopp och resultatarkivet är tomma platser, se nedan |
+| `index.html` | Sidans struktur och den fasta texten (PM, seedning, kontakt). Årets lopp, resultatarkivet och partnerna är tomma platser, se nedan |
 | `inbjudan.html` | Inbjudan till årets lopp som ett utskrivbart A4-ark, på `/inbjudan` |
 | `src/main.js` | Ingång. Laddar CSS, typsnitt, nyheter, årets lopp och (vid behov) admin |
 | `src/site.js` | Nedräkning, lägen, meny, km-mätare, distansväljare, packlista |
 | `src/news.js` | Hämtar och visar nyheter |
 | `src/bilder.js` | Bildsektionen: filmen, val av kategori, rutnät och helskärmsvisning |
 | `src/admin.js` | Google-inloggning och hantering av nyheter |
-| `src/cms-admin.js` | Adminläget för årets lopp och resultatarkivet |
+| `src/cms-admin.js` | Adminläget för årets lopp, resultatarkivet och partnerna |
 | `src/admin-kit.js` | Gemensamt för adminformulären: fel, osparat, rader, bekräfta borttagning |
-| `src/cms/defaults.js` | Standardinnehållet för årets lopp och resultatarkivet (används tills något sparats i Firestore) |
+| `src/cms/defaults.js` | Standardinnehållet för årets lopp, resultatarkivet och partnerna (används tills något sparats i Firestore) |
 | `src/cms/model.js` | Datamodell, gränser och svensk formatering |
 | `src/cms/render.js` | Gör HTML av innehållet. Används både vid bygget och i webbläsaren |
 | `src/cms/runtime.js` | Hämtar innehållet från Firestore i webbläsaren och ritar om det som ändrats |
@@ -122,6 +122,7 @@ För att se lägena kring tävlingsdagen, lägg till `?lage=tavlingsvecka`, `?la
 |---|---|
 | Ändra tävlingsdatum, plats, distanser, avgifter, sista anmälningsdag, anmälningslänk, startlista, liveresultat, banfakta eller e-post | Logga in som admin och välj **Årets lopp**. Ändringen syns direkt på startsidan och i inbjudan. Kontrollera med Skriv ut att inbjudan fortfarande ryms på en A4 |
 | Ställa in loppet | **Årets lopp** → Status: Inställt. Skriv också en nyhet som viktigt meddelande |
+| Lägga till, ändra, flytta eller ta bort en partner | Logga in som admin och välj **Partners** i adminraden eller **Redigera partners** under Partners. Ordningen i formuläret är ordningen på sidan. En partner med webbadress blir en länk. Slutar en partner: ta bort raden och skriv namnet under Tidigare partners. Högst 12 partners |
 | Lägga in årets resultat | Logga in som admin, gå till Resultat och välj **Lägg in resultat** på årets lopp |
 | Lägga till, ändra eller ta bort ett äldre år | Resultat → **+ Lägg till år**, eller **Redigera** och **Ta bort** vid året |
 | Ändra övrig text, PM eller inbjudans fasta text | `index.html` och `inbjudan.html` |
@@ -164,6 +165,14 @@ För att se lägena kring tävlingsdagen, lägg till `?lage=tavlingsvecka`, `?la
 | `distances` | array | 1–4 st `{ km, laps, classes, fee, lateFee, note }`. `laps` 1–6, avgifter i hela kronor |
 | `updatedAt`, `updatedBy` | | Som för nyheter |
 
+**`settings/partners`**: partnerna under Partners på startsidan. Ett enda dokument. Alla kan läsa, bara admins kan ändra, ingen kan ta bort. Saknas det visas partnerna i `src/cms/defaults.js`. Det sparas för sig och påverkas inte av första sparningen av årets lopp.
+
+| Fält | Typ | Regel |
+|---|---|---|
+| `partners` | array | Max 12 st `{ name, text, url }` i den ordning de visas. `name` 1–60 tecken, `text` (raden under namnet) max 60, `url` tom eller `https://…` |
+| `former` | string | Tidigare partners, ett namn per rad. Max 500 tecken. Visas som "Tidigare år: A, B och C." |
+| `updatedAt`, `updatedBy` | | Som för nyheter |
+
 **`years/{år}`**: ett år i resultatarkivet. Dokument-ID är årtalet. Alla kan läsa, bara admins kan skriva och ta bort.
 
 | Fält | Typ | Regel |
@@ -185,11 +194,12 @@ För att se lägena kring tävlingsdagen, lägg till `?lage=tavlingsvecka`, `?la
 - **Nyhetsetiketterna** finns på tre ställen som måste stämma överens: `TAGS` i `src/news.js`, `<select id="f-tag">` i `index.html` och listan i `validNews` i `firestore.rules`.
 - **Ändras en regel** i `firestore.rules` ska ett test läggas till i `tests/rules.test.mjs`.
 - **Firestore Lite** används, inte full Firestore. Nyheterna hämtas på nytt varje minut och efter varje ändring. Det finns ingen live-prenumeration.
-- **Årets lopp och resultatarkivet** står inte i `index.html` och `inbjudan.html`. Där finns tomma platser, `<dl data-cms="facts"></dl>` och `{{cms:title}}`. När sajten byggs hämtar `scripts/vite-cms.mjs` innehållet från Firestore och fyller platserna, så att sidan fungerar utan JavaScript och sökmotorer ser rätt datum. I webbläsaren hämtar `src/cms/runtime.js` det senaste och ritar om det som ändrats. Platserna måste vara tomma i källfilen, annars stoppas bygget.
+- **Årets lopp, resultatarkivet och partnerna** står inte i `index.html` och `inbjudan.html`. Där finns tomma platser, `<dl data-cms="facts"></dl>` och `{{cms:title}}`. När sajten byggs hämtar `scripts/vite-cms.mjs` innehållet från Firestore och fyller platserna, så att sidan fungerar utan JavaScript och sökmotorer ser rätt datum. I webbläsaren hämtar `src/cms/runtime.js` det senaste och ritar om det som ändrats. Platserna måste vara tomma i källfilen, annars stoppas bygget.
 - **Första sparningen** i adminläget kopierar standardinnehållet (`src/cms/defaults.js`) till Firestore i samma batch, så att inget år försvinner. Därefter är det Firestore som gäller, och `defaults.js` används bara om Firestore saknar innehållet.
 - **Rutan Segrare i arkivet** är en tabell med ett år per rad och herrar och damer i var sin kolumn. Klassens första bokstav avgör kolumnen (H eller D, `winSex` i `src/cms/render.js`). En segrare vars klass inte börjar med H eller D får en egen rad över båda kolumnerna.
 - **Segrarna på 21 km** är dolda i arkivet tills besökaren kryssar i *21 km* ovanför listan. Filtret är ren CSS (`#vis-42`, `#vis-21` i `index.html`). Vilken grupp en segrare hör till avgörs av den största siffran i klassen (`winDist` i `src/cms/render.js`): under 30 blir 21 km (H21, D20, H22), annars 42 km (H42, D40, "42 km").
-- **Gränserna** för årets lopp och resultatarkivet finns på två ställen som måste stämma överens: `LIMITS` i `src/cms/model.js` och `validEvent`/`validYear` i `firestore.rules`.
+- **Gränserna** för årets lopp, resultatarkivet och partnerna finns på två ställen som måste stämma överens: `LIMITS` i `src/cms/model.js` och `validEvent`/`validYear`/`validPartners` i `firestore.rules`.
+- **Reglerna får utvärdera högst 1000 uttryck per skrivning.** Listor kontrolleras position för position, så varje post kostar. En partner kostar cirka 60 uttryck och gränsen nås vid 17 partners, därför är taket 12. Höjs ett tak för en lista: lägg till ett test i `tests/rules.test.mjs` som sparar en full lista.
 - **Logotypen och renhuvudet** ligger som symbolerna `#okrenen` och `#ren` längst ner i både `index.html` och `inbjudan.html`, och ska vara likadana i båda. De är tagna direkt ur vektorerna i `public/grafik/okrenen-logoark.pdf`. Renen får färg från `currentColor`. Logotypens bakgrund styrs med `--logo-bg` (transparent på blå botten) och färgen på RENEN med `--logo-renen`.
 - **Webbkonfigurationen** (`VITE_FIREBASE_*`) läses från miljövariabler. Lokalt i `.env.local` eller `.env.emulator`, i GitHub som repository variables.
 

@@ -1,6 +1,6 @@
-// Vite-plugin: fyller sidornas tomma platser för årets lopp och resultatarkivet när sajten byggs.
+// Vite-plugin: fyller sidornas tomma platser för årets lopp, resultatarkivet och partnerna när sajten byggs.
 //
-// Innehållet hämtas från Firestore (settings/event och years) med Firestores REST-gränssnitt.
+// Innehållet hämtas från Firestore (settings/event, settings/partners och years) med Firestores REST-gränssnitt.
 // Det är publikt läsbart, så ingen nyckel skickas (webbnyckeln kan vara begränsad till sajtens
 // domän). Finns inget sparat innehåll än, eller saknas Firebase-konfigurationen, används
 // src/cms/defaults.js.
@@ -40,8 +40,10 @@ export async function fetchContent({ projectId, emulator = false, timeoutMs = 10
     if (!res.ok) throw new Error(`Firestore svarade ${res.status} för ${path}`);
     return res.json();
   };
-  const event = await get("settings/event");
-  if (!event) return { content: cleanContent(null), note: "inget sparat innehåll i Firestore än, standardinnehållet används" };
+  const [event, saved] = await Promise.all([get("settings/event"), get("settings/partners")]);
+  const partners = saved ? fieldsToObject(saved.fields) : null;
+  const p = saved ? ", partners från Firestore" : ", standardpartnerna";
+  if (!event) return { content: cleanContent({ partners }), note: "årets lopp och arkivet är inte sparade i Firestore än, standardinnehållet används" + p };
   const years = [];
   let pageToken = "";
   do {
@@ -52,7 +54,7 @@ export async function fetchContent({ projectId, emulator = false, timeoutMs = 10
     }
     pageToken = page?.nextPageToken || "";
   } while (pageToken);
-  return { content: cleanContent({ source: "db", event: fieldsToObject(event.fields), years }), note: `från Firestore (${years.length} år i arkivet)` };
+  return { content: cleanContent({ source: "db", event: fieldsToObject(event.fields), years, partners }), note: `från Firestore (${years.length} år i arkivet${p})` };
 }
 
 export function cms() {
@@ -67,7 +69,7 @@ export function cms() {
     } catch (e) {
       const why = (e && (e.cause?.code || e.name === "TimeoutError" && "tidsgräns" || e.message)) || String(e);
       if (emulator) return { content: cleanContent(null), note: `emulatorn svarar inte (${why}), standardinnehållet används` };
-      if (process.env.CMS_REQUIRE_FIRESTORE === "true") throw new Error(`Årets lopp och resultatarkivet kunde inte hämtas från Firestore (${why}). Bygget avbryts för att inte publicera gammalt innehåll.`);
+      if (process.env.CMS_REQUIRE_FIRESTORE === "true") throw new Error(`Årets lopp, resultatarkivet och partnerna kunde inte hämtas från Firestore (${why}). Bygget avbryts för att inte publicera gammalt innehåll.`);
       return { content: cleanContent(null), note: `Firestore gick inte att nå (${why}), standardinnehållet används`, warn: true };
     }
   }
@@ -83,7 +85,7 @@ export function cms() {
       order: "pre",
       async handler(html) {
         // Vid bygget hämtas innehållet en gång för alla sidor. I utvecklingsläget vid varje sidladdning.
-        const result = await (isServe ? load() : (cached ??= load().then((r) => { (r.warn ? logger.warn : logger.info)(`[cms] Årets lopp och resultatarkivet: ${r.note}`); return r; })));
+        const result = await (isServe ? load() : (cached ??= load().then((r) => { (r.warn ? logger.warn : logger.info)(`[cms] Årets lopp, resultatarkivet och partnerna: ${r.note}`); return r; })));
         return fillHtml(html, result.content);
       },
     },

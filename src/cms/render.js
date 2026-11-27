@@ -1,10 +1,10 @@
-// Rendering av årets lopp och resultatarkivet till HTML-text.
+// Rendering av årets lopp, resultatarkivet och partnerna till HTML-text.
 //
 // Sidorna har tomma platser: <dl data-cms="facts"></dl> och, i <head>, {{cms:title}}.
 // Vid bygget fyller fillHtml() platserna (scripts/vite-cms.mjs). I webbläsaren ritar
 // src/cms/runtime.js om de platser vars HTML har ändrats när färskt innehåll hämtats.
 // Allt som kommer från data passerar esc(), och länkar kontrolleras mot HTTPS/WEB.
-import { cap, fmtDate, fmtKr, fmtNum, fmtTemp, joinList, numWord, yearOf, HTTPS, WEB } from "./model.js";
+import { cap, fmtDate, fmtKr, fmtNum, fmtTemp, formerNames, joinList, numWord, yearOf, HTTPS, WEB } from "./model.js";
 
 export const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]);
 const NEW_TAB = " (öppnas i ny flik)";
@@ -190,6 +190,23 @@ function historySide(c) {
     + (inv.length ? `<section class="side-box"><h3>Tidigare inbjudningar</h3><ul class="inv-list">${inv.join("")}</ul></section>` : "");
 }
 
+/* ---------- Partners ---------- */
+// Ett kort per partner. Med webbadress är hela kortet en länk till partnerns webbplats.
+function partnerCard(p) {
+  const inner = esc(p.name) + (p.text ? `<small>${esc(p.text)}</small>` : "");
+  return HTTPS.test(p.url)
+    ? `<li><a class="partner" href="${esc(p.url)}" target="_blank" rel="noopener">${inner}<span class="sr-only">${NEW_TAB}</span></a></li>`
+    : `<li><span class="partner">${inner}</span></li>`;
+}
+
+function partners(c) {
+  const { partners: list, former } = c.partners, names = formerNames(former);
+  return (list.length
+      ? `<ul class="partners" aria-labelledby="partners-h">${list.map(partnerCard).join("")}</ul>`
+      : `<p>Partners för Renrajden ${year(c.event)} presenteras här.</p>`)
+    + (names.length ? `<p class="note partners-former">Tidigare år: ${esc(joinList(names))}.</p>` : "");
+}
+
 /* ---------- Platser i inbjudan ---------- */
 const invFacts = (e) => `<div><dt>Start</dt><dd>${esc(e.startTime)}<small>Alla distanser</small></dd></div>`
   + `<div><dt>Plats</dt><dd>${esc(e.venue)}<small>${esc(e.venueArea)}</small></dd></div>`
@@ -234,6 +251,7 @@ export function renderSlots(c) {
     "results-eyebrow": resultsEyebrow(c),
     years: years(c),
     "history-side": historySide(c),
+    partners: partners(c),
     "inv-date": dateTime(e),
     "inv-facts": invFacts(e),
     "inv-fees": invFees(e),
@@ -268,7 +286,7 @@ export function renderHead(c) {
     "inv-description": `Inbjudan till Renrajden ${fmtDate(e.date, { weekday: true })} på Ormberget i Luleå. Distanser, avgifter och anmälan.`,
     "inv-og-title": `Inbjudan Renrajden ${y} – ${dayMonth(e)} på Ormberget`,
     "inv-og-description": `${distances} klassiskt. Seedningsgrundande för Vasaloppet. Arrangör: OK Renen, Luleå.`,
-    data: { source: c.source, event: e, years: c.years },
+    data: { source: c.source, event: e, years: c.years, partners: c.partners },
   };
 }
 

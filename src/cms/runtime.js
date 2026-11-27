@@ -1,4 +1,4 @@
-// Årets lopp och resultatarkivet i webbläsaren.
+// Årets lopp, resultatarkivet och partnerna i webbläsaren.
 //
 // Sidan levereras färdigrenderad (scripts/vite-cms.mjs) med innehållet inbäddat i #cms-data,
 // så att allt syns direkt och fungerar utan JavaScript. Efter laddning hämtas färskt innehåll
@@ -67,16 +67,19 @@ async function fetchOnce() {
   if (!isConfigured) { document.documentElement.dataset.cms = "embedded"; return false; }
   try {
     const { db, fs } = await getDb();
-    const ev = await fs.getDoc(fs.doc(db, "settings", "event"));
+    const [ev, pa] = await Promise.all([fs.getDoc(fs.doc(db, "settings", "event")), fs.getDoc(fs.doc(db, "settings", "partners"))]);
+    // Partnerna sparas för sig och gäller även om årets lopp inte har sparats än.
+    const partners = pa.exists() ? pa.data() : null;
     if (!ev.exists()) {
       initialized = false;
+      applyContent(cleanContent({ partners }));
       document.documentElement.dataset.cms = "defaults";
       return true;
     }
     const snap = await fs.getDocs(fs.collection(db, "years"));
     const years = snap.docs.map((d) => cleanYear(d.data(), d.id)).filter(Boolean);
     initialized = true;
-    applyContent(cleanContent({ source: "db", event: ev.data(), years }));
+    applyContent(cleanContent({ source: "db", event: ev.data(), years, partners }));
     document.documentElement.dataset.cms = "db"; // testerna väntar på det här
     return true;
   } catch {
