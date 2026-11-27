@@ -59,7 +59,7 @@ export const DEFAULT_YEARS = [
   }),
   year(2022, {
     date: "2022-02-19",
-    winners: [{ class: "H42", names: "Henrik Strand" }, { class: "D42", names: "Nina Lintzén" }, { class: "H22", names: "Viktor Sundén" }, { class: "D22", names: "Anna Rimpi" }],
+    winners: [{ class: "H42", names: "Henrik Strand" }, { class: "D42", names: "Nina Lintzén" }, { class: "H21", names: "Viktor Sundén" }, { class: "D21", names: "Anna Rimpi" }],
     links: [
       link("Resultat", "https://drive.google.com/file/d/1IGspsGsRtOmkcbsIR68j7WqscqUged3u/view?usp=sharing"),
       link("Varvtider (chip)", "http://obasen.orientering.se/winsplits/online/sv/default.asp?page=table&databaseId=80132&categoryId=0"),
@@ -71,7 +71,7 @@ export const DEFAULT_YEARS = [
   year(2020, {
     date: "2020-01-25",
     text: "10, 20 och 40 km på den nya fyravarvsbanan.",
-    winners: [{ class: "H40", names: "Magnus Näslund" }, { class: "D40", names: "Ellen Scheidegger" }, { class: "H20", names: "Andreas Karlsson" }, { class: "D20", names: "Annaclara Forss" }],
+    winners: [{ class: "H40", names: "Magnus Näslund" }, { class: "D40", names: "Ellen Scheidegger" }, { class: "H21", names: "Andreas Karlsson" }, { class: "D21", names: "Annaclara Forss" }],
     links: [
       link("Resultat (pdf)", "https://www.okrenen.se/globalassets/ok-renen---orientering/dokument/resultat-renrajden2020.pdf"),
       link("SSF TA", "http://ta.skidor.com/ResultList.aspx?eventid=11471&competitionid=19335&orgid=2920"),

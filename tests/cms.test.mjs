@@ -108,7 +108,7 @@ test("segrarna märks med distans, så att 21 km kan filtreras bort", () => {
   const html = renderSlots(defaults());
   assert.match(html["history-side"], /<li data-dist="42"><b>2025, H42:<\/b> Viktor Mäenpää<\/li>/);
   assert.match(html["history-side"], /<li data-dist="21"><b>2025, H21:<\/b> Samuel Matkala Nordlund<\/li>/);
-  assert.match(html.years, /<p class="winners" data-dist="21">Segrare D20: Annaclara Forss<\/p>/);
+  assert.match(html.years, /<p class="winners" data-dist="21">Segrare D21: Annaclara Forss<\/p>/);
   const sideWinners = html["history-side"].split("</ul>")[0];
   assert.doesNotMatch(sideWinners, /<li>/, "en segrare i sidorutan saknar data-dist");
   assert.doesNotMatch(html.years, /class="winners">/, "en segrare i årslistan saknar data-dist");
