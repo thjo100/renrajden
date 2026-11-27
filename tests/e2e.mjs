@@ -11,6 +11,9 @@ import { fillHtml } from "../src/cms/render.js";
 import { DEFAULT_YEARS } from "../src/cms/defaults.js";
 
 const YEARS = DEFAULT_YEARS.length; // år i standardarkivet; 2027 visas överst som kommande lopp tills resultatet lagts in
+const BILDER = JSON.parse(readFileSync("public/bilder/bilder.json", "utf8")).length; // bilderna från gamla bloggen
+const STORAGE = "http://127.0.0.1:9199/v0/b/demo-renrajden.firebasestorage.app/o/";
+const stored = async (path) => (await fetch(STORAGE + encodeURIComponent(path) + "?alt=media")).status; // 200 eller 404
 
 if (!process.env.FIRESTORE_EMULATOR_HOST) {
   console.error("Kör via `npm run test:e2e` så att emulatorerna startas.");
@@ -73,6 +76,19 @@ await step("nyhetsarkivet går att fälla ut", async () => {
   await page.click("#news-more");
   assert((await page.locator("#news-archive > li").count()) === 18, "arkivet har fel antal poster");
   await page.click("#news-more");
+});
+
+await step("besökare ser bilderna från gamla bloggen innan något sparats", async () => {
+  await page.locator("#bilder").scrollIntoViewIfNeeded();
+  await page.waitForFunction(() => document.documentElement.dataset.media === "defaults", null, { timeout: 10000 });
+  const chips = await page.$$eval("#galleri-val .galleri-chip", (b) => b.map((x) => x.firstChild.textContent));
+  assert(JSON.stringify(chips) === JSON.stringify(["Alla", "Foton", "Affischer", "Banor", "Sponsorer", "Seedning"]), "fel kategorier: " + chips.join(", "));
+  assert((await page.locator("#galleri > li").count()) === 5, "Foton ska visa fem bilder");
+  assert((await page.locator("#galleri [data-media-edit]").count()) === 0, "adminknappar syns för besökare");
+  await page.click("#galleri .galleri-kort >> nth=0");
+  await page.waitForSelector("#bildvisning[open]");
+  assert(await page.locator("#bild-stor").isVisible() && await page.locator("#bild-film").isHidden(), "bilden visas inte i helskärm");
+  await page.keyboard.press("Escape");
 });
 
 await step("Google-konto som inte är admin nekas och loggas ut", async () => {
@@ -329,6 +345,168 @@ await step("ta bort ett år ger Ångra, och ångra återställer det", async () 
   assert((await db.doc("years/2013").get()).exists, "2013 återställdes inte");
 });
 
+/* ---------- Bilder och filmer ---------- */
+const uploaded = async () => (await db.collection("media").get()).docs.filter((d) => d.get("file").startsWith("galleri/")).map((d) => ({ id: d.id, ...d.data() }));
+const fixture = (name, mimeType) => ({ name, mimeType, buffer: readFileSync("tests/fixtures/" + name) });
+const rowState = () => page.$$eval("#md-list .md-row", (rs) => rs.map((r) => r.dataset.state));
+
+await step("admin ändrar en bild från gamla bloggen, och första sparningen kopierar alla bilder", async () => {
+  assert(!(await db.doc("settings/media").get()).exists, "settings/media fanns redan före testet");
+  await page.locator("#bilder").scrollIntoViewIfNeeded();
+  const id = "foton-2015-tre-akare-i-dimman";
+  await page.click(`[data-media-edit="${id}"]`);
+  await page.waitForSelector("#media-edit-dialog[open]");
+  assert(await page.evaluate(() => document.activeElement?.id === "me-year"), "fokus hamnade inte på året");
+  assert((await page.inputValue("#me-year")) === "2015" && (await page.inputValue("#me-text")) === "Tre åkare i dimman", "formuläret har fel värden");
+  await page.fill("#me-year", "15");
+  await page.click("#media-edit-dialog [type=submit]");
+  await page.waitForFunction(() => document.activeElement?.classList.contains("error-summary"), null, { timeout: 5000 })
+    .catch(() => { throw new Error("felsammanfattningen fick inte fokus"); });
+  await page.fill("#me-year", "2016");
+  await page.fill("#me-text", "Tre åkare i dimman på Ormberget");
+  await page.click("#media-edit-dialog [type=submit]");
+  await page.waitForFunction(() => !document.querySelector("#media-edit-dialog").open, null, { timeout: 15000 })
+    .catch(() => { throw new Error("dialogen stängdes inte efter sparning"); });
+  await page.waitForFunction((id) => document.activeElement?.dataset.mediaEdit === id, id, { timeout: 5000 })
+    .catch(() => { throw new Error("fokus kom inte tillbaka till Redigera"); });
+  assert((await page.textContent(`#galleri li[data-media-id="${id}"] .galleri-text`)) === "Tre åkare i dimman på Ormberget2016", "kortet uppdaterades inte");
+  assert((await db.doc("settings/media").get()).exists, "settings/media skrevs inte");
+  assert((await db.collection("media").get()).size === BILDER, "bilderna kopierades inte till Firestore");
+  const d = (await db.doc(`media/${id}`).get()).data();
+  assert(d.text === "Tre åkare i dimman på Ormberget" && d.year === 2016 && d.updatedBy === uid && d.file.startsWith("/bilder/"), "ändringen sparades fel");
+});
+
+await step("admin laddar upp två bilder och en film, med år och text", async () => {
+  await page.click('#admin-bar [data-action="add-media"]');
+  await page.waitForSelector("#media-dialog[open]");
+  assert(await page.evaluate(() => document.activeElement?.id === "md-pick"), "fokus hamnade inte på Välj filer");
+  await page.setInputFiles("#md-files", [
+    fixture("stor.jpg", "image/jpeg"), fixture("liten.png", "image/png"), fixture("film.webm", "video/webm"),
+    { name: "lista.txt", mimeType: "text/plain", buffer: Buffer.from("inte en bild") },
+  ]);
+  assert((await page.textContent("#md-skipped")).includes("lista.txt"), "textfilen hoppades inte över");
+  await page.waitForFunction(() => [...document.querySelectorAll("#md-list .md-row")].every((r) => r.dataset.state === "ready"), null, { timeout: 20000 })
+    .catch(async () => { throw new Error("filerna förbereddes inte: " + (await rowState()).join(", ")); });
+  assert((await page.textContent("#md-list .md-row >> nth=0 >> .md-status")).startsWith("2048 × 1365 px"), "den stora bilden förminskades inte");
+  assert((await page.textContent("#md-list .md-row >> nth=2 >> .md-status")).startsWith("Film, 0:02"), "filmens längd saknas");
+  assert((await page.textContent("#media-dialog [type=submit]")) === "Ladda upp 3 filer", "fel text på knappen");
+  const year = (n) => page.locator(`#md-list .md-row >> nth=${n} >> input[id^="md-y-"]`);
+  await page.fill("#md-year", "2027");
+  assert((await year(0).inputValue()) === "2027" && (await year(2).inputValue()) === "2027", "året fylldes inte i på filerna");
+  await year(1).fill("2019");
+  await page.fill("#md-year", "2026");
+  assert((await year(0).inputValue()) === "2026" && (await year(1).inputValue()) === "2019", "året för alla skrev över ett eget år");
+  await page.locator('#md-list .md-row >> nth=0 >> input[id^="md-t-"]').fill("Upploppet");
+  await year(2).fill("26");
+  await page.screenshot({ path: `${OUT}/bilder-uppladdning.png` });
+  await page.click("#media-dialog [type=submit]");
+  await page.waitForFunction(() => document.activeElement?.classList.contains("error-summary"), null, { timeout: 5000 })
+    .catch(() => { throw new Error("felsammanfattningen fick inte fokus"); });
+  assert((await year(2).getAttribute("aria-invalid")) === "true", "fel år markerades inte");
+  await year(2).fill("2026");
+  await page.click("#media-dialog [type=submit]");
+  await page.waitForFunction(() => !document.querySelector("#media-dialog").open, null, { timeout: 30000 })
+    .catch(async () => { throw new Error("uppladdningen blev inte klar: " + (await page.$$eval("#md-list .md-status", (s) => s.map((x) => x.textContent))).join(" | ")); });
+  assert((await page.textContent("#toast-text")) === "2 bilder och 1 film är uppladdade", "fel besked: " + (await page.textContent("#toast-text")));
+  await page.waitForTimeout(200);
+  assert(await page.evaluate(() => document.activeElement?.id === "bilder-h"), "fokus hamnade inte på Bilder");
+  const up = await uploaded();
+  assert(up.length === 3 && (await db.collection("media").get()).size === BILDER + 3, "fel antal bilder i Firestore");
+  const jpg = up.find((m) => m.file.endsWith("bild.jpg")), png = up.find((m) => m.file.endsWith("bild.png")), film = up.find((m) => m.type === "video");
+  assert(jpg && jpg.text === "Upploppet" && jpg.year === 2026 && jpg.category === "foton" && jpg.width === 2048 && jpg.height === 1365 && jpg.createdBy === uid, "bilden sparades fel");
+  assert(png && png.year === 2019 && png.text === "" && png.width === 400, "PNG-bilden sparades fel");
+  assert(film && film.category === "filmer" && film.file.endsWith("film.webm") && film.duration > 1.5 && film.width === 320, "filmen sparades fel");
+  for (const m of up) for (const path of [m.file, m.thumb]) assert((await stored(path)) === 200, "filen finns inte i Storage: " + path);
+  assert((await page.getAttribute('.galleri-chip:has-text("Alla")', "aria-pressed")) === "true", "galleriet visar inte alla efter uppladdningen");
+  assert((await page.locator(`#galleri li[data-media-id="${film.id}"] .galleri-play`).textContent()).includes("0:02"), "filmkortet saknar längden");
+  await page.locator("#bilder").screenshot({ path: `${OUT}/bilder-admin.png` });
+});
+
+await step("besökare ser de nya bilderna och kan spela filmen", async () => {
+  const p = await browser.newPage();
+  p.on("pageerror", (e) => errors.push(e.message));
+  await p.goto(BASE + "#bilder");
+  await p.waitForFunction(() => document.documentElement.dataset.media === "db", null, { timeout: 10000 });
+  assert((await p.locator("#galleri-val .galleri-chip >> nth=0 >> small").textContent()) === String(BILDER + 3), "fel antal under Alla");
+  assert((await p.textContent("#galleri li >> nth=0")).includes("Upploppet"), "den nya bilden visas inte först under Foton");
+  await p.click('.galleri-chip:has-text("Filmer")');
+  assert((await p.locator("#galleri > li").count()) === 1, "Filmer ska ha en film");
+  assert((await p.getAttribute("#galleri .galleri-kort", "aria-label")) === "Spela filmen från 2026", "fel etikett på filmkortet");
+  await p.click("#galleri .galleri-kort");
+  await p.waitForSelector("#bildvisning[open]");
+  await p.waitForFunction(() => { const f = document.querySelector("#bild-film"); return !f.hidden && f.readyState >= 1; }, null, { timeout: 10000 })
+    .catch(() => { throw new Error("filmen laddades inte i helskärmsvisningen"); });
+  assert(await p.locator("#bild-stor").isHidden(), "bilden syns samtidigt som filmen");
+  assert((await p.textContent("#bild-info")) === "Filmer · 2026", "fel text under filmen");
+  await p.screenshot({ path: `${OUT}/bilder-film.png` });
+  await p.keyboard.press("Escape");
+  // Dialogen stängs (och filmen stoppas) en stund efter Esc.
+  await p.waitForFunction(() => !document.querySelector("#bildvisning").open && !document.querySelector("#bild-film").getAttribute("src"), null, { timeout: 5000 })
+    .catch(() => { throw new Error("filmen fortsatte efter stängning"); });
+  await p.close();
+});
+
+await step("ta bort en film ger Ångra, och filerna tas bort först när det inte går att ångra", async () => {
+  const film = (await uploaded()).find((m) => m.type === "video");
+  await page.click('.galleri-chip:has-text("Filmer")');
+  await page.click(`[data-media-delete="${film.id}"]`);
+  assert((await page.textContent("#confirm-h")) === "Ta bort filmen från 2026?", "fel rubrik i bekräftelsen");
+  await page.click("#confirm-delete");
+  await page.waitForFunction(() => document.activeElement?.id === "toast-action", null, { timeout: 10000 });
+  assert(!(await db.doc(`media/${film.id}`).get()).exists, "filmen finns kvar i Firestore");
+  assert((await stored(film.file)) === 200, "filen togs bort innan det gick att ångra");
+  assert((await page.locator(".galleri-chip", { hasText: "Filmer" }).count()) === 0, "Filmer visas fast den är tom");
+  await page.keyboard.press("Enter");
+  await page.waitForFunction((id) => document.activeElement?.dataset.mediaEdit === id, film.id, { timeout: 10000 })
+    .catch(() => { throw new Error("fokus hamnade inte på den återställda filmen"); });
+  const back = (await db.doc(`media/${film.id}`).get()).data();
+  assert(back && back.createdAt.isEqual(film.createdAt) && back.duration === film.duration, "filmen återställdes fel");
+  await page.click(`[data-media-delete="${film.id}"]`);
+  await page.click("#confirm-delete");
+  await page.waitForFunction(() => document.activeElement?.id === "toast-action", null, { timeout: 10000 });
+  await page.click("#toast-close");
+  for (let i = 0; i < 40 && (await stored(film.file)) === 200; i++) await page.waitForTimeout(250);
+  assert((await stored(film.file)) === 404 && (await stored(film.thumb)) === 404, "filerna togs inte bort ur Storage");
+  assert(!(await db.doc(`media/${film.id}`).get()).exists, "filmen finns kvar i Firestore");
+});
+
+await step("filer som släpps på sidan öppnar uppladdningen", async () => {
+  await page.evaluate(async () => {
+    const blob = await (await fetch("/bilder/mini/foton/2015-akare-i-sparet.jpg")).blob();
+    const dt = new DataTransfer();
+    dt.items.add(new File([blob], "slappt.jpg", { type: "image/jpeg" }));
+    const t = document.querySelector("#resultat");
+    t.dispatchEvent(new DragEvent("dragover", { bubbles: true, cancelable: true, dataTransfer: dt }));
+    t.dispatchEvent(new DragEvent("drop", { bubbles: true, cancelable: true, dataTransfer: dt }));
+  });
+  await page.waitForSelector("#media-dialog[open]");
+  await page.waitForFunction(() => document.querySelector("#md-list .md-row")?.dataset.state === "ready", null, { timeout: 10000 });
+  assert((await page.textContent("#md-list .md-name b")) === "slappt.jpg", "den släppta filen kom inte med");
+  await page.keyboard.press("Escape"); // visar "Stäng utan att ladda upp?"
+  assert(await page.locator("#media-dialog .discard").isVisible(), "varningen för filer i listan visas inte");
+  await page.click("#media-dialog [data-discard-yes]");
+  assert(!(await isOpen("#media-dialog")), "dialogen stängdes inte");
+  assert((await uploaded()).length === 2, "filen laddades upp fast dialogen stängdes");
+});
+
+await step("uppladdningen fungerar på mobil 360 px", async () => {
+  const p = await context.newPage(); // samma inloggning
+  await p.setViewportSize({ width: 360, height: 780 });
+  await p.goto(BASE);
+  await p.waitForSelector("#admin-bar:not([hidden])", { timeout: 15000 });
+  await p.click('#bilder [data-action="add-media"]');
+  await p.waitForSelector("#media-dialog[open]");
+  await p.setInputFiles("#md-files", ["tests/fixtures/stor.jpg", "tests/fixtures/film.webm"]);
+  await p.waitForFunction(() => [...document.querySelectorAll("#md-list .md-row")].every((r) => r.dataset.state === "ready"), null, { timeout: 20000 });
+  assert(await p.evaluate(() => { const d = document.querySelector("#media-dialog"); return d.scrollWidth <= d.clientWidth; }), "dialogen scrollar i sidled");
+  await p.locator("#md-list").scrollIntoViewIfNeeded();
+  await p.screenshot({ path: `${OUT}/bilder-uppladdning-mobil.png` });
+  await p.click("#media-dialog [data-close] >> nth=0");
+  await p.click("#media-dialog [data-discard-yes]");
+  assert((await p.evaluate(() => document.documentElement.scrollWidth)) <= 360, "sidledsscroll med adminknappar i galleriet");
+  await p.close();
+});
+
 await step("bygget hämtar det sparade innehållet från Firestore", async () => {
   const { content } = await fetchContent({ projectId: "demo-renrajden", emulator: true });
   assert(content.source === "db", "bygget hittade inte innehållet i Firestore");
@@ -347,6 +525,7 @@ await step("admin tar bort testnyheten och loggar ut", async () => {
   await page.click("#logout-btn");
   await page.waitForSelector("#admin-bar", { state: "hidden" });
   assert((await page.locator("[data-edit]").count()) === 0, "redigeringsknappar finns kvar efter utloggning");
+  assert((await page.locator("[data-media-edit]").count()) === 0, "knapparna i Bilder finns kvar efter utloggning");
   assert(await page.locator("#alert-bar").isHidden(), "bannern ligger kvar fast nyheten är borttagen");
   await page.reload();
   await page.waitForSelector(".news-card");

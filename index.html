@@ -67,6 +67,7 @@
     <button class="btn btn-red btn-sm" type="button" data-action="new-news">+ Ny nyhet</button>
     <button class="btn btn-quiet btn-sm" type="button" data-action="edit-event">Årets lopp</button>
     <button class="btn btn-quiet btn-sm" type="button" data-action="edit-partners">Partners</button>
+    <button class="btn btn-quiet btn-sm" type="button" data-action="add-media">Bilder</button>
     <button class="btn btn-quiet btn-sm" type="button" id="logout-btn">Logga ut</button>
   </div>
 </section>
@@ -329,6 +330,7 @@
         <p class="eyebrow">Från spåret</p>
         <h2 id="bilder-h">Bilder</h2>
         <p class="section-intro">Film, foton, affischer och banor från Renrajden genom åren.</p>
+        <p class="galleri-admin-rad" data-admin-only hidden><button class="btn btn-quiet btn-sm" type="button" data-action="add-media">+ Lägg till bilder och filmer</button><span class="note">eller dra filerna hit</span></p>
       </div>
       <figure class="film">
         <video id="film" src="/video/renrajden-2024.mp4" poster="/video/renrajden-2024.jpg" muted loop playsinline preload="metadata" aria-label="Film från Renrajden 2024"></video>
@@ -453,6 +455,7 @@
     <div class="bv-bild">
       <button type="button" class="bv-knapp bv-pil bv-fore" id="bild-fore" aria-label="Föregående bild">‹</button>
       <img id="bild-stor" alt="">
+      <video id="bild-film" controls playsinline preload="metadata" hidden></video>
       <button type="button" class="bv-knapp bv-pil bv-nasta" id="bild-nasta" aria-label="Nästa bild">›</button>
     </div>
     <p class="bv-text"><b id="bild-titel"></b><small id="bild-info"></small></p>

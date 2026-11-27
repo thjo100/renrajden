@@ -4,8 +4,8 @@
 // Första gången något sparas finns inget i Firestore än, och sidan visar standardinnehållet
 // (src/cms/defaults.js). Då sparas hela det innehållet i samma batch som ändringen, så att inget
 // år i arkivet försvinner när sidan börjar läsa från Firestore. Partnerna sparas för sig och berörs inte av det.
-import { $, $$, el, toast, openDialog, closeDialog, focusEl, initDialog } from "./ui.js";
-import { withTimeout, writeErr, field, selectField, dialogParts, formKit, repeater, linkRow, readLinks, confirmDelete } from "./admin-kit.js";
+import { $, $$, el, toast, openDialog, closeDialog, focusEl } from "./ui.js";
+import { withTimeout, writeErr, field, selectField, makeDialog, repeater, linkRow, readLinks, confirmDelete } from "./admin-kit.js";
 import { getContent, applyContent, refreshContent, isInitialized, onContent } from "./cms/runtime.js";
 import { cleanContent, formerNames, isDate, fmtNum, LIMITS, TIME, HTTPS, WEB, EMAIL, MIN_YEAR, MAX_YEAR } from "./cms/model.js";
 
@@ -61,20 +61,6 @@ const val = (id) => $("#" + id).value.trim();
 const group = (legend, ...kids) => el("fieldset", { class: "group" }, el("legend", { text: legend }), ...kids);
 const grid = (cls, ...kids) => el("div", { class: cls }, ...kids);
 const busy = (btn, on, text) => { if (on) { btn._text = btn.textContent; btn.setAttribute("aria-disabled", "true"); btn.textContent = text; } else { btn.removeAttribute("aria-disabled"); btn.textContent = btn._text; } };
-
-function makeDialog(id, title) {
-  const parts = dialogParts(id);
-  const body = el("div", { class: "dlg-body" }, parts.summary);
-  const save = el("button", { class: "btn btn-red", type: "submit", text: "Spara" });
-  const form = el("form", { novalidate: true },
-    el("div", { class: "dlg-head" }, el("h2", { id: id + "-h", text: title }), el("button", { class: "dlg-close", type: "button", "data-close": "", "aria-label": "Stäng utan att spara" }, "×")),
-    body, parts.discard,
-    el("div", { class: "dlg-foot" }, el("button", { class: "btn btn-quiet", type: "button", "data-close": "", text: "Avbryt" }), save));
-  const dlg = el("dialog", { id, class: "dlg-wide", "aria-labelledby": id + "-h" }, form);
-  document.body.append(dlg);
-  initDialog(dlg);
-  return { dlg, body, form, save, kit: formKit(dlg) };
-}
 
 /* ---------- Årets lopp ---------- */
 let E = null, dists = null, savingEvent = false;

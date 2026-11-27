@@ -43,10 +43,13 @@ export const announce = (text) => {
 let toastTimer = 0;
 let toastAction = null;
 let toastReturn = null; // vart fokus går när toasten stängs medan den har fokus
+let toastDismiss = null; // körs när toasten försvinner utan att åtgärden valts
+function dismissed() { const d = toastDismiss; toastDismiss = null; if (d) d(); }
 export function hideToast() {
   const toastEl = $("#toast");
   const hadFocus = toastEl.contains(document.activeElement);
   toastEl.hidden = true; toastAction = null; clearTimeout(toastTimer);
+  dismissed();
   if (hadFocus) focusEl((toastReturn && $(toastReturn)) || $("#news-h"));
 }
 function armToast(ms) {
@@ -56,9 +59,15 @@ function armToast(ms) {
     (toastEl.contains(document.activeElement) || toastEl.matches(":hover")) ? armToast(3000) : hideToast();
   }, ms);
 }
-/** action = { label, run, returnTo? }. returnTo är en selektor, annars går fokus till Nyheter. */
+/**
+ * action = { label, run, returnTo?, onDismiss? }. returnTo är en selektor, annars går fokus till Nyheter.
+ * onDismiss körs om toasten stängs, tar slut eller ersätts utan att åtgärden valts (till exempel
+ * för att ta bort en fil först när det inte längre går att ångra).
+ */
 export function toast(text, action) {
   const toastEl = $("#toast"), btn = $("#toast-action");
+  dismissed();
+  toastDismiss = action && action.onDismiss || null;
   $("#toast-text").textContent = text;
   toastAction = action ? action.run : null;
   toastReturn = action && action.returnTo || null;
@@ -72,7 +81,7 @@ export function initToast() {
   const toastEl = $("#toast");
   toastEl.addEventListener("focusout", (e) => { if (!toastEl.contains(e.relatedTarget)) armToast(5000); });
   toastEl.addEventListener("keydown", (e) => { if (e.key === "Escape") { e.preventDefault(); hideToast(); } });
-  $("#toast-action").addEventListener("click", () => { const run = toastAction; hideToast(); if (run) run(); });
+  $("#toast-action").addEventListener("click", () => { const run = toastAction; toastDismiss = null; hideToast(); if (run) run(); });
   $("#toast-close").addEventListener("click", hideToast);
 }
 

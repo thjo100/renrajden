@@ -1,0 +1,47 @@
+rules_version = '2';
+
+// Renrajden – säkerhetsregler för Cloud Storage (bilder och filmer i Bilder)
+//
+// * Alla kan se filerna under galleri/, även utan inloggning.
+// * Bara administratörer får ladda upp och ta bort. Administratör = samma kontroll som i
+//   firestore.rules: inloggad med Google, verifierad e-post och dokumentet admins/{e-post i gemener}.
+//   Kontrollen läser Firestore, vilket kräver att Storage har rätt att läsa databasen
+//   (se docs/driftsattning.md, steg 10).
+// * En uppladdad fil ändras aldrig. Ny bild = ny mapp, galleri/{id}/ där id är dokumentets id i media.
+// * Filnamnen och storleksgränserna ska stämma med src/media.js.
+service firebase.storage {
+  match /b/{bucket}/o {
+
+    function isAdmin() {
+      return request.auth != null
+        && request.auth.token.firebase.sign_in_provider == 'google.com'
+        && request.auth.token.email_verified == true
+        && request.auth.token.email is string
+        && firestore.exists(/databases/(default)/documents/admins/$(request.auth.token.email.lower()));
+    }
+
+    function validFile(name) {
+      return (name.matches('^bild[.](jpg|png|gif)$')
+          && request.resource.contentType.matches('^image/(jpeg|png|gif)$')
+          && request.resource.size <= 15 * 1024 * 1024)
+        || (name == 'mini.jpg'
+          && request.resource.contentType == 'image/jpeg'
+          && request.resource.size <= 2 * 1024 * 1024)
+        || (name.matches('^film[.](mp4|webm|mov)$')
+          && request.resource.contentType.matches('^video/(mp4|webm|quicktime)$')
+          && request.resource.size <= 200 * 1024 * 1024);
+    }
+
+    match /galleri/{id}/{name} {
+      allow read: if true;
+      allow create: if isAdmin() && id.matches('^[A-Za-z0-9]{1,40}$') && validFile(name);
+      allow update: if false;
+      allow delete: if isAdmin();
+    }
+
+    // Allt annat är stängt.
+    match /{allPaths=**} {
+      allow read, write: if false;
+    }
+  }
+}
