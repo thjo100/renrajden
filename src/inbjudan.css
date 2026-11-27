@@ -167,7 +167,12 @@ h1, h2, p, dl, dd, ol, ul { margin: 0; }
   .sheet { margin: 0; box-shadow: none; height: auto; min-height: max(280mm, min(100vh, 297mm)); }
   .sheet > .block:last-of-type { margin-bottom: 15mm; }
   /* Affischen: inga avgifter, och innehållet mitt i det vita mellan toppen och foten */
-  .block[aria-labelledby="fees-h"] { display: none; }
+  /* Affischen visar distanserna stort, avgifterna finns på webben */
+  .screen-only, .fees th:nth-child(n + 3), .fees td:nth-child(n + 3) { display: none; }
+  .fees tbody th b { font-size: 26pt; }
+  .fees tbody th span { font-size: 11pt; }
+  .fees td { font-size: 13pt; font-weight: 600; }
+  .fees tbody th, .fees td { padding: 2.6mm 0; }
   .facts { margin-top: auto; }
   .foot-wave { height: 11mm; }
   .bottom { break-inside: avoid; }
