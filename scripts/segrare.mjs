@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 // Kompletterar resultatarkivet i Firestore med segrare och datum från standardinnehållet (src/cms/defaults.js).
-// Bara år som redan finns i Firestore ändras. Segrarklasser som saknas läggs till efter de som redan finns,
+// År som saknas i Firestore skapas från standardinnehållet. Segrarklasser som saknas läggs till efter de som redan finns,
 // och ett tomt datum fylls i. Det som redan står i Firestore rörs inte, om du inte anger --force: då blir
 // segrarna, datumet och texten exakt som i standardinnehållet (även tomma). Länkar och inbjudan rörs aldrig.
 //
@@ -19,14 +19,22 @@ export function mergeWinners(current, wanted) {
   return [...current, ...wanted.filter((w) => !have.has(classKey(w)))].slice(0, LIMITS.winners);
 }
 
+/** Ett helt årsdokument från standardinnehållet, för år som saknas i Firestore. Samma fält som adminläget sparar. */
+const newYear = (y) => ({
+  year: y.year, status: y.status, date: y.date || "", text: y.text || "", winners: plain(y.winners),
+  links: (y.links || []).map((l) => ({ label: l.label, url: l.url })),
+  invitation: y.invitation ? { label: y.invitation.label, url: y.invitation.url } : null,
+  updatedAt: FieldValue.serverTimestamp(), updatedBy: null,
+});
+
 export async function fillArchive(db, { force = false, years = DEFAULT_YEARS } = {}) {
-  const result = { written: {}, skipped: [], missing: [] };
+  const result = { written: {}, skipped: [], created: [] };
   for (const y of years) {
-    const wanted = plain(y.winners);
-    if (!force && !wanted.length && !y.date) continue;
     const ref = db.doc(`years/${y.year}`);
     const snap = await ref.get();
-    if (!snap.exists) { result.missing.push(y.year); continue; }
+    if (!snap.exists) { await ref.set(newYear(y)); result.created.push(y.year); continue; }
+    const wanted = plain(y.winners);
+    if (!force && !wanted.length && !y.date) continue;
     const update = {};
     const current = plain(snap.get("winners"));
     const winners = force ? wanted : mergeWinners(current, wanted);
@@ -44,9 +52,9 @@ export async function fillArchive(db, { force = false, years = DEFAULT_YEARS } =
 if (import.meta.url === `file://${process.argv[1]}`) {
   const { flags } = parseArgs();
   const { db, projectId, emulator } = connect(flags);
-  const { written, skipped, missing } = await fillArchive(db, { force: flags.force });
+  const { written, skipped, created } = await fillArchive(db, { force: flags.force });
   const list = (a) => (a.length ? a.join(", ") : "inga");
   const done = Object.entries(written).map(([y, f]) => `${y} (${f.join(", ")})`);
-  console.log(`Ifyllt: ${list(done)}. Redan kompletta: ${list(skipped)}. Saknas i Firestore: ${list(missing)}. (${projectId}${emulator ? ", emulator" : ""})`);
+  console.log(`Nya år: ${list(created)}. Ifyllt: ${list(done)}. Redan kompletta: ${list(skipped)}. (${projectId}${emulator ? ", emulator" : ""})`);
   process.exit(0);
 }
