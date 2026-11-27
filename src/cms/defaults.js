@@ -34,6 +34,7 @@ const year = (y, fields) => ({ year: y, status: "held", date: "", text: "", winn
 export const DEFAULT_YEARS = [
   year(2025, {
     date: "2025-02-09",
+    winners: [{ class: "H42", names: "Viktor Mäenpää" }, { class: "D42", names: "Helena Lundkvist" }],
     links: [
       link("Resultat (pdf)", "https://drive.google.com/file/d/18MDWvPwT7fYfBq7Ffobwkv2o5Ng6c-tY/view?usp=sharing"),
       link("Liveresultat", "http://live.skidor.com/5583#result@46786@1@-1"),
@@ -43,6 +44,7 @@ export const DEFAULT_YEARS = [
   }),
   year(2024, {
     date: "2024-02-10",
+    winners: [{ class: "H42", names: "Viktor Mäenpää" }, { class: "D42", names: "Siri Jeppson" }],
     links: [
       link("Resultat (pdf)", "https://drive.google.com/file/d/1Auuj2y_SYhVtES366o7NH1-czVkCQ14x/view?usp=sharing"),
       link("SSF TA", "https://ta.skidor.com/ResultList.aspx?eventid=14793&competitionid=25311&orgid=2920"),
@@ -51,11 +53,13 @@ export const DEFAULT_YEARS = [
   }),
   year(2023, {
     date: "2023-02-11",
+    winners: [{ class: "H42", names: "Simon Öberg" }, { class: "D42", names: "Åse Borgeryd" }],
     links: [link("Resultat", "https://drive.google.com/file/d/1MLrjuAHvQ4BOJSSZ6t7kAgGW8lONGRv2/view?usp=share_link")],
     invitation: link("Inbjudan 2023", "https://drive.google.com/file/d/1UDaIENyTIf-ig6vSlUeimXJ261k_S6MK/view?usp=share_link"),
   }),
   year(2022, {
     date: "2022-02-19",
+    winners: [{ class: "H42", names: "Henrik Strand" }, { class: "D42", names: "Nina Lintzén" }],
     links: [
       link("Resultat", "https://drive.google.com/file/d/1IGspsGsRtOmkcbsIR68j7WqscqUged3u/view?usp=sharing"),
       link("Varvtider (chip)", "http://obasen.orientering.se/winsplits/online/sv/default.asp?page=table&databaseId=80132&categoryId=0"),
@@ -75,6 +79,7 @@ export const DEFAULT_YEARS = [
   }),
   year(2019, { status: "cancelled", text: "Paus. Klubben arrangerade flera stora event." }),
   year(2018, {
+    winners: [{ class: "H42", names: "Hannes Boström" }, { class: "D42", names: "Nina Lintzén" }],
     text: "Även Kalvrajden för HD10–16.",
     links: [
       link("SSF TA", "http://ta.skidor.com/ResultList.aspx?eventid=8698&competitionid=14578&orgid=2920"),
@@ -120,5 +125,8 @@ export const DEFAULT_YEARS = [
     ],
   }),
   year(2014, { status: "cancelled", text: "Inställt på grund av kyla." }),
-  year(2013, { links: [link("Resultat", "https://drive.google.com/file/d/0B1D0YYjNfooockxvbFIwU3hoTlk/view")] }),
+  year(2013, {
+    winners: [{ class: "H42", names: "Daniel Nordebo" }, { class: "D42", names: "Malin Rensfeldt" }],
+    links: [link("Resultat", "https://drive.google.com/file/d/0B1D0YYjNfooockxvbFIwU3hoTlk/view")],
+  }),
 ];
